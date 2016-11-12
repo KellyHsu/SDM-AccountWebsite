@@ -2,7 +2,7 @@
 
  SDM final project
 
- ## INSTALLATION & SETTINGS
+## INSTALLATION & SETTINGS
  
  At first, you should make sure you have [virtualenv](http://www.virtualenv.org/) installed.
 
