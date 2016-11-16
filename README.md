@@ -4,7 +4,11 @@
 
 ## INSTALLATION & SETTINGS
  
- At first, you should make sure you have [virtualenv](http://www.virtualenv.org/) installed.
+ At first, you should make sure you have [virtualenv](http://www.virtualenv.org/) installe
+ 
+ if not:
+
+    [sudo] pip install virtualenv
 
 after that, just cd to your_project_name:
 
