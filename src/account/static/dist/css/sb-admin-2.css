@@ -4,7 +4,7 @@
  * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap/blob/gh-pages/LICENSE)
  */
 body {
-  background-color: #f8f8f8;
+  background-color: #FFFFFF;
 }
 #wrapper {
   width: 100%;
@@ -34,6 +34,7 @@ body {
 .navbar-top-links li a {
   padding: 15px;
   min-height: 50px;
+  color:#999;
 }
 .navbar-top-links .dropdown-menu li {
   display: block;
@@ -77,8 +78,10 @@ body {
 .sidebar ul li {
   border-bottom: 1px solid #e7e7e7;
 }
-.sidebar ul li a.active {
-  background-color: #eeeeee;
+.sidebar ul li a {
+  background-color:white;
+  color:#777;
+  font-weight:600;
 }
 .sidebar .arrow {
   float: right;
@@ -112,6 +115,24 @@ body {
     margin-left: auto;
   }
 }
+
+/***********************
+  CUSTON BTN VALUES
+************************/
+
+.btn.submit:focus, .btn.submit:hover{
+    background-color:white;
+    box-shadow:2px 2px 2px rgba(20%,20%,40%,0.6),4px 4px 6px rgba(20%,20%,40%,0.4),6px 6px 12px rgba(20%,20%,40%,0.4);
+}
+.btn-default.submit:active, .btn-default.submit.active, .btn-primary.submit:active, .btn-primary.submit.active {
+    background: #eee;
+    box-shadow: none;
+}
+
+/***********************
+  END CUSTOM BTN
+************************/
+
 .btn-outline {
   color: inherit;
   background-color: transparent;
