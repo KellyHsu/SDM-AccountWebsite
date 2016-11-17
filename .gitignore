@@ -3,6 +3,10 @@
 ######  File in these naming or directory beneath will be ignore in git control. 
 ########################################################################
 
+# SQLite3 database files:
+*.db
+*.sqlite3
+*.sqlite
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -17,7 +21,6 @@ __pycache__/
 env/
 build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
