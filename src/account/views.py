@@ -1,15 +1,8 @@
 from django.shortcuts import render
-
-# Create your views here.
-
-
-def login(request):
-    return render(request, 'account/login.html', {})
-
-
-def register(request):
-    return render(request, 'account/register.html', {})
+from django.http import HttpResponseRedirect
 
 
 def dashboard(request):
-    return render(request, 'account/dashboard.html', {})
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    return render(request, 'dashboard.html', {})

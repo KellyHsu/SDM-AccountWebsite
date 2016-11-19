@@ -24,12 +24,13 @@
             <div class="col-md-4 card card-container">
                 <section class="login-form">
                     <h1 class="welcome text-center">Welcome to <br> Money Keeper</h1>
-                    <form method="post" action="#" role="login">
+                    <form method="post" action="/login/" role="login">
+                        {% csrf_token %}
                         <h2 class='login_title text-center'>Login</h2>
                         <hr>
                         <input type="email" name="email" class="form-control input-lg login_box" placeholder="user01@IceCode.com" required autofocus />
-                        <input type="password" class="form-control input-lg login_box" id="password" placeholder="******" required="" />
-           
+                        <input type="password" name="password" class="form-control input-lg login_box" placeholder="******" required autofocus />
+
                         <button type="submit" name="go" class="btn btn-lg btn-primary btn-block">Sign in</button>
                         <div>
                             <a href="../register">Create account</a> or <a href="#">reset password</a>
