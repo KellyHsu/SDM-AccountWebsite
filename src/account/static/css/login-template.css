@@ -123,3 +123,19 @@ form[role=login] > div {
 .form-links a {
     color: #fff;
 }
+
+.btn-primary {
+    background-color: #39A0EE;
+}
+
+.btn-primary:focus, .btn-primary:hover {
+    background-color: #235B9B;
+}
+
+.register-link a {
+    color: #39A0EE;
+}
+
+
+
+
