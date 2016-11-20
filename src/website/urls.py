@@ -20,6 +20,7 @@ from member.views import login, logout, register
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     # url(r'^account/', include('account.urls')),
+    url(r'^$', logout),
     url(r'', include('account.urls')),
     url(r'^login/$', login),
     url(r'^logout/$', logout),
