@@ -1,8 +1,9 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from member.models import Member
 
-# 帳目
+
 class Receipt(models.Model):
     money = models.IntegerField()
     remark = models.CharField(max_length=100)
@@ -11,8 +12,6 @@ class Receipt(models.Model):
     payment = models.ForeignKey('Payment', on_delete=models.CASCADE)
     incomeandexpense = models.ForeignKey('IncomeAndExpense', on_delete=models.CASCADE)
 
-    
-# 類別
 class Classification(models.Model):
     CLASSIFICATION_TYPE = (
         ('FO', 'food'),
@@ -25,13 +24,11 @@ class Classification(models.Model):
     )
     classificaion_type = models.CharField(max_length=2, choices=CLASSIFICATION_TYPE)
 
-# 子類別
 class SubClassification(models.Model):
     name = models.CharField(max_length=100)
     classification = models.ForeignKey('Classification', on_delete=models.CASCADE)
-    member = models.ForeignKey('Member', on_delete=models.CASCADE)
+    member = models.ForeignKey('member.Member', on_delete=models.CASCADE)
 
-# 付款方式
 class Payment(models.Model):
     PAYMENT_TYPE = (
         ('CR', 'credit_card'),
@@ -39,7 +36,6 @@ class Payment(models.Model):
     )
     payment_type = models.CharField(max_length=2, choices=PAYMENT_TYPE)
 
-# 收/支
 class IncomeAndExpense(models.Model):
     INCOME_TYPE = (
         ('IN', 'income'),
