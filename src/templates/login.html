@@ -28,10 +28,16 @@
                         {% csrf_token %}
                         <h2 class='login_title text-center'>Login</h2>
                         <hr>
-                        <input type="email" name="email" class="form-control input-lg login_box" placeholder="Email Address" required autofocus />
-                        <input type="password" name="password" class="form-control input-lg login_box" placeholder="Password" required />
-
-
+                        {% for field in form %}
+                            {% if field.label|lower == 'username' %}
+                                <input id="{{ field.id_for_label }}" type="email" class="form-control input-lg login_box" name="{{ field.html_name }}" placeholder="Email Address" required autofocus>
+                                {{ form.username.errors }}
+                            {% else %}
+                                <input id="{{ field.id_for_label }}" type="password" class="form-control input-lg login_box" name="{{ field.html_name }}" placeholder="Password" required>
+                                {{ form.password.errors }}
+                                {{ form.non_field_errors }}
+                            {% endif %}
+                        {% endfor %}
                         <button type="submit" name="go" class="btn btn-lg btn-primary btn-block">Sign in</button>
                         <div class="register-link">
                             <a href="/register/">Create account</a> or <a href="#">reset password</a>

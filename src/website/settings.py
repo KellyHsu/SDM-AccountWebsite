@@ -149,3 +149,5 @@ STATIC_ROOT = join(BASE_DIR, 'assets')
 STATICFILES_DIRS = [join(BASE_DIR, 'static')]
 
 LOGIN_URL = reverse_lazy('login')
+LOGIN_REDIRECT_URL = "/dashboard/"
+LOGOUT_REDIRECT_URL = "/login/"
