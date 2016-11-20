@@ -27,11 +27,27 @@
             <div class="col-md-4 card card-container">
                 <section class="login-form">
                     <h1 class="welcome text-center">Welcome to <br> Money Keeper</h1>
-                    <form method="post" action="#" role="login">
-						<h2 class='login_title text-center'>Register</h2><hr>
-                        <input type="email" name="email" class="form-control input-lg login_box" placeholder="Email Address" required autofocus />
-                        <input type="password" class="form-control input-lg login_box" id="password" placeholder="Password" required/>
-                        <input type="password" class="form-control input-lg login_box" id="confirmPassword" placeholder="Confirm Password" required/>
+                    <!--<form method="post" action="/register/" role="login">-->
+						<!--<h2 class='login_title text-center'>Register</h2><hr>-->
+                        <!--<input type="email" name="email" class="form-control input-lg login_box" placeholder="Email Address" required autofocus />-->
+                        <!--<input type="password" class="form-control input-lg login_box" id="password" placeholder="Password" required="" />-->
+                        <!--<input type="password" class="form-control input-lg login_box" id="confirmPassword" placeholder="Confirm Password" required="" />-->
+                        <!--<button type="submit" name="go" class="btn btn-lg btn-primary btn-block">Register Now</button>-->
+                    <!--</form>-->
+                    <form method="post" action="/register/" role="login">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            {% if field.label|lower == 'username' %}
+                                <input id="{{ field.id_for_label }}" type="email" class="form-control input-lg login_box" name="{{ field.html_name }}" placeholder="Email Address" required autofocus>
+                                {{ form.username.errors }}
+                            {% elif field.label|lower == 'password' %}
+                                <input id="{{ field.id_for_label }}" class="form-control input-lg login_box" type="password" name="{{ field.html_name }}" placeholder="Password" required>
+                                {{ form.password1.errors }}
+                            {% else %}
+                                <input id="{{ field.id_for_label }}" class="form-control input-lg login_box" type="password" name="{{ field.html_name }}" placeholder="Confirm Password" required>
+                                {{ form.password2.errors }}
+                            {% endif %}
+                        {% endfor %}
                         <button type="submit" name="go" class="btn btn-lg btn-primary btn-block">Register Now</button>
                     </form>
                 </section>

@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.contrib import auth
 from django.http import HttpResponseRedirect
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render_to_response
 
 
 def login(request):
@@ -31,4 +33,13 @@ def logout(request):
 
 
 def register(request):
-    pass
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        print(form)
+        if form.is_valid():
+            user = form.save()
+            return HttpResponseRedirect('/login/')
+    else:
+        # return render(request, 'register.html', context)
+        form = UserCreationForm()
+    return render(request, 'register.html', locals())
