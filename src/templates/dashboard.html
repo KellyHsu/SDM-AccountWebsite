@@ -21,7 +21,7 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-
+    <link href="{% static 'css/base.css' %}" rel="stylesheet">
     	<!-- Bootstrap Core CSS -->
     <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
 
@@ -114,7 +114,7 @@ $(document).ready(function() {
 <body>
 
     <!-- whole page wrapper -->
-    <div id="wrapper">
+    <div id="wrapper cotainer">
 
         <!-- Navigation -->
         <nav class="navbar navbar-light navbar-static-top" role="navigation">
@@ -129,22 +129,23 @@ $(document).ready(function() {
             </div><!-- /.navbar-header -->
             
             <ul class="nav navbar-top-links navbar-right">
+                {% comment %}
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" >
                         <i class="fa fa-envelope fa-fw"></i> <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-messages">
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <strong>John Smith</strong>
-                                    <span class="pull-right text-muted">
-                                        <em>Yesterday</em>
-                                    </span>
-                                </div>
-                                <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
-                            </a>
-                        </li>
+                        <!--<li>-->
+                            <!--<a href="#">-->
+                                <!--<div>-->
+                                    <!--<strong>John Smith</strong>-->
+                                    <!--<span class="pull-right text-muted">-->
+                                        <!--<em>Yesterday</em>-->
+                                    <!--</span>-->
+                                <!--</div>-->
+                                <!--<div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>-->
+                            <!--</a>-->
+                        <!--</li>-->
                         <li class="divider"></li>
                         <li>
                             <a href="#">
@@ -318,9 +319,9 @@ $(document).ready(function() {
                     </ul><!-- /.dropdown-alerts -->
                     
                 </li><!-- /.dropdown -->
-                
+                {% endcomment %}
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="color: white;">
                         <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
@@ -341,7 +342,7 @@ $(document).ready(function() {
 
 
         <!-- Below the navbar starting -->
-        <div class="container-fluid">
+        <div class="container-fluid" style="background-color: rgb(229, 228, 219);">
 
             <div class="row col-sm-3 col-md-3 left-side">
                 <div class="panel-group" id="accordion">
@@ -373,7 +374,7 @@ $(document).ready(function() {
                     </div>  <!-- /.panel 支出 -->
 
                         <!-- start panel 收入 -->
-                    <div class="panel panel-default hidden">
+                    <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><span class="glyphicon glyphicon-list-alt">
@@ -402,12 +403,12 @@ $(document).ready(function() {
             </div>  <!-- /.left-side row -->
 
             <!-- Main container -->
-            <div id="page-wrapper" class="col-sm-9 col-md-9">
-                
+            <div id="page-wrapper" class="col-sm-9 col-md-9" style="min-height: 167px; background-color: rgb(229, 228, 219);">
+
                 <div class="container-fluid col-xs-12 col-sm-12">
                     
                     <div class="row">
-                        <div class="col-lg-12">
+                        <div class="col-lg-12" style="background-color: #fff; margin-top: 20px;">
                             <div id="titleMenu" class="page-header" style="text-align: center;">
                                 <form>
                                     <select id="recordType" name="recordType">
@@ -423,27 +424,29 @@ $(document).ready(function() {
                                 </form>
                             </div>
                             <form style="text-align: center;">
-                                <span style="font-size: 130px;">&#36</span>
-                                <input type="number" id="amount" style="font-size: 100px;">
+                                <label style="font-size: 100px;padding-right: 20px;">$</label>
+                                <input type="number" id="amount">
                                 <br />
-                                <div class="row" style="text-align: center;">
-                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category">食</button>
-                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category">衣</button>
-                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category">住</button>
-                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category">行</button>
-                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category">育</button>
-                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category">樂</button>
-                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category">其</button>
+                                <div class="row" style="text-align: center; margin-bottom: 20px;">
+                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category" style="background: url('../static/image/blue.png') no-repeat;">食</button>
+                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category" style="background: url('../static/image/red.png') no-repeat;">衣</button>
+                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category" style="background: url('../static/image/black.png') no-repeat;">住</button>
+                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category" style="background: url('../static/image/green.png') no-repeat;">行</button>
+                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category" style="background: url('../static/image/purple.png') no-repeat;">育</button>
+                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category" style="background: url('../static/image/yellow.png') no-repeat;">樂</button>
+                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category" style="background: url('../static/image/brown.png') no-repeat;">其</button>
                                 </div>
-                                <span style="font-size: 50px;">分類</span>
-                                <input type="text" id="costCategory" value="預設類別" readonly>
-                                <br />
-                                <span style="font-size:50px;">備註</span>
-                                <input type="text" id="memo" />
-                                <br />
+                                <div class="row" style="margin-bottom: 20px;">
+                                    <label style="font-size: 25px; padding-right: 5px;">分類</label>
+                                    <input type="text" id="costCategory" value="預設類別" readonly>
+                                </div>
                                 <div class="row">
-                                    <input type="button" class="btn btn-default btn-lg submit" value="確定">
-                                    <input type="button" class="btn btn-default btn-lg submit" value="清空">
+                                    <label style="font-size: 25px; padding-right: 5px;">備註</label>
+                                    <input type="text" id="memo" />
+                                </div>
+                                <div class="row" style="margin-top: 30px;margin-bottom: 30px;">
+                                    <input type="button" class="btn-default btn-lg submit" id="last-btn" value="確定" style="border: 2px solid #03aaa0;">
+                                    <input type="button" class="btn-default btn-lg submit" id="last-btn" value="清空" style="border: 2px solid #03aaa0;">
                                 </div>
                             </form>
                         </div>

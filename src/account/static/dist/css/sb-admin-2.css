@@ -24,7 +24,8 @@ body {
 }
 .navbar-light {
   margin-bottom:0 ;
-  background-color: #e3f2fd
+  background-image: url("../../image/fe-bg.jpg");
+  /*background-color: #e3f2fd*/
 }
 
 .navbar-light .navbar-toggle{
@@ -53,7 +54,7 @@ body {
 }
 
 .navbar-brand {
-  color: #333;
+  color: #fff;
 }
 
 .navbar-top-links {
@@ -111,7 +112,6 @@ body {
   padding-left: 0!important;
 }
 
-
 @media (min-width: 768px) {
   .navbar-top-links .dropdown-messages,
   .navbar-top-links .dropdown-tasks,
@@ -123,7 +123,7 @@ body {
 /* Left Menu  */
 .glyphicon { margin-right:10px; }
 .panel-body { padding:0px; }
-.panel-body table tr td { padding-left: 15px }
+.panel-body table tr td { padding-left: 30px }
 .panel-body .table {margin-bottom: 0px; }
 
 
@@ -141,6 +141,7 @@ body {
 }
 .btn-default#category{
   margin: 0px 10px 10px 0px;
+  color: #fff;
 }
 
 /***********************
@@ -149,20 +150,20 @@ body {
 
 select {
     width: 15%;
-    margin: 5px 100px 10px 0px;
+    margin: 5px 0px 10px 0px;
     border: none;
     border-radius: 4px;
     background-color: #f1f1f1;
 }
 
-input#amount, input#costCategory, input#memo {
-    padding-left: 5%;
+input#costCategory, input#memo {
+    padding-left: 20px;
     border: 0;
     outline: 0;
     background: transparent;
     border-bottom: 2px solid black;
-    width: 80%;
-    font-size: 35px;
+    width:65%;
+    font-size: 25px;
 }
 
 .btn-outline {
