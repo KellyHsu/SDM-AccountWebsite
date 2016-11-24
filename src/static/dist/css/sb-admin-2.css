@@ -143,6 +143,10 @@ body {
   margin: 0px 10px 10px 0px;
   color: #fff;
 }
+.btn-default#category2{
+  margin: 0px 10px 10px 0px;
+  color: #fff;
+}
 
 /***********************
   END CUSTOM BTN
@@ -495,9 +499,18 @@ table.dataTable thead .sorting:after {
 
   .left-side {
     padding-right: 0 !important;
+    margin-bottom: -10px;
+  }
+
+  .row{
+    margin-left: -15px !important;
   }
 
   .btn-default#category{
+    margin: 5px 5px;
+  }
+
+    .btn-default#category2{
     margin: 5px 5px;
   }
 

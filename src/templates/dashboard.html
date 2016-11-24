@@ -66,6 +66,22 @@ $(document).ready(function() {
         $('#main-cate').text(mainCate);
     });
 
+    $( '#category2' ).click(function(){
+        var mainCate = $(this).text();
+        $('#main-cate').text(mainCate);
+        $(".btn-link").each(function(index, element){
+
+            if(index == 0){
+                $(element).text("包包");
+            }else if(index == 1){
+                $(element).text("洋裝");
+            }else{
+                $(element).text("鞋子");
+            }
+
+        });
+    });
+
     $( '#modal-submit' ).click(function(){
         var lv1 = $( '#main-cate' ).text();
         var lv2 = $( '.btn-link.selected').text();
@@ -80,7 +96,7 @@ $(document).ready(function() {
 
     $("#datepicker1").datepicker("setDate", new Date());
 
-    $( '.submit' ).click(function(){
+    $( '.determin' ).click(function(){
         var amount = $('#amount').val();
         var cate = $('#costCategory').attr("value");
         var memo = $('#memo').val();
@@ -90,8 +106,14 @@ $(document).ready(function() {
                 rowcontent = "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>未分類紀錄: "
                             + amount + "</a></td></tr>";
             }else{
-                rowcontent = "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>"
+                if(memo!==''){
+                    rowcontent = "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>"
                             + cate + "-" + memo + ": "+ amount + "</a></td></tr>";
+                }
+                else{
+                    rowcontent = "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>"
+                            + cate + ": "+ amount + "</a></td></tr>";
+                }
             }
 
             $('#cost-list').append(rowcontent);
@@ -104,6 +126,12 @@ $(document).ready(function() {
 
         }
     });
+
+    $('.clear').click(function(){
+        $('#amount').val('');
+        $('#costCategory').attr("value", "預設類別");
+        $('#memo').val('');
+    })
 
 }); 
 
@@ -119,7 +147,7 @@ $(document).ready(function() {
         <!-- Navigation -->
         <nav class="navbar navbar-light navbar-static-top" role="navigation">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".panel-group">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -345,7 +373,7 @@ $(document).ready(function() {
         <div class="container-fluid" style="background-color: rgb(229, 228, 219);">
 
             <div class="row col-sm-3 col-md-3 left-side">
-                <div class="panel-group" id="accordion">
+                <div class="panel-group collapse in" id="accordion" aria-expanded="true">
 
                     <!-- start panel 支出 -->
                     <div class="panel panel-default">
@@ -358,16 +386,7 @@ $(document).ready(function() {
                         <div id="collapseOne" class="panel-collapse collapse in">
                             <div class="panel-body">
                                 <table class="table" id="cost-list">
-                                    <tr>
-                                        <td>
-                                            <span class="glyphicon glyphicon-file text-success"></span><a href="#">食-早餐:50</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <span class="glyphicon glyphicon-file text-success"></span><a href="#">食-午餐-便當:80</a>
-                                        </td>
-                                    </tr>
+                                    
                                 </table>
                             </div>
                         </div>
@@ -384,16 +403,7 @@ $(document).ready(function() {
                         <div id="collapseTwo" class="panel-collapse collapse in">
                             <div class="panel-body">
                                 <table class="table">
-                                    <tr>
-                                        <td>
-                                            <span class="glyphicon glyphicon-file text-success"></span><a href="#">店租:40000</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <span class="glyphicon glyphicon-file text-success"></span><a href="#">利息:5000</a>
-                                        </td>
-                                    </tr>
+                                    
                                 </table>
                             </div>
                         </div>
@@ -424,12 +434,12 @@ $(document).ready(function() {
                                 </form>
                             </div>
                             <form style="text-align: center;">
-                                <label style="font-size: 100px;padding-right: 20px;">$</label>
+                                <label class="test" style="font-size: 100px;padding-right: 20px;">$</label>
                                 <input type="number" id="amount">
                                 <br />
                                 <div class="row" style="text-align: center; margin-bottom: 20px;">
                                     <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category" style="background: #8D8F76 no-repeat;">食</button>
-                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category" style="background: #BAB6AF no-repeat;">衣</button>
+                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category2" style="background: #BAB6AF no-repeat;">衣</button>
                                     <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category" style="background: #E19F81 no-repeat;">住</button>
                                     <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category" style="background: #73AFB8 no-repeat;">行</button>
                                     <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category" style="background: #BA736A no-repeat;">育</button>
@@ -445,8 +455,8 @@ $(document).ready(function() {
                                     <input type="text" id="memo" />
                                 </div>
                                 <div class="row" style="margin-top: 30px;margin-bottom: 30px;">
-                                    <input type="button" class="btn-default btn-lg submit" id="last-btn" value="確定" style="border: 2px solid #03aaa0;">
-                                    <input type="button" class="btn-default btn-lg submit" id="last-btn" value="清空" style="border: 2px solid #03aaa0;">
+                                    <input type="button" class="btn-default btn-lg submit determin" id="last-btn" value="確定" style="border: 2px solid #03aaa0;">
+                                    <input type="button" class="btn-default btn-lg submit clear" id="last-btn" value="清空" style="border: 2px solid #03aaa0;">
                                 </div>
                             </form>
                         </div>
@@ -474,7 +484,7 @@ $(document).ready(function() {
 		            <button type="button" class="btn btn-link" id="sec-category">午餐</button>
 		            <button type="button" class="btn btn-link" id="sec-category">晚餐</button>
 		            <button type="button" class="btn btn-link" id="add-category">新增</button>   
-		            <button type="button" class="btn btn-link" id="del-category">刪除</button>
+		            <!-- <button type="button" class="btn btn-link" id="del-category">刪除</button> -->
 				</div>
 	            <div class="modal-footer">
 	                <button type="button" class="btn btn-default" data-dismiss="modal" id="modal-submit">確定</button>
@@ -483,7 +493,7 @@ $(document).ready(function() {
 	        </div>
 	    </div>
 	</div>
-
+    <!-- Modal 2 -->
 
 </body>
 
