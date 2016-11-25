@@ -73,7 +73,7 @@ body {
 }
 .dropdown-toggle:focus,
 .dropdown-toggle:hover {
-    color: rgba(0,0,0,.7);
+    color: rgba(255,255,255,.7);
 }
 .navbar-top-links .dropdown-menu li {
   display: block;
@@ -91,7 +91,7 @@ body {
 .navbar-top-links .dropdown-messages,
 .navbar-top-links .dropdown-tasks,
 .navbar-top-links .dropdown-alerts {
-  width: 310px;
+  width: 200px;
   min-width: 0;
 }
 .navbar-top-links .dropdown-messages {
