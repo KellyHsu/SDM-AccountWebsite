@@ -11,6 +11,7 @@ class Receipt(models.Model):
     subclassification = models.ForeignKey('SubClassification', on_delete=models.CASCADE)
     payment = models.ForeignKey('Payment', on_delete=models.CASCADE)
     incomeandexpense = models.ForeignKey('IncomeAndExpense', on_delete=models.CASCADE)
+    member = models.ForeignKey('member.Member', on_delete=models.CASCADE)
 
 class Classification(models.Model):
     CLASSIFICATION_TYPE = (
@@ -33,6 +34,7 @@ class Payment(models.Model):
     PAYMENT_TYPE = (
         ('CR', 'credit_card'),
         ('CA', 'cash'),
+        ('OT', 'other'),
     )
     payment_type = models.CharField(max_length=2, choices=PAYMENT_TYPE)
 

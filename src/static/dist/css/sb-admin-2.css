@@ -73,7 +73,7 @@ body {
 }
 .dropdown-toggle:focus,
 .dropdown-toggle:hover {
-    color: rgba(0,0,0,.7);
+    color: rgba(255,255,255,.7);
 }
 .navbar-top-links .dropdown-menu li {
   display: block;
@@ -91,7 +91,7 @@ body {
 .navbar-top-links .dropdown-messages,
 .navbar-top-links .dropdown-tasks,
 .navbar-top-links .dropdown-alerts {
-  width: 310px;
+  width: 200px;
   min-width: 0;
 }
 .navbar-top-links .dropdown-messages {
@@ -140,6 +140,10 @@ body {
     box-shadow: none;
 }
 .btn-default#category{
+  margin: 0px 10px 10px 0px;
+  color: #fff;
+}
+.btn-default#category2{
   margin: 0px 10px 10px 0px;
   color: #fff;
 }
@@ -495,9 +499,18 @@ table.dataTable thead .sorting:after {
 
   .left-side {
     padding-right: 0 !important;
+    margin-bottom: -10px;
+  }
+
+  .row{
+    margin-left: -15px !important;
   }
 
   .btn-default#category{
+    margin: 5px 5px;
+  }
+
+    .btn-default#category2{
     margin: 5px 5px;
   }
 
