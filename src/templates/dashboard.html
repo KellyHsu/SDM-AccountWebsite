@@ -59,6 +59,9 @@ $(document).ready(function() {
     $( ".btn-link" ).click(function(){
         $(".btn-link").removeClass("selected");
         $(this).addClass("selected");
+        $.ajaxSetup({  
+                 data: {csrfmiddlewaretoken: '{{ csrf_token }}' },  
+            });  
     });
 
     $( '#category' ).click(function() {
@@ -95,7 +98,7 @@ $(document).ready(function() {
     });
 
     $("#datepicker1").datepicker("setDate", new Date());
-
+/*
     $( '.determin' ).click(function(){
         var amount = $('#amount').val();
         var cate = $('#costCategory').attr("value");
@@ -126,14 +129,39 @@ $(document).ready(function() {
 
         }
     });
-
+*/
     $('.clear').click(function(){
         $('#amount').val('');
         $('#costCategory').attr("value", "預設類別");
         $('#memo').val('');
     })
 
-}); 
+    $('#formadd').submit(function(){  
+                var member = request.user;
+                var money = $("#amount").val();
+                var remark = $("#memo").val();
+                var date = $("#datepicker1").val();
+                //var subclassification = $("#costCategory").val();
+                var subclassification = "FO";
+                var payment = $("#payment").val();
+                var incomeandexpense = $("#recordType").val();
+                
+                $.ajax({  
+                    type:"POST",  
+                    data: {member:member, money:money, remark:remark, date:date, subclassification:subclassification, payment:payment, incomeandexpense:incomeandexpense},  
+                    url: "{% url 'createReceipt' %}",  
+                    cache: false,  
+                    dataType: "html",  
+                    success: function(result, statues, xml){  
+                        alert(result); 
+                    },  
+                    error: function(){  
+                        alert("false");  
+                    }  
+                });  
+                return false;  
+            });  
+});  
 
 </script>
 
@@ -269,7 +297,7 @@ $(document).ready(function() {
                     <div class="row">
                         <div class="col-lg-12" style="background-color: #fff; margin-top: 20px;">
                             <div id="titleMenu" class="page-header" style="text-align: center;">
-                                <form>
+                                <form method="post" id="formadd">
                                     <select id="recordType" name="recordType">
                                         <option value="cost">支出</option>
                                         <option value="revenue">收入</option>
@@ -280,9 +308,10 @@ $(document).ready(function() {
                                         <option value="other">其他</option>
                                     </select>
                                     <input type="text"  data-provide="datepicker" id="datepicker1">
-                                </form>
+                                
                             </div>
-                            <form style="text-align: center;">
+                            <div style="text-align: center;">
+                            
                                 <label class="test" style="font-size: 100px;padding-right: 20px;">$</label>
                                 <input type="number" id="amount">
                                 <br />
@@ -304,8 +333,9 @@ $(document).ready(function() {
                                     <input type="text" id="memo" />
                                 </div>
                                 <div class="row" style="margin-top: 30px;margin-bottom: 30px;">
-                                    <input type="button" class="btn-default btn-lg submit determin" id="last-btn" value="確定" style="border: 2px solid #03aaa0;">
+                                    <input type="submit" class="btn-default btn-lg submit determin" id="last-btn" value="確定" style="border: 2px solid #03aaa0;">
                                     <input type="button" class="btn-default btn-lg submit clear" id="last-btn" value="清空" style="border: 2px solid #03aaa0;">
+                                </div>
                                 </div>
                             </form>
                         </div>

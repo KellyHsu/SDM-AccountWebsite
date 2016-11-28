@@ -6,4 +6,5 @@ urlpatterns = [
     url(r'^dashboard/$', views.dashboard),
     url(r'^setting/$', views.setting),
     url(r'^filter/$', views.filter),
+    url(r'^createReceipt/$', views.createReceipt, name='createReceipt'),
 ]
