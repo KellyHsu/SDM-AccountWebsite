@@ -56,16 +56,18 @@
 
 <script>
 $(document).ready(function() {
-    $( ".btn-link" ).click(function(){
-        $(".btn-link").removeClass("selected");
-        $(this).addClass("selected");
-    });
 
+    $(".new-sub-handler").hide();	// new-sub-handler的物件預設隱藏
+    
+    subCategorySelected();	// 增加次分類的selected屬性
+
+	// 主分類被點擊的時候會在modal裡面放入主分類的名稱
     $( '#category' ).click(function() {
         var mainCate = $(this).text();
         $('#main-cate').text(mainCate);
     });
-
+	
+	// work-around方法---當"衣"被點擊時，會更改次分類內容
     $( '#category2' ).click(function(){
         var mainCate = $(this).text();
         $('#main-cate').text(mainCate);
@@ -82,6 +84,7 @@ $(document).ready(function() {
         });
     });
 
+	// 當modal的確認被按下後，會提交給分類欄位
     $( '#modal-submit' ).click(function(){
         var lv1 = $( '#main-cate' ).text();
         var lv2 = $( '.btn-link.selected').text();
@@ -127,13 +130,56 @@ $(document).ready(function() {
         }
     });
 
+	// 復原與清空表單
     $('.clear').click(function(){
         $('#amount').val('');
         $('#costCategory').attr("value", "預設類別");
         $('#memo').val('');
     })
 
+	// 實作新增次分類的動畫效果
+    $('#subCategoryAdder').click(function(){
+        $("#subCategoryAdder").hide();
+        $('.new-sub-handler').animate({
+            width: 'toggle'
+        });
+
+        $(".modal-btn").prop('disabled', true);
+    });
+
+    $('.btn.new-sub-handler').click(function(){
+        $('.new-sub-handler').hide();
+        $("#subCategoryAdder").show();
+        $(".modal-btn").prop('disabled', false);
+
+    });
+
+	// 填完新次分類要增加到選單列表中
+    $('.new-sub-handler.new-sub-submit').click(function(){
+        var newSub = $('#new-sub-text').val();
+        $(".modal-body").append("<button type='button' class='btn btn-link' id='sec-category'>" + newSub + "</button>");
+        subCategorySelected();
+    });
+
+
+    $('#myModal').on('hidden.bs.modal', function () {
+        $('.new-sub-handler').hide();
+        $("#subCategoryAdder").show();
+        $(".modal-btn").prop('disabled', false);
+    });
+
 }); 
+
+// 用來讓每個次分類被點擊的時候都會多一個class-selected
+// 且移除其他item 的selected class
+function subCategorySelected(){
+    $( ".btn-link" ).click(function(){
+        $(".btn-link").removeClass("selected");
+        $(this).addClass("selected");
+    });
+}
+
+
 
 </script>
 
@@ -332,12 +378,38 @@ $(document).ready(function() {
 		            <button type="button" class="btn btn-link" id="sec-category">早餐</button> 
 		            <button type="button" class="btn btn-link" id="sec-category">午餐</button>
 		            <button type="button" class="btn btn-link" id="sec-category">晚餐</button>
-		            <button type="button" class="btn btn-link" id="add-category">新增</button>   
+		            <button type="button" class="btn btn-link" id="add-category">點心</button>
+                    <button type="button" class="btn btn-link" id="sec-category">早餐</button> 
+                    <button type="button" class="btn btn-link" id="sec-category">午餐</button>
+                    <button type="button" class="btn btn-link" id="sec-category">晚餐</button>
+                    <button type="button" class="btn btn-link" id="add-category">點心</button> 
+                    <button type="button" class="btn btn-link" id="sec-category">早餐</button> 
+                    <button type="button" class="btn btn-link" id="sec-category">午餐</button>
+                    <button type="button" class="btn btn-link" id="sec-category">晚餐</button>
+                    <button type="button" class="btn btn-link" id="add-category">點心</button>    
+                    <button type="button" class="btn btn-link" id="sec-category">早餐</button> 
+                    <button type="button" class="btn btn-link" id="sec-category">午餐</button>
+                    <button type="button" class="btn btn-link" id="sec-category">晚餐</button>
+                    <button type="button" class="btn btn-link" id="add-category">點心</button> 
+                    <button type="button" class="btn btn-link" id="sec-category">早餐</button> 
+                    <button type="button" class="btn btn-link" id="sec-category">午餐</button>
+                    <button type="button" class="btn btn-link" id="sec-category">晚餐</button>
+                    <button type="button" class="btn btn-link" id="add-category">點心</button> 
+                    <button type="button" class="btn btn-link" id="sec-category">早餐</button> 
+                    <button type="button" class="btn btn-link" id="sec-category">午餐</button>
+                    <button type="button" class="btn btn-link" id="sec-category">晚餐</button>
+                    <button type="button" class="btn btn-link" id="add-category">點心</button> 
 		            <!-- <button type="button" class="btn btn-link" id="del-category">刪除</button> -->
 				</div>
 	            <div class="modal-footer">
-	                <button type="button" class="btn btn-default" data-dismiss="modal" id="modal-submit">確定</button>
-	                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <div style="float: left;">
+                        <button type="button" class="btn btn-default" id="subCategoryAdder">新增次分類</button>
+                        <input type="text" id="new-sub-text" class="new-sub-handler" placeholder="請輸入次分類名稱" />
+                        <button type="button" class="btn btn-success btn-sm new-sub-handler new-sub-submit">新增</button>
+                        <button type="button" class="btn btn-danger btn-sm new-sub-handler">取消</button>
+                    </div>
+	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal" id="modal-submit">確定</button>
+	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal">取消</button>
 	            </div>
 	        </div>
 	    </div>
