@@ -22,7 +22,7 @@ class Classification(models.Model):
         ('entertainment', 'entertainment'),
         ('others', 'others'),
     )
-    classificaion_type = models.CharField(max_length=2, choices=CLASSIFICATION_TYPE)
+    classificaion_type = models.CharField(max_length=20, choices=CLASSIFICATION_TYPE)
 
 
 class SubClassification(models.Model):
@@ -37,7 +37,7 @@ class Payment(models.Model):
         ('cash', 'cash'),
         ('other', 'other'),
     )
-    payment_type = models.CharField(max_length=2, choices=PAYMENT_TYPE)
+    payment_type = models.CharField(max_length=20, choices=PAYMENT_TYPE)
 
 
 class IncomeAndExpense(models.Model):
@@ -45,4 +45,4 @@ class IncomeAndExpense(models.Model):
         ('income', 'income'),
         ('expense', 'expense'),
     )
-    income_type = models.CharField(max_length=2, choices=INCOME_TYPE)
+    income_type = models.CharField(max_length=10, choices=INCOME_TYPE)
