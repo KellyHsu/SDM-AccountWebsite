@@ -136,32 +136,34 @@ $(document).ready(function() {
         $('#memo').val('');
     })
 
-    $('#formadd').submit(function(){  
-                var member = request.user;
-                var money = $("#amount").val();
-                var remark = $("#memo").val();
-                var date = $("#datepicker1").val();
-                //var subclassification = $("#costCategory").val();
-                var subclassification = "FO";
-                var payment = $("#payment").val();
-                var incomeandexpense = $("#recordType").val();
-                
-                $.ajax({  
-                    type:"POST",  
-                    data: {member:member, money:money, remark:remark, date:date, subclassification:subclassification, payment:payment, incomeandexpense:incomeandexpense},  
-                    url: "{% url 'createReceipt' %}",  
-                    cache: false,  
-                    dataType: "html",  
-                    success: function(result, statues, xml){  
-                        alert(result); 
-                    },  
-                    error: function(){  
-                        alert("false");  
-                    }  
-                });  
-                return false;  
-            });  
-});  
+    $('#submit-btn').click(function(){
+        var member = request.user;
+        var money = $("#amount").val();
+        var remark = $("#memo").val();
+        var date = $("#datepicker1").val();
+        //var subclassification = $("#costCategory").val();
+        var subclassification = "FO";
+        var payment = $("#payment").val();
+        var incomeandexpense = $("#recordType").val();
+
+        alert("hello")
+
+        $.ajax({
+            type:"POST",
+            data: {member:member, money:money, remark:remark, date:date, subclassification:subclassification, payment:payment, incomeandexpense:incomeandexpense},
+            url: "{% url 'createReceipt' %}",
+            cache: false,
+            dataType: "html",
+            success: function(result, statues, xml){
+                alert(result);
+            },
+            error: function(){
+                alert("false");
+            }
+        });
+        return false;
+    });
+});
 
 </script>
 
@@ -308,7 +310,7 @@ $(document).ready(function() {
                                         <option value="other">其他</option>
                                     </select>
                                     <input type="text"  data-provide="datepicker" id="datepicker1">
-                                
+                                </form>
                             </div>
                             <div style="text-align: center;">
                             
@@ -333,7 +335,7 @@ $(document).ready(function() {
                                     <input type="text" id="memo" />
                                 </div>
                                 <div class="row" style="margin-top: 30px;margin-bottom: 30px;">
-                                    <input type="submit" class="btn-default btn-lg submit determin" id="last-btn" value="確定" style="border: 2px solid #03aaa0;">
+                                    <input type="submit" class="btn-default btn-lg submit determin" id="submit-btn" value="確定" style="border: 2px solid #03aaa0;">
                                     <input type="button" class="btn-default btn-lg submit clear" id="last-btn" value="清空" style="border: 2px solid #03aaa0;">
                                 </div>
                                 </div>
