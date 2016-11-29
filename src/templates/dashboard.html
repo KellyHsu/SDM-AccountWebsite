@@ -137,31 +137,35 @@ $(document).ready(function() {
     })
 
     $('#submit-btn').click(function(){
-        var member = request.user;
-        var money = $("#amount").val();
-        var remark = $("#memo").val();
-        var date = $("#datepicker1").val();
-        //var subclassification = $("#costCategory").val();
-        var subclassification = "FO";
-        var payment = $("#payment").val();
-        var incomeandexpense = $("#recordType").val();
+        var amount = $('#amount').val();
+        var category = $('#costCategory').attr("value")
+        var memo = $('#memo').val()
+        if(amount){
+            $.ajax({
+                url: "/createReceipt/",
+                type:"POST",
+                data: {amount : amount, category : category,
+                    memo: memo, record_type: $('#recordType').val(), payment: $('#payment').val(),
+                    date: $('#datepicker1').val()},
+                success: function(new_receipt){
+                    rowcontent = "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>"
+                                 + category + "-" + memo + ": "+ amount + "</a></td></tr>";
 
-        alert("hello")
+                    $('#cost-list').append(rowcontent);
+                    $('#amount').val('');
+                    $('#costCategory').attr("value", "預設類別");
+                    $('#memo').val('');
+                },
+                error: function(){
+                    $('#amount').val('');
+                    $('#costCategory').attr("value", "預設類別");
+                    $('#memo').val('');
+                }
+            });
+        }else{
+            alert("支出金額為必填");
 
-        $.ajax({
-            type:"POST",
-            data: {member:member, money:money, remark:remark, date:date, subclassification:subclassification, payment:payment, incomeandexpense:incomeandexpense},
-            url: "{% url 'createReceipt' %}",
-            cache: false,
-            dataType: "html",
-            success: function(result, statues, xml){
-                alert(result);
-            },
-            error: function(){
-                alert("false");
-            }
-        });
-        return false;
+        }
     });
 });
 
@@ -301,12 +305,12 @@ $(document).ready(function() {
                             <div id="titleMenu" class="page-header" style="text-align: center;">
                                 <form method="post" id="formadd">
                                     <select id="recordType" name="recordType">
-                                        <option value="cost">支出</option>
-                                        <option value="revenue">收入</option>
+                                        <option value="expense">支出</option>
+                                        <option value="income">收入</option>
                                     </select>
                                     <select id="payment" name="payment" >
                                         <option value="cash">現金</option>
-                                        <option value="credit-card">信用卡</option>
+                                        <option value="credit_card">信用卡</option>
                                         <option value="other">其他</option>
                                     </select>
                                     <input type="text"  data-provide="datepicker" id="datepicker1">
