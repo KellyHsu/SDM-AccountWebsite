@@ -32,6 +32,10 @@
         <!--datepicker CSS-->
     <link href="{% static 'css/bootstrap-responsive.css' %}" rel="stylesheet">
 
+    	<!--datatables CSS-->
+    <link href="{% static 'datatables/jquery-ui.css' %}" rel="stylesheet">
+    <link href="{% static 'datatables/dataTables.jqueryui.min.css' %}" rel="stylesheet">
+
     	<!-- Custom Fonts -->
     <link href="{% static 'font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
 
@@ -42,9 +46,20 @@
     	<!-- Bootstrap Core JavaScript -->
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
 
+    	<!-- datatables JavaScript -->
+    <script src="{% static 'datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'datatables/dataTables.jqueryui.min.js' %}"></script>
+
 		<!-- Custom Theme JavaScript -->
     <script src="{% static 'dist/js/metisMenu.min.js' %}"></script>
     <script src="{% static 'dist/js/sb-admin-2.js' %}"></script>
+
+
+<script type="text/javascript">
+	$(document).ready(function() {
+    	$('#example').DataTable();
+	} );
+</script>
 
 </head>
 
@@ -119,10 +134,204 @@
         </nav><!-- /.navbar-top-links -->
 
         <!-- main container -->
-        <div class="container">
-        <p style="text-align: center; font-size: 100px;">主要內容放這邊
-        </p>
-        </div><!-- /.container -->
+        <div class="container-fluid" style="background-color: rgb(229, 228, 219);">
+        	<div class="row col-sm-2 col-md-2 left-side">
+                <div class="panel-group collapse in" id="accordion" aria-expanded="true">
+
+                    <!-- start panel 以日瀏覽 -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a href="/filter/"><span class="glyphicon glyphicon-menu-right">
+                                </span>以日瀏覽</a>
+                            </h4>
+                        </div>
+                    </div>  <!-- /.panel 以日瀏覽 -->
+
+                    <!-- start panel 以週瀏覽 -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a href="/filter/"><span class="glyphicon glyphicon-menu-right">
+                                </span>以週瀏覽</a>
+                            </h4>
+                        </div>
+                    </div>  <!-- /.panel 以週瀏覽 -->
+
+                    <!-- start panel 以月瀏覽 -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a href="/filter/"><span class="glyphicon glyphicon-menu-right">
+                                </span>以月瀏覽</a>
+                            </h4>
+                        </div>
+                    </div>  <!-- /.panel 以月瀏覽 -->
+
+                    <!-- start panel 以年瀏覽 -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a href="/filter/"><span class="glyphicon glyphicon-menu-right">
+                                </span>以年瀏覽</a>
+                            </h4>
+                        </div>
+                    </div>  <!-- /.panel 以年瀏覽 -->
+
+                </div>  <!-- /.panel group -->
+            </div>  <!-- /.left-side row -->
+
+
+	        <!-- Main container -->
+	        <div id="page-wrapper" class="col-sm-10 col-md-10" style="min-height: 167px; background-color: rgb(229, 228, 219);">
+	        	<div class="container-fluid col-xs-12 col-sm-12">
+			    	<p style="text-align: center; font-size: 100px;">
+			    	</p>
+			    	<div class="row">
+                        <div class="col-lg-12" style="background-color: #fff; margin-top: 20px;">
+                            <div id="titleMenu" class="page-header" style="text-align: center;">
+                                <form>
+                                	<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                                	<span class="label label-default" id="pageHeader_date">2016-11-28</span>
+                               		<span class="label label-default"  id="pageHeader_money">總支出</span>
+                                   	<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>      
+                                </form>
+                            </div>
+                            <div>
+                            	<table id="example" class="display" cellspacing="0" width="100%">
+							        <thead>
+							            <tr>
+							                <th>類別</th>
+							                <th>備註</th>
+							                <th>支出/收入</th>
+							                <th>付款方式</th>
+							                <th>日期</th>
+							                <th>金額</th>
+							            </tr>
+							        </thead>
+							        <tfoot>
+							            <tr>
+							                <th>分類/次分類</th>
+							                <th>備註</th>
+							                <th>支出/收入</th>
+							                <th>付款方式</th>
+							                <th>日期</th>
+							                <th>金額</th>
+							            </tr>
+							        </tfoot>
+							        <tbody>
+							            <tr>
+							                <td>食-早餐</td>
+							                <td>蛋餅</td>
+							                <td>支出</td>
+							                <td>現金</td>
+							                <td>2016/11/28</td>
+							                <td>$35</td>
+							            </tr>
+							            <tr>
+							                <td>食-早餐</td>
+							                <td>紅茶</td>
+							                <td>支出</td>
+							                <td>現金</td>
+							                <td>2016/11/28</td>
+							                <td>$15</td>
+							            </tr>
+							            <tr>
+							                <td>食-午餐</td>
+							                <td>便當</td>
+							                <td>支出</td>
+							                <td>現金</td>
+							                <td>2016/11/28</td>
+							                <td>$60</td>
+							            </tr>
+							            <tr>
+							                <td>衣-上衣</td>
+							                <td>T-shirt</td>
+							                <td>支出</td>
+							                <td>現金</td>
+							                <td>2016/11/28</td>
+							                <td>$350</td>
+							            </tr>
+							            <tr>
+							                <td>食-早餐</td>
+							                <td>蛋餅</td>
+							                <td>支出</td>
+							                <td>現金</td>
+							                <td>2016/11/28</td>
+							                <td>$35</td>
+							            </tr>
+							            <tr>
+							                <td>食-早餐</td>
+							                <td>蛋餅</td>
+							                <td>支出</td>
+							                <td>現金</td>
+							                <td>2016/11/28</td>
+							                <td>$35</td>
+							            </tr>
+							            <tr>
+							                <td>食-早餐</td>
+							                <td>蛋餅</td>
+							                <td>支出</td>
+							                <td>現金</td>
+							                <td>2016/11/28</td>
+							                <td>$35</td>
+							            </tr>
+							            <tr>
+							                <td>食-早餐</td>
+							                <td>蛋餅</td>
+							                <td>支出</td>
+							                <td>現金</td>
+							                <td>2016/11/28</td>
+							                <td>$35</td>
+							            </tr>
+							            <tr>
+							                <td>食-早餐</td>
+							                <td>蛋餅</td>
+							                <td>支出</td>
+							                <td>現金</td>
+							                <td>2016/11/28</td>
+							                <td>$35</td>
+							            </tr>
+							            <tr>
+							                <td>食-早餐</td>
+							                <td>蛋餅</td>
+							                <td>支出</td>
+							                <td>現金</td>
+							                <td>2016/11/28</td>
+							                <td>$35</td>
+							            </tr>
+							            <tr>
+							                <td>食-早餐</td>
+							                <td>蛋餅</td>
+							                <td>支出</td>
+							                <td>現金</td>
+							                <td>2016/11/28</td>
+							                <td>$35</td>
+							            </tr>
+							            <tr>
+							                <td>食-早餐</td>
+							                <td>蛋餅</td>
+							                <td>支出</td>
+							                <td>現金</td>
+							                <td>2016/11/28</td>
+							                <td>$35</td>
+							            </tr>
+							            <tr>
+							                <td>食-早餐</td>
+							                <td>蛋餅</td>
+							                <td>支出</td>
+							                <td>現金</td>
+							                <td>2016/11/28</td>
+							                <td>$35</td>
+							            </tr>
+							        </tbody>
+							    </table>
+                            </div>
+                        </div>
+                    </div><!-- /.row -->
+		    	</div><!-- /.container-fluid -->
+	    	</div><!-- /#page-wrapper (main container) -->
+        </div><!-- /.container-fluid (whole div below navbar) -->
                    
 
 
@@ -133,3 +342,4 @@
 </body>
 
 </html>
+
