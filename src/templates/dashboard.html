@@ -13,7 +13,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Dashboard</title>
+    <title>MoneyKeeper</title>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -198,8 +198,11 @@ $(document).ready(function() {
 	// 填完新次分類要增加到選單列表中
     $('.new-sub-handler.new-sub-submit').click(function(){
         var newSub = $('#new-sub-text').val();
-        $(".modal-body").append("<button type='button' class='btn btn-link' id='sec-category'>" + newSub + "</button>");
-        subCategorySelected();
+        if(newSub){
+            $(".modal-body").append("<button type='button' class='btn btn-link' id='sec-category'>"
+                                     + newSub + "</button>");
+            subCategorySelected();
+        }
     });
 
 
@@ -447,7 +450,7 @@ function subCategorySelected(){
 	            <div class="modal-footer">
                     <div style="float: left;">
                         <button type="button" class="btn btn-default" id="subCategoryAdder">新增次分類</button>
-                        <input type="text" id="new-sub-text" class="new-sub-handler" placeholder="請輸入次分類名稱" />
+                        <input type="text" id="new-sub-text" class="new-sub-handler" placeholder="請輸入次分類名稱" maxlength="10" />
                         <button type="button" class="btn btn-success btn-sm new-sub-handler new-sub-submit">新增</button>
                         <button type="button" class="btn btn-danger btn-sm new-sub-handler">取消</button>
                     </div>

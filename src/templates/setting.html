@@ -13,7 +13,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Dashboard</title>
+    <title>MoneyKeeper</title>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -45,6 +45,53 @@
 		<!-- Custom Theme JavaScript -->
     <script src="{% static 'dist/js/metisMenu.min.js' %}"></script>
     <script src="{% static 'dist/js/sb-admin-2.js' %}"></script>
+
+
+    <style type="text/css">
+    	span.item-title {
+			font-size: 20px;
+			font-weight: 600;
+			word-spacing:10px;
+			white-space:nowrap;
+    	}
+
+    	input[type="text"] {
+    		width: 25em;
+    		height: 30px;
+    	}
+
+    	.edit-img-btn {
+			border: 0; 
+			background-color: transparent; 
+			width: 32px; 
+			height: 32px;    	
+		}
+    </style>
+
+    <script>
+    // 用來隱藏重設密碼的欄位
+    function hidePasswdSetting(){
+		$(".passwd-set").hide();
+    }
+
+	$(document).ready(function(){
+		hidePasswdSetting();
+
+		$("#go-passwd-set").click(function(){
+			$(".passwd-set").animate({
+				height: 'toggle'
+			});
+			$(this).hide();
+		});
+
+		$(".passwd-submit").click(function(){
+			$(".passwd-set").animate({
+				height: 'toggle'
+			});
+			$("#go-passwd-set").show(1000);
+		});
+	});
+    </script>
 
 </head>
 
@@ -126,122 +173,92 @@
                 <div class="col-md-12 well" style="margin-top: 30px;">
                     <legend id="anch1">個人基本資料設定</legend>
                     <form>
-                        <p><h4>帳&nbsp;&nbsp;&nbsp;號&nbsp;:&nbsp;<input type="text" name="userName" size="25">&nbsp;(不可編輯) </h4>
-                           <h4>密&nbsp;&nbsp;&nbsp;碼&nbsp;:&nbsp;<input type="text" name="passward" size="25"> </h4>   
-                        </p>
-						<p>
-						   <input type="reset" value="重新設定">
-						   <input type="submit" value="送出">
+                        <p><span class="item-title">帳 號: </span>
+						    <input type="text" name="userName" placeholder="這裡之後會在page load時從資料庫抓帳號" readonly>
+						    <button type="button" class="btn btn-primary" id="go-passwd-set">重設密碼</button>
 						</p>
+						<div class="passwd-set">
+						    <span class="item-title">密 碼: </span>
+						    <input type="text" name="userName" placeholder="請輸入密碼" class="passwd-set">
+						    <span class="item-title">確認密碼: </span>
+						    <input type="text" name="userName" placeholder="再次輸入密碼" class="">
+						        <button type="button" class="btn btn-default passwd-submit" id="new-passwd-submit">
+						        確認</button>
+						        <button type="button" class="btn btn-default passwd-submit">取消修改</button>
+						</div>
+
                     </form>
                 </div>
 
                 <div class="col-md-12 well">
-                    <legend id="anch1">支出類別設定</legend>
+                    <legend id="anch1"><span style="margin-right: 10px;">支出類別設定</span>
+                    	<button type="button" class="edit-img-btn" style="background-image: url(/static/image/add.png);"></button>
+                    	<button type="button" class="edit-img-btn" style="background-image: url(/static/image/delete.png);"></button>
+                    </legend>
                     <form>
 					    <p>
-						   <table border="1">
-						      <tr> 
-							     <th>已設支出類別 </th>
-								 <th>已設支出子類別 </th>
-							  </tr>
-							  <tr> 
-							     <td>食 
-								    <input type="submit" value="修改">
-						            <input type="submit" value="刪除">
-						         </td>
-								 <td>早餐、午餐、晚餐
-								    <input type="submit" value="新增">
-									<input type="submit" value="修改">
-						            <input type="submit" value="刪除">
-						         </td>
-							  </tr>
-							  <tr> 
-							     <td>衣 
-								    <input type="submit" value="修改">
-						            <input type="submit" value="刪除">
-						         </td>
-								 <td>
-								    <input type="submit" value="新增">
-									<input type="submit" value="修改">
-						            <input type="submit" value="刪除">
-						         </td>
-							  </tr>
-							  <tr> 
-							     <td>住 
-								    <input type="submit" value="修改">
-						            <input type="submit" value="刪除">
-						         </td>
-								 <td>
-								    <input type="submit" value="新增">
-									<input type="submit" value="修改">
-						            <input type="submit" value="刪除">
-						         </td>
-							  </tr>
-							  <tr> 
-							     <td>行 
-								    <input type="submit" value="修改">
-						            <input type="submit" value="刪除">
-						         </td>
-								 <td>
-								    <input type="submit" value="新增">
-									<input type="submit" value="修改">
-						            <input type="submit" value="刪除">
-						         </td>
-							  </tr>
-							  <tr> 
-							     <td>育 
-								    <input type="submit" value="修改">
-						            <input type="submit" value="刪除">
-						         </td>
-								 <td>
-								    <input type="submit" value="新增">
-									<input type="submit" value="修改">
-						            <input type="submit" value="刪除">
-						         </td>
-							  </tr>
-							  <tr> 
-							     <td>樂 
-								    <input type="submit" value="修改">
-						            <input type="submit" value="刪除">
-						         </td>
-								 <td>
-								    <input type="submit" value="新增">
-									<input type="submit" value="修改">
-						            <input type="submit" value="刪除">
-						         </td>
-							  </tr>
-							  <tr> 
-							     <td>其他 
-								    <input type="submit" value="修改">
-						            <input type="submit" value="刪除">
-						         </td>
-								 <td>
-								    <input type="submit" value="新增">
-									<input type="submit" value="修改">
-						            <input type="submit" value="刪除">
-						         </td>
-							  </tr>
-							  <tr> 
-							     <td> 
-								    <input type="submit" value="新增支出類別">
-						         </td>
-								 <td>
-							     </td>
-							  </tr>
+						   <table class="table table-bordered table-striped table-responsive">
+						      <thead> 
+							     <th class="col-md-3">已設支出類別 </th>
+								 <th class="col-md-9">已設支出子類別 </th>
+							  </thead>
+							  <tbody>
+								  <tr> 
+								     <td>食</td>
+									 <td>
+									    <button type="button" class="btn btn-link btn-md">早餐</button>
+									    <button type="button" class="btn btn-link btn-md">午餐</button>
+									    <button type="button" class="btn btn-link btn-md">晚餐</button>
+									</td>
+
+								  </tr>
+								  <tr> 
+								     <td>衣</td>
+								     <td>
+								     	<button type="button" class="btn btn-link btn-md">包包</button>
+								     	<button type="button" class="btn btn-link btn-md">鞋子</button>
+								     	<button type="button" class="btn btn-link btn-md">上衣</button>
+								     </td>
+								  </tr>
+								  <tr> 
+								     <td>住</td>
+								     <td>
+							     		<button type="button" class="btn btn-link btn-md">房租</button>
+								     </td>
+								  </tr>
+								  <tr> 
+								     <td>行</td>
+								     <td>
+								     	<button type="button" class="btn btn-link btn-md">計程車</button>
+								     </td>
+								  </tr>
+								  <tr> 
+								     <td>育</td>
+								     <td></td>
+								  </tr>
+								  <tr> 
+								     <td>樂</td>
+								     <td></td>
+								  </tr>
+								  <tr> 
+								     <td>其他</td>
+								     <td></td>
+								  </tr>
+							  </tbody>
 						   </table>
 						</p>                        
                     </form>
                 </div>
 
-                <div class="col-md-12 well">
-                    <legend id="anch1">預算上限設定</legend>
+				<div class="col-md-12 well">
+                    <legend id="anch1"><span style="margin-right: 10px;">單月預算上限設定</span>
+                    </legend>
                     <form>
-						   <table border="1">
+						   <table class="table table-bordered table-striped table-responsive">
 						      <tr> 
-							     <th>支出類別 </th>
-								 <th>預算上限金額 </th>
-								 <th>逼近上限金額通知設定 </th>
+							     <th class="col-md-3">支出類別 </th>
+								 <th class="col-md-4">預算上限金額 </th>
+								 <th class="col-md-5">逼近上限金額通知設定 </th>
 							  </tr>
 							  <tr> 
 							     <td>食
@@ -318,13 +335,103 @@
                 </div>
 
                 <div class="col-md-12 well">
-                    <legend id="anch1">週期性支出設定</legend>
+                    <legend id="anch1"><span style="margin-right: 10px;">分類預算上限設定</span>
+                    </legend>
                     <form>
-						   <table border="1">
+						   <table class="table table-bordered table-striped table-responsive">
 						      <tr> 
-							     <th>已設週期性支出項目 </th>
-								 <th>預設支出日期 </th>
-								 <th>繳費提醒通知設定 </th>
+							     <th class="col-md-3">支出類別 </th>
+								 <th class="col-md-4">預算上限金額 </th>
+								 <th class="col-md-5">逼近上限金額通知設定 </th>
+							  </tr>
+							  <tr> 
+							     <td>食
+                                 </td>
+                                 <td>10000								 
+								    <input type="submit" value="設定">
+						         </td>
+								 <td>8000
+						            <input type="submit" value="設定">
+						         </td>
+							  </tr>
+							  <tr> 
+							     <td>衣 
+                                 </td>
+                                 <td>10000								 
+								    <input type="submit" value="設定">
+						         </td>
+								 <td>8000
+						            <input type="submit" value="設定">
+						         </td>
+							  </tr>
+							  <tr> 
+							     <td>住 
+                                 </td>
+                                 <td>10000								 
+								    <input type="submit" value="設定">
+						         </td>
+								 <td>8000
+						            <input type="submit" value="設定">
+						         </td>
+							  </tr>
+							  <tr> 
+							     <td>行 
+                                 </td>
+                                 <td>10000								 
+								    <input type="submit" value="設定">
+						         </td>
+								 <td>8000
+						            <input type="submit" value="設定">
+						         </td>
+							  </tr>
+							  <tr> 
+							     <td>育 
+                                 </td>
+                                 <td>10000								 
+								    <input type="submit" value="設定">
+						         </td>
+								 <td>8000
+						            <input type="submit" value="設定">
+						         </td>
+							  </tr>
+							  <tr> 
+							     <td>樂 
+                                 </td>
+                                 <td>10000								 
+								    <input type="submit" value="設定">
+						         </td>
+								 <td>8000
+						            <input type="submit" value="設定">
+						         </td>
+							  </tr>
+							  <tr> 
+							     <td>其他 
+                                 </td>
+                                 <td>10000								 
+								    <input type="submit" value="設定">
+						         </td>
+								 <td>8000
+						            <input type="submit" value="設定">
+						         </td>
+							  </tr>
+						   </table>
+					</form>
+                </div>
+
+                <div class="col-md-12 well">
+                    <legend id="anch1"><span style="margin-right: 10px;">週期性支出設定</span>
+                    	<button type="button" class="edit-img-btn" 
+                    			style="background-image: url(/static/image/add.png);"></button>
+                    	<button type="button" class="edit-img-btn" 
+                    			style="background-image: url(/static/image/delete.png);"></button>
+                    </legend>
+
+                    <form>
+						   <table class="table table-bordered table-striped table-responsive">
+						      <tr> 
+							     <th class="col-md-3">週期性支出項目 </th>
+								 <th class="col-md-4">預設支出日期 </th>
+								 <th class="col-md-5">繳費提醒通知設定 </th>
 							  </tr>
 							  <tr> 
 							     <td>房租
@@ -362,16 +469,7 @@
 						            <input type="submit" value="設定">
 						         </td>
 							  </tr>
-							  <tr> 
-							     <td>
-								  <input type="submit" value="新增周期性支出項目">
-								 </td>
-                                 <td> 								 
-								 </td>
-								 <td>
-								 </td>
-							  </tr>
-						   </table>					
+						   </table>
 			           </form>
                 </div>
             </div><!-- /.row -->
