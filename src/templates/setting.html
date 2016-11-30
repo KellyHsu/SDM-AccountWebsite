@@ -35,6 +35,9 @@
     	<!-- Custom Fonts -->
     <link href="{% static 'font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
 
+    	<!-- Animate CSS -->
+    <link href="{% static 'css/animate.css' %}" rel="stylesheet">
+
 		<!-- jQuery -->
     <script src="{% static 'js/jquery.js' %}"></script>
     <!-- <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script> -->
@@ -66,31 +69,143 @@
 			width: 32px; 
 			height: 32px;    	
 		}
+
+.sub-category { 
+    position: relative; 
+    margin-right: 2px;
+}
+
+/* 用來在次分類上增加刪除的叉 */
+.sub-category span { 
+    position: absolute; 
+    top: -18px;  /* position in bottom right & top corner */
+    right: -8px;
+    z-index: 100;
+    width: 16px;
+    height: 16px;
+    color: red;
+    font-size: 23px;
+}   
+
     </style>
 
     <script>
-    // 用來隱藏重設密碼的欄位
-    function hidePasswdSetting(){
+    // 用來在一開始隱藏不需要的欄位
+    function defaultHiding(){
 		$(".passwd-set").hide();
-    }
+		$(".sub-category-del-submit").hide();
+		$(".table4-del-submit").hide();
+
+    }	// end function defaultHiding()
 
 	$(document).ready(function(){
-		hidePasswdSetting();
+		defaultHiding();	// 先把要隱藏的欄位隱藏
 
+		// 重設按鈕按下
 		$("#go-passwd-set").click(function(){
 			$(".passwd-set").animate({
 				height: 'toggle'
 			});
 			$(this).hide();
 		});
-
+		
+		// 密碼設定完成的確認按鈕
 		$(".passwd-submit").click(function(){
 			$(".passwd-set").animate({
 				height: 'toggle'
 			});
 			$("#go-passwd-set").show(1000);
 		});
-	});
+
+		// 刪除子分類的按鈕事件
+		$("#btn-sub-category-del").click(function(){
+			$(this).hide();
+			$(".sub-category-del-submit").animate({
+				width:'toggle'
+				}, 
+				function(){		// 執行完動畫後做這段
+					var list_sub_category = $(".sub-category");
+					list_sub_category.removeClass("btn-link");
+					list_sub_category.addClass("btn-default");
+					list_sub_category.addClass("animated");	// 套用animate css
+					list_sub_category.addClass("swing");	// 使用swing 動畫
+					list_sub_category.append("<span>&times;</span>");
+				}
+			);
+		});
+
+		// 確定刪除or取消刪除子分類的按鈕
+		$(".sub-category-del-submit").click(function(){
+			$(".sub-category-del-submit").hide();
+			$("#btn-sub-category-del").animate({
+				width:'toggle'
+				},
+				600
+			);
+
+			var list_sub_category = $(".sub-category");
+			list_sub_category.removeClass("btn-default");
+			list_sub_category.removeClass("animated");
+			list_sub_category.removeClass("swing");
+			list_sub_category.addClass("btn-link");
+			$(".sub-category > span").remove();
+		});
+
+		// 刪除週期性支出項目
+		$("#btn-duration-cost-del").click(function(){
+			$(this).hide();
+			$(".table4-del-submit").animate({
+				width: 'toggle'
+			});
+			table4deletionBtnHandler()	// 執行完動畫後做table4 handler().
+		});
+
+		// 確定刪除or取消刪除週期性項目的按鈕
+		$(".table4-del-submit").click(function(){
+			$(".table4-del-submit").hide();
+			$("#table4 tr:first th:first").remove();
+			$("#table4 tr td:first-child").remove();
+			$("#btn-duration-cost-del").animate({
+				width:'toggle'
+			});
+		});
+		
+	});	// end document.ready()
+
+
+	// 處理表格4的刪除項目按鈕按下的事件
+	function table4deletionBtnHandler(){
+		$("#table4 tr").each(function(index){
+			if(index==0){
+				$(this).prepend("<th style='text-align:center;''>刪除記錄</th>");
+			
+			}else{
+				$(this).prepend("<td style='text-align:center;'><input type='checkbox' id='row" + index+ "'/></td>");
+			}
+		});
+
+		$("#table4 tr:first th").each(function(index){
+			switch(index) {
+				case 0:
+					$(this).addClass("col-md-1");
+					break;
+				case 1:
+					$(this).removeClass("col-md-3");
+					$(this).addClass("col-md-3");
+					break;
+				case 2:
+					break;
+				case 3:
+					$(this).removeClass("col-md-5");
+					$(this).addClass("col-md-4");
+					break;
+				default:
+					alert('內容顯示錯誤，請洽工程師');
+			}
+
+		});
+	}	// end function table4deletionBtnHandler()
+
     </script>
 
 </head>
@@ -192,8 +307,10 @@
 
                 <div class="col-md-12 well">
                     <legend id="anch1"><span style="margin-right: 10px;">支出類別設定</span>
-                    	<button type="button" class="edit-img-btn" style="background-image: url(/static/image/add.png);"></button>
-                    	<button type="button" class="edit-img-btn" style="background-image: url(/static/image/delete.png);"></button>
+                    	<button type="button" class="edit-img-btn" id="btn-sub-category-add" style="background-image: url(/static/image/add.png);"></button>
+                    	<button type="button" class="edit-img-btn" id="btn-sub-category-del" style="background-image: url(/static/image/delete.png);"></button>
+                    	<button type="button" class="btn btn-success btn-md sub-category-del-submit" id="sub-category-del-finish">刪除完畢</button>
+                    	<button type="button" class="btn btn-danger btn-md sub-category-del-submit" id="sub-category-del-cancel">取消刪除</button>
                     </legend>
                     <form>
 					    <p>
@@ -206,30 +323,30 @@
 								  <tr> 
 								     <td>食</td>
 									 <td>
-									    <button type="button" class="btn btn-link btn-md">早餐</button>
-									    <button type="button" class="btn btn-link btn-md">午餐</button>
-									    <button type="button" class="btn btn-link btn-md">晚餐</button>
+									    <button type="button" class="btn btn-link btn-md sub-category">早餐</button>
+									    <button type="button" class="btn btn-link btn-md sub-category">午餐</button>
+									    <button type="button" class="btn btn-link btn-md sub-category">晚餐</button>
 									</td>
 
 								  </tr>
 								  <tr> 
 								     <td>衣</td>
 								     <td>
-								     	<button type="button" class="btn btn-link btn-md">包包</button>
-								     	<button type="button" class="btn btn-link btn-md">鞋子</button>
-								     	<button type="button" class="btn btn-link btn-md">上衣</button>
+								     	<button type="button" class="btn btn-link btn-md sub-category">包包</button>
+								     	<button type="button" class="btn btn-link btn-md sub-category">鞋子</button>
+								     	<button type="button" class="btn btn-link btn-md sub-category">上衣</button>
 								     </td>
 								  </tr>
 								  <tr> 
 								     <td>住</td>
 								     <td>
-							     		<button type="button" class="btn btn-link btn-md">房租</button>
+							     		<button type="button" class="btn btn-link btn-md sub-category">房租</button>
 								     </td>
 								  </tr>
 								  <tr> 
 								     <td>行</td>
 								     <td>
-								     	<button type="button" class="btn btn-link btn-md">計程車</button>
+								     	<button type="button" class="btn btn-link btn-md sub-category">計程車</button>
 								     </td>
 								  </tr>
 								  <tr> 
@@ -420,14 +537,16 @@
 
                 <div class="col-md-12 well">
                     <legend id="anch1"><span style="margin-right: 10px;">週期性支出設定</span>
-                    	<button type="button" class="edit-img-btn" 
+                    	<button type="button" class="edit-img-btn" id="btn-duration-cost-add" 
                     			style="background-image: url(/static/image/add.png);"></button>
-                    	<button type="button" class="edit-img-btn" 
+                    	<button type="button" class="edit-img-btn" id="btn-duration-cost-del" 
                     			style="background-image: url(/static/image/delete.png);"></button>
+                 		<button type="button" class="btn btn-success btn-md table4-del-submit" id="table4-del-finish">刪除完畢</button>
+                    	<button type="button" class="btn btn-danger btn-md table4-del-submit" id="table4-del-cancel">取消刪除</button>
                     </legend>
 
                     <form>
-						   <table class="table table-bordered table-striped table-responsive">
+						   <table class="table table-bordered table-striped table-responsive" id="table4">
 						      <tr> 
 							     <th class="col-md-3">週期性支出項目 </th>
 								 <th class="col-md-4">預設支出日期 </th>
@@ -435,8 +554,6 @@
 							  </tr>
 							  <tr> 
 							     <td>房租
-								    <input type="submit" value="修改">
-						    	    <input type="submit" value="刪除">
 						         </td>
                                  <td>每月8號								 
 								    <input type="submit" value="設定">
@@ -447,8 +564,6 @@
 							  </tr>
 							  <tr> 
 							     <td>水費
-								    <input type="submit" value="修改">
-						    	    <input type="submit" value="刪除">
 						         </td>
                                  <td>每月10號								 
 								    <input type="submit" value="設定">
@@ -459,8 +574,6 @@
 							  </tr>
 							  <tr> 
 							     <td>電費
-								    <input type="submit" value="修改">
-						    	    <input type="submit" value="刪除">
 						         </td>
                                  <td>每月20號								 
 								    <input type="submit" value="設定">
