@@ -49,7 +49,6 @@
     <script src="{% static 'dist/js/metisMenu.min.js' %}"></script>
     <script src="{% static 'dist/js/sb-admin-2.js' %}"></script>
 
-
     <style type="text/css">
     	span.item-title {
 			font-size: 20px;
@@ -70,22 +69,22 @@
 			height: 32px;    	
 		}
 
-.sub-category { 
-    position: relative; 
-    margin-right: 2px;
-}
+		.sub-category { 
+		    position: relative; 
+		    margin-right: 2px;
+		}
 
-/* 用來在次分類上增加刪除的叉 */
-.sub-category span { 
-    position: absolute; 
-    top: -18px;  /* position in bottom right & top corner */
-    right: -8px;
-    z-index: 100;
-    width: 16px;
-    height: 16px;
-    color: red;
-    font-size: 23px;
-}   
+		/* 用來在次分類上增加刪除的叉 */
+		.sub-category span { 
+		    position: absolute; 
+		    top: -18px;  /* position in bottom right & top corner */
+		    right: -8px;
+		    z-index: 100;
+		    width: 16px;
+		    height: 16px;
+		    color: red;
+		    font-size: 23px;
+		}   
 
     </style>
 
@@ -122,16 +121,18 @@
 			$(this).hide();
 			$(".sub-category-del-submit").animate({
 				width:'toggle'
-				}, 
-				function(){		// 執行完動畫後做這段
-					var list_sub_category = $(".sub-category");
-					list_sub_category.removeClass("btn-link");
-					list_sub_category.addClass("btn-default");
-					list_sub_category.addClass("animated");	// 套用animate css
-					list_sub_category.addClass("swing");	// 使用swing 動畫
-					list_sub_category.append("<span>&times;</span>");
 				}
 			);
+
+			var list_sub_category = $(".sub-category");
+			list_sub_category.removeClass("btn-link");
+			list_sub_category.addClass("btn-default");
+			list_sub_category.addClass("confirm");
+			list_sub_category.addClass("animated");	// 套用animate css
+			list_sub_category.addClass("swing");	// 使用swing 動畫
+			list_sub_category.append("<span>&times;</span>");
+			sub_category_deletionHandler();
+
 		});
 
 		// 確定刪除or取消刪除子分類的按鈕
@@ -160,6 +161,24 @@
 			table4deletionBtnHandler()	// 執行完動畫後做table4 handler().
 		});
 
+		// 按下週期性項目[刪除完畢]
+		$("#table4-del-finish").click(function(){
+			var deltArr = [];
+			
+			$("#table4 tr td:first-child input:checked").each(function(index){
+				var deltItem = $(this).parent().next().text().trim();
+				deltArr.push( deltItem );	// 把要刪除的筆數加進陣列
+			});
+
+			var cout = "";
+			$.each(deltArr, function(index, value){		// 印出陣列內容
+				cout = cout + value + ';';
+				$("#table4 tr td:contains('"+value+"')").parent().remove();		// 把蘊含該值的記錄整個列刪除
+			});
+
+			alert("刪除的記錄有：" + cout);	// 要做post的話改這邊
+		});
+
 		// 確定刪除or取消刪除週期性項目的按鈕
 		$(".table4-del-submit").click(function(){
 			$(".table4-del-submit").hide();
@@ -169,6 +188,8 @@
 				width:'toggle'
 			});
 		});
+
+		
 		
 	});	// end document.ready()
 
@@ -205,6 +226,25 @@
 
 		});
 	}	// end function table4deletionBtnHandler()
+
+	// 處理刪除子項目(右上角打叉)的處理
+	function sub_category_deletionHandler(){
+		$(".sub-category").click(function(){
+			if( $(this).hasClass('confirm') ){
+				var delSub = $(this);
+				delSub.children().empty();
+				var btnText = delSub.text().trim();
+
+				var result = confirm("你真的要刪掉次分類：" + btnText + "嗎？");
+				if(result){
+					delSub.remove();	// 如果要做post做在這邊
+					alert("刪除了" + btnText);
+				}else{
+					delSub.children().text("×");
+				}
+			}
+		});
+	}
 
     </script>
 
@@ -310,7 +350,6 @@
                     	<button type="button" class="edit-img-btn" id="btn-sub-category-add" style="background-image: url(/static/image/add.png);"></button>
                     	<button type="button" class="edit-img-btn" id="btn-sub-category-del" style="background-image: url(/static/image/delete.png);"></button>
                     	<button type="button" class="btn btn-success btn-md sub-category-del-submit" id="sub-category-del-finish">刪除完畢</button>
-                    	<button type="button" class="btn btn-danger btn-md sub-category-del-submit" id="sub-category-del-cancel">取消刪除</button>
                     </legend>
                     <form>
 					    <p>
