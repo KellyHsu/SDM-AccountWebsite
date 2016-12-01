@@ -95,7 +95,11 @@ $(document).ready(function() {
     $( '#modal-submit' ).click(function(){
         var lv1 = $( '#main-cate' ).text();
         var lv2 = $( '.btn-link.selected').text();
-        $('#costCategory').attr("value", lv1+'-'+lv2);
+        if(lv2===''){
+           $('#costCategory').attr("value", lv1);
+        }else{
+           $('#costCategory').attr("value", lv1+'-'+lv2);
+        }
     });
 
     $('#datepicker1').datepicker({
