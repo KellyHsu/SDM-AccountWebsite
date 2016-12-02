@@ -340,17 +340,17 @@
                 </div>
 
                 <div class="col-md-12 well">
-                    <legend id="anch1"><span style="margin-right: 10px;">支出類別設定</span>
-                    	<button type="button" class="edit-img-btn" id="btn-sub-category-add" style="background-image: url(/static/image/add.png);"></button>
-                    	<button type="button" class="edit-img-btn" id="btn-sub-category-del" style="background-image: url(/static/image/delete.png);"></button>
+                    <legend id="anch1"><span style="margin-right: 10px;">支出子分類設定</span>
+                    	<button type="button" name="btnAddSub" class="edit-img-btn" id="btn-sub-category-add" style="background-image: url(/static/image/add.png);" data-toggle="modal" data-target="#modal-subCategory"></button>
+                    	<button type="button" name="btnDelSub" class="edit-img-btn" id="btn-sub-category-del" style="background-image: url(/static/image/delete.png);"></button>
                     	<button type="button" class="btn btn-success btn-md sub-category-del-submit" id="sub-category-del-finish">刪除完畢</button>
                     </legend>
                     <form>
 					    <p>
 						   <table class="table table-bordered table-striped table-responsive">
 						      <thead> 
-							     <th class="col-md-3">已設支出類別 </th>
-								 <th class="col-md-9">已設支出子類別 </th>
+							     <th class="col-md-3">支出主分類 </th>
+								 <th class="col-md-9">支出子分類 </th>
 							  </thead>
 							  <tbody>
 								  <tr> 
@@ -570,9 +570,9 @@
 
                 <div class="col-md-12 well">
                     <legend id="anch1"><span style="margin-right: 10px;">週期性支出設定</span>
-                    	<button type="button" class="edit-img-btn" id="btn-duration-cost-add" 
-                    			style="background-image: url(/static/image/add.png);"></button>
-                    	<button type="button" class="edit-img-btn" id="btn-duration-cost-del" 
+                    	<button type="button" class="edit-img-btn" id="btn-periodic-cost-add" 
+                    			style="background-image: url(/static/image/add.png);" data-toggle="modal" data-target="#modal-periodic" ></button>
+                    	<button type="button" class="edit-img-btn" id="btn-periodic-cost-del" 
                     			style="background-image: url(/static/image/delete.png);"></button>
                  		<button type="button" class="btn btn-success btn-md table4-del-submit" id="table4-del-finish">刪除完畢</button>
                     	<button type="button" class="btn btn-danger btn-md table4-del-submit" id="table4-del-cancel">取消刪除</button>
@@ -623,7 +623,77 @@
 
     </div><!-- /#wrapper (whole page)-->
 
-	
+	<!-- Modal 增加支出子分類 -->
+	<div class="modal fade" id="modal-subCategory" role="dialog">
+	    <div class="modal-dialog">
+	        <!-- Modal content-->
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal">&times;</button>
+	                <h4 class="modal-title">新增子分類</h4>
+	            </div> <!-- /.modal-header -->
+
+	            <div class="modal-body" id="sectest">
+					<div class="form-group">
+						<label for="main-cate-choose">主分類選擇</label>
+						<select class="form-control" id="main-cate-choose">
+							<option>食</option>
+							<option>衣</option>
+							<option>住</option>
+							<option>行</option>
+							<option>育</option>
+							<option>樂</option>
+							<option>其他</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="new-sub-cate">子分類</label>
+						<input type="text" class="form-control" id="new-sub-cate" placeholder="新子分類">
+					</div>
+				</div> <!-- /.modal-body -->
+
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal" id="modal-subCategory-submit">確定</button>
+	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal">取消</button>
+	            </div> <!-- /.modal-footer -->
+	        </div>
+	    </div>
+	</div>
+    <!-- /.modal -->	
+
+	<!-- Modal 增加週期性支出項目 -->
+	<div class="modal fade" id="modal-periodic" role="dialog">
+	    <div class="modal-dialog">
+	        <!-- Modal content-->
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal">&times;</button>
+	                <h4 class="modal-title">新增週期性支出項目</h4>
+	            </div> <!-- /.modal-header -->
+
+	            <div class="modal-body" id="sectest">
+					<div class="form-group">
+						<label for="periodic-item-name">週期性支出項目</label>
+						<input type="text" class="form-control" id="periodic-item-name" placeholder="新子分類">
+					</div>
+					<div class="form-group">
+						<label for="pay-date">支出日期</label>
+						<input type="text" class="form-control" id="pay-date" placeholder="新子分類">
+					</div>
+					<div class="form-group">
+						<label for="alert-date">繳費提醒通知日期</label>
+						<input type="text" class="form-control" id="alert-date" placeholder="新子分類">
+					</div>
+				</div> <!-- /.modal-body -->
+
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal" id="modal-periodic-submit">確定</button>
+	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal">取消</button>
+	            </div> <!-- /.modal-footer -->
+	        </div>
+	    </div>
+	</div>
+    <!-- /.modal -->	
 
 </body>
 
