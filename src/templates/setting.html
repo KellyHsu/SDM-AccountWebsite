@@ -89,13 +89,6 @@
     </style>
 
     <script>
-    // 用來在一開始隱藏不需要的欄位
-    function defaultHiding(){
-		$(".passwd-set").hide();
-		$(".sub-category-del-submit").hide();
-		$(".table4-del-submit").hide();
-
-    }	// end function defaultHiding()
 
 	$(document).ready(function(){
 		defaultHiding();	// 先把要隱藏的欄位隱藏
@@ -189,9 +182,29 @@
 			});
 		});
 
+
+		periodicTimeFormatToggle($("#peridoic-type"));	// 先在loading時放入一次值
+		periodicTimeFormatToggle($("#alert-daytype"));
+
+		// 切換新增週期性項目裡的日期設定
+		$("#peridoic-type").change(function(){
+			periodicTimeFormatToggle($(this));
+		});
+		$("#alert-daytype").change(function(){
+			periodicTimeFormatToggle($(this));
+		});
 		
 		
 	});	// end document.ready()
+
+
+    // 用來在一開始隱藏不需要的欄位
+    function defaultHiding(){
+		$(".passwd-set").hide();
+		$(".sub-category-del-submit").hide();
+		$(".table4-del-submit").hide();
+
+    }	// end function defaultHiding()
 
 
 	// 處理表格4的刪除項目按鈕按下的事件
@@ -227,6 +240,7 @@
 		});
 	}	// end function table4deletionBtnHandler()
 
+
 	// 處理刪除子項目(右上角打叉)的處理
 	function sub_category_deletionHandler(){
 		$(".sub-category").click(function(){
@@ -244,6 +258,65 @@
 				}
 			}
 		});
+	}	// end function sub_category_deletionHandler()
+
+
+	// 處理新增週期性項目的繳費日期格式切換
+	function periodicTimeFormatToggle(selector) {
+		var dayOfMonth = [];
+		var i;
+		for(i=1; i<=31; i++){
+			dayOfMonth.push(i + " 號");
+		}
+
+		var dayOfWeek = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+
+		if(selector[0] == $("#peridoic-type")[0]){
+			$("#pay-date").empty();
+
+			if( selector.val() === "每月" ){
+				$.each(dayOfMonth, function(index, value){
+					$("#pay-date").append("<option>" +value+ "</option>");
+				});
+
+			}else{
+				$.each(dayOfWeek, function(index, value){
+					$("#pay-date").append("<option>" +value+ "</option>");
+				});
+			}
+			
+		}else if(selector[0] == $("#alert-daytype")[0]){
+			$("#alert-date").empty();
+
+			if( selector.val() === "每月" ){
+				$.each(dayOfMonth, function(index, value){
+					$("#alert-date").append("<option>" +value+ "</option>");
+				});
+
+			}else{
+				$.each(dayOfWeek, function(index, value){
+					$("#alert-date").append("<option>" +value+ "</option>");
+				});
+
+			}
+		}
+	}	// end function periodicTimeFormatToggle()
+
+	
+	// 送出新增週期性項目的表單
+	function addPeriodicPaymentItem(){
+		var title = $("#periodic-item-name").val();
+		var paymentDate = $("#peridoic-type").val() + ' ' + $("#pay-date").val();
+		var alertDate = $("#alert-daytype").val() + ' ' + $("#alert-date").val();
+
+		if( title.trim() ){
+			$("#table4").append("<tr><td>" + title + "</td><td>" + paymentDate 
+							+ " <button type='button' class='btn btn-primary btn-sm'>設定</button></td><td>" + alertDate
+							+ " <button type='button' class='btn btn-primary btn-sm'>設定</button></td></tr>");
+			alert("新增成功!");
+		}else{
+			alert("缺少項目標題");
+		}
 	}
 
     </script>
@@ -414,70 +487,70 @@
 							     <td>食
                                  </td>
                                  <td>10000								 
-								    <input type="submit" value="設定">
+								    <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 								 <td>8000
-						            <input type="submit" value="設定">
+						            <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 							  </tr>
 							  <tr> 
 							     <td>衣 
                                  </td>
                                  <td>10000								 
-								    <input type="submit" value="設定">
+								    <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 								 <td>8000
-						            <input type="submit" value="設定">
+						            <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 							  </tr>
 							  <tr> 
 							     <td>住 
                                  </td>
                                  <td>10000								 
-								    <input type="submit" value="設定">
+								    <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 								 <td>8000
-						            <input type="submit" value="設定">
+						            <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 							  </tr>
 							  <tr> 
 							     <td>行 
                                  </td>
                                  <td>10000								 
-								    <input type="submit" value="設定">
+								    <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 								 <td>8000
-						            <input type="submit" value="設定">
+						            <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 							  </tr>
 							  <tr> 
 							     <td>育 
                                  </td>
                                  <td>10000								 
-								    <input type="submit" value="設定">
+								    <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 								 <td>8000
-						            <input type="submit" value="設定">
+						            <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 							  </tr>
 							  <tr> 
 							     <td>樂 
                                  </td>
                                  <td>10000								 
-								    <input type="submit" value="設定">
+								    <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 								 <td>8000
-						            <input type="submit" value="設定">
+						            <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 							  </tr>
 							  <tr> 
 							     <td>其他 
                                  </td>
                                  <td>10000								 
-								    <input type="submit" value="設定">
+								    <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 								 <td>8000
-						            <input type="submit" value="設定">
+						            <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 							  </tr>
 						   </table>
@@ -498,70 +571,70 @@
 							     <td>食
                                  </td>
                                  <td>10000								 
-								    <input type="submit" value="設定">
+								    <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 								 <td>8000
-						            <input type="submit" value="設定">
+						            <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 							  </tr>
 							  <tr> 
 							     <td>衣 
                                  </td>
                                  <td>10000								 
-								    <input type="submit" value="設定">
+								    <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 								 <td>8000
-						            <input type="submit" value="設定">
+						            <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 							  </tr>
 							  <tr> 
 							     <td>住 
                                  </td>
                                  <td>10000								 
-								    <input type="submit" value="設定">
+								    <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 								 <td>8000
-						            <input type="submit" value="設定">
+						            <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 							  </tr>
 							  <tr> 
 							     <td>行 
                                  </td>
                                  <td>10000								 
-								    <input type="submit" value="設定">
+								    <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 								 <td>8000
-						            <input type="submit" value="設定">
+						            <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 							  </tr>
 							  <tr> 
 							     <td>育 
                                  </td>
                                  <td>10000								 
-								    <input type="submit" value="設定">
+								    <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 								 <td>8000
-						            <input type="submit" value="設定">
+						            <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 							  </tr>
 							  <tr> 
 							     <td>樂 
                                  </td>
                                  <td>10000								 
-								    <input type="submit" value="設定">
+								    <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 								 <td>8000
-						            <input type="submit" value="設定">
+						            <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 							  </tr>
 							  <tr> 
 							     <td>其他 
                                  </td>
                                  <td>10000								 
-								    <input type="submit" value="設定">
+								    <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 								 <td>8000
-						            <input type="submit" value="設定">
+						            <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 							  </tr>
 						   </table>
@@ -571,7 +644,7 @@
                 <div class="col-md-12 well">
                     <legend id="anch1"><span style="margin-right: 10px;">週期性支出設定</span>
                     	<button type="button" class="edit-img-btn" id="btn-periodic-cost-add" 
-                    			style="background-image: url(/static/image/add.png);" data-toggle="modal" data-target="#modal-periodic" ></button>
+                    			style="background-image: url(/static/image/add.png);" data-toggle="modal" data-target="#modal-periodic"></button>
                     	<button type="button" class="edit-img-btn" id="btn-periodic-cost-del" 
                     			style="background-image: url(/static/image/delete.png);"></button>
                  		<button type="button" class="btn btn-success btn-md table4-del-submit" id="table4-del-finish">刪除完畢</button>
@@ -582,37 +655,37 @@
 						   <table class="table table-bordered table-striped table-responsive" id="table4">
 						      <tr> 
 							     <th class="col-md-3">週期性支出項目 </th>
-								 <th class="col-md-4">預設支出日期 </th>
+								 <th class="col-md-4">預定支出日期 </th>
 								 <th class="col-md-5">繳費提醒通知設定 </th>
 							  </tr>
 							  <tr> 
 							     <td>房租
 						         </td>
                                  <td>每月8號								 
-								    <input type="submit" value="設定">
+								    <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 								 <td>每月3號
-						            <input type="submit" value="設定">
+						            <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 							  </tr>
 							  <tr> 
 							     <td>水費
 						         </td>
                                  <td>每月10號								 
-								    <input type="submit" value="設定">
+								    <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 								 <td>每月8號
-						            <input type="submit" value="設定">
+						            <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 							  </tr>
 							  <tr> 
 							     <td>電費
 						         </td>
                                  <td>每月20號								 
-								    <input type="submit" value="設定">
+								    <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 								 <td>每月18號
-						            <input type="submit" value="設定">
+						            <button type='button' class='btn btn-primary btn-sm'>設定</button>
 						         </td>
 							  </tr>
 						   </table>
@@ -668,7 +741,7 @@
 	        <div class="modal-content">
 	            <div class="modal-header">
 	                <button type="button" class="close" data-dismiss="modal">&times;</button>
-	                <h4 class="modal-title">新增週期性支出項目</h4>
+	                <h4 class="modal-title">新增週期性支出提醒設定</h4>
 	            </div> <!-- /.modal-header -->
 
 	            <div class="modal-body" id="sectest">
@@ -677,17 +750,25 @@
 						<input type="text" class="form-control" id="periodic-item-name" placeholder="新子分類">
 					</div>
 					<div class="form-group">
-						<label for="pay-date">支出日期</label>
-						<input type="text" class="form-control" id="pay-date" placeholder="新子分類">
+						<label for="pay-date">支出日期</label><br>
+						<select class="form-control" id="peridoic-type" style="width: 40%; display: inline; margin-right: 20px;">
+							<option>每月</option>
+							<option>每週</option>
+						</select>
+						<select class="form-control" id="pay-date" style="width: 40%; display: inline;"> </select>
 					</div>
 					<div class="form-group">
-						<label for="alert-date">繳費提醒通知日期</label>
-						<input type="text" class="form-control" id="alert-date" placeholder="新子分類">
+						<label for="alert-date">繳費提醒通知日期</label><br>
+						<select class="form-control" id="alert-daytype" style="width: 40%; display: inline; margin-right: 20px;">
+							<option>每月</option>
+							<option>每週</option>
+						</select>
+						<select class="form-control" id="alert-date" style="width: 40%; display: inline;"> </select>
 					</div>
 				</div> <!-- /.modal-body -->
 
 	            <div class="modal-footer">
-	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal" id="modal-periodic-submit">確定</button>
+	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal" id="modal-periodic-submit" onclick="addPeriodicPaymentItem()">確定</button>
 	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal">取消</button>
 	            </div> <!-- /.modal-footer -->
 	        </div>
