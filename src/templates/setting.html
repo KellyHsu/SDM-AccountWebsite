@@ -319,6 +319,22 @@
 		}
 	}
 
+
+	// 送出新增子分類的表單
+	function addSubCategory(){
+		var mainType = $("#main-type-choose").val();
+		var subType = $("#new-sub-type").val();
+
+		$("#table1 tr td:first-child").each(function(){
+			if($(this).text() === mainType ){
+				$(this).next().append("<button type='button' class='btn btn-link btn-md sub-category'>" 
+								+ subType + "</button>");	
+				alert("您新增了: " + mainType + "-" + subType);
+			}
+
+		});
+	}
+
     </script>
 
 </head>
@@ -420,7 +436,7 @@
                     </legend>
                     <form>
 					    <p>
-						   <table class="table table-bordered table-striped table-responsive">
+						   <table class="table table-bordered table-striped table-responsive" id="table1">
 						      <thead> 
 							     <th class="col-md-3">支出主分類 </th>
 								 <th class="col-md-9">支出子分類 </th>
@@ -708,8 +724,8 @@
 
 	            <div class="modal-body" id="sectest">
 					<div class="form-group">
-						<label for="main-cate-choose">主分類選擇</label>
-						<select class="form-control" id="main-cate-choose">
+						<label for="main-type-choose">主分類選擇</label>
+						<select class="form-control" id="main-type-choose">
 							<option>食</option>
 							<option>衣</option>
 							<option>住</option>
@@ -720,13 +736,13 @@
 						</select>
 					</div>
 					<div class="form-group">
-						<label for="new-sub-cate">子分類</label>
-						<input type="text" class="form-control" id="new-sub-cate" placeholder="新子分類">
+						<label for="new-sub-type">子分類</label>
+						<input type="text" class="form-control" id="new-sub-type" placeholder="新子分類">
 					</div>
 				</div> <!-- /.modal-body -->
 
 	            <div class="modal-footer">
-	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal" id="modal-subCategory-submit">確定</button>
+	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal" id="modal-subCategory-submit" onclick="addSubCategory()">確定</button>
 	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal">取消</button>
 	            </div> <!-- /.modal-footer -->
 	        </div>
