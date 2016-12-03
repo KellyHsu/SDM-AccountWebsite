@@ -9,7 +9,12 @@ from datetime import datetime, date
 def dashboard(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/')
-    return render(request, 'dashboard.html', {})
+    else:
+        member = Member.objects.filter(user__username=request.user).first()
+        cost_list = Receipt.objects.filter(member=member).filter(date=date.today()).filter(incomeandexpense__income_type="expense")
+        print(cost_list)
+
+    return render(request, 'dashboard.html', {"cost_list": cost_list, })
 
 
 def setting(request):
@@ -42,26 +47,26 @@ def create_receipt(request):
     return HttpResponse(new_receipt)
 
 
-def createSubClassification(request):
-    member = request.POST['user']
-    #get user?
-    classification = request.POST['category']
-    #get category
-    if classification == 'food':
-        classification = 'FO'
-    elif classification == 'clothing':
-        classification = 'CL'
-    elif classification == 'housing':
-        classification = 'HO'
-    elif classification == 'transportation':
-        classification = 'TR'
-    elif classification == 'education':
-        classification = 'ED'
-    elif classification == 'entertainment':
-        classification = 'EN'
-    elif classification == 'others':
-        classification = 'OT'
-    name = request.POST['SubCategory']
-
-    account.objects.create(member=member, classification=classification, name=name)
-    return render(request, 'dashboard.html', {})
+# def createSubClassification(request):
+#     member = request.POST['user']
+#     #get user?
+#     classification = request.POST['category']
+#     #get category
+#     if classification == 'food':
+#         classification = 'FO'
+#     elif classification == 'clothing':
+#         classification = 'CL'
+#     elif classification == 'housing':
+#         classification = 'HO'
+#     elif classification == 'transportation':
+#         classification = 'TR'
+#     elif classification == 'education':
+#         classification = 'ED'
+#     elif classification == 'entertainment':
+#         classification = 'EN'
+#     elif classification == 'others':
+#         classification = 'OT'
+#     name = request.POST['SubCategory']
+#
+#     account.objects.create(member=member, classification=classification, name=name)
+#     return render(request, 'dashboard.html', {})

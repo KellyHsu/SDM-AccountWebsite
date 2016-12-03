@@ -146,7 +146,6 @@ $(document).ready(function() {
     })
 
     $('#submit-btn').click(function(){
-        alert("in")
         var amount = $('#amount').val();
         var category = $('#costCategory').attr("value")
         var memo = $('#memo').val()
@@ -322,7 +321,16 @@ function subCategorySelected(){
                         <div id="collapseOne" class="panel-collapse collapse in">
                             <div class="panel-body">
                                 <table class="table" id="cost-list">
-                                    
+                                    {% for cost_receipt in cost_list %}
+                                    <tr>
+                                        <td>
+                                            <span class='glyphicon glyphicon-file text-success'></span>
+                                            <a href='#'>{{cost_receipt.subclassification.classification.classificaion_type}}-
+                                                {{cost_receipt.subclassification.name}}-{{cost_receipt.remark}}: {{cost_receipt.money}}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
                                 </table>
                             </div>
                         </div>
