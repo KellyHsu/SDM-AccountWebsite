@@ -24,11 +24,17 @@ class Classification(models.Model):
     )
     classificaion_type = models.CharField(max_length=20, choices=CLASSIFICATION_TYPE)
 
+    def __unicode__(self):
+        return self.classificaion_type
+
 
 class SubClassification(models.Model):
     name = models.CharField(max_length=100)
     classification = models.ForeignKey('Classification', on_delete=models.CASCADE)
     member = models.ForeignKey('member.Member', on_delete=models.CASCADE)
+
+    def __unicode__(self):
+        return self.name
 
 
 class Payment(models.Model):
@@ -39,6 +45,9 @@ class Payment(models.Model):
     )
     payment_type = models.CharField(max_length=20, choices=PAYMENT_TYPE)
 
+    def __unicode__(self):
+        return self.payment_type
+
 
 class IncomeAndExpense(models.Model):
     INCOME_TYPE = (
@@ -46,3 +55,6 @@ class IncomeAndExpense(models.Model):
         ('expense', 'expense'),
     )
     income_type = models.CharField(max_length=10, choices=INCOME_TYPE)
+
+    def __unicode__(self):
+        return self.income_type

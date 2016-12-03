@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 
 DJANGO_APPS = (
     'django.contrib.auth',
+    'super_inlines',
     'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
