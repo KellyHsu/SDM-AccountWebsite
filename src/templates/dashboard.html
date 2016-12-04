@@ -202,10 +202,27 @@ $(document).ready(function() {
 	// 填完新次分類要增加到選單列表中
     $('.new-sub-handler.new-sub-submit').click(function(){
         var newSub = $('#new-sub-text').val();
+        alert($( '#main-cate' ).text());
         if(newSub){
-            $(".modal-body").append("<button type='button' class='btn btn-link' id='sec-category'>"
-                                     + newSub + "</button>");
-            subCategorySelected();
+            //$(".modal-body").append("<button type='button' class='btn btn-link' id='sec-category'>"
+            //                         + newSub + "</button>");
+            //subCategorySelected();
+            
+            // 新增進資料庫
+            alert("in");
+            $.ajax({
+                url: "/createSubCategory/",
+                type:"POST",
+                data: {newSub : newSub, category : $( '#main-cate' ).text()},
+                success: function(new_subCategory){
+                    rowcontent = "<button type='button' class='btn btn-link' id='sec-category'>"+ newSub + "</button>"
+                    $(".modal-body").append(rowcontent);
+                    subCategorySelected();
+                },
+                error: function(){
+                    alert("新增子分類失敗");
+                }
+            });
         }
     });
 
@@ -241,12 +258,6 @@ function subCategorySelected(){
         <!-- Navigation -->
         <nav class="navbar navbar-light navbar-static-top" role="navigation">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".panel-group">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
                 <a class="navbar-brand glyphicon glyphicon-book" href="/dashboard/"></a>
                 <a href="/dashboard/"><img src="../static/image/logo.png" alt="logo" class="navbar-brand glyphicon glyphicon-book" height="30px" width="200px" border="0" /></a>
             </div><!-- /.navbar-header -->

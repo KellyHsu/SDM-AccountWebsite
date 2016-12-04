@@ -42,26 +42,11 @@ def create_receipt(request):
     return HttpResponse(new_receipt)
 
 
-def createSubClassification(request):
-    member = request.POST['user']
-    #get user?
-    classification = request.POST['category']
-    #get category
-    if classification == 'food':
-        classification = 'FO'
-    elif classification == 'clothing':
-        classification = 'CL'
-    elif classification == 'housing':
-        classification = 'HO'
-    elif classification == 'transportation':
-        classification = 'TR'
-    elif classification == 'education':
-        classification = 'ED'
-    elif classification == 'entertainment':
-        classification = 'EN'
-    elif classification == 'others':
-        classification = 'OT'
-    name = request.POST['SubCategory']
+def create_subClassification(request):
 
-    account.objects.create(member=member, classification=classification, name=name)
-    return render(request, 'dashboard.html', {})
+    if request.method == 'POST':
+        print(request.POST)
+        category = Classification.objects.filter(name=request.POST["category"]).first()
+        member = Member.objects.filter(user__username=request.user).first()
+        new_subClassification = SubClassification.objects.create(name=request.POST["newSub"], classification=category, member=member)
+    return HttpResponse(new_subClassification)
