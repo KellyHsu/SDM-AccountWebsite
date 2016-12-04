@@ -69,26 +69,89 @@ $(document).ready(function() {
     subCategorySelected();	// 增加次分類的selected屬性
 
 	// 主分類被點擊的時候會在modal裡面放入主分類的名稱
-    $( '#category' ).click(function() {
+    $( '#food' ).click(function() {
         var mainCate = $(this).text();
         $('#main-cate').text(mainCate);
+        $('.food_list').removeClass('hidden');
+        $('.clothing_list').addClass('hidden');
+        $('.housing_list').addClass('hidden');
+        $('.transportation_list').addClass('hidden');
+        $('.education_list').addClass('hidden');
+        $('.entertainment_list').addClass('hidden');
+        $('.other_list').addClass('hidden');
     });
 	
 	// work-around方法---當"衣"被點擊時，會更改次分類內容
-    $( '#category2' ).click(function(){
+    $( '#clothing' ).click(function() {
         var mainCate = $(this).text();
         $('#main-cate').text(mainCate);
-        $(".btn-link").each(function(index, element){
+        $('.food_list').addClass('hidden');
+        $('.clothing_list').removeClass('hidden');
+        $('.housing_list').addClass('hidden');
+        $('.transportation_list').addClass('hidden');
+        $('.education_list').addClass('hidden');
+        $('.entertainment_list').addClass('hidden');
+        $('.other_list').addClass('hidden');
+    });
 
-            if(index == 0){
-                $(element).text("包包");
-            }else if(index == 1){
-                $(element).text("洋裝");
-            }else{
-                $(element).text("鞋子");
-            }
+    $( '#housing' ).click(function() {
+        var mainCate = $(this).text();
+        $('#main-cate').text(mainCate);
+        $('.food_list').addClass('hidden');
+        $('.clothing_list').addClass('hidden');
+        $('.housing_list').removeClass('hidden');
+        $('.transportation_list').addClass('hidden');
+        $('.education_list').addClass('hidden');
+        $('.entertainment_list').addClass('hidden');
+        $('.other_list').addClass('hidden');
+    });
 
-        });
+    $( '#transportation' ).click(function() {
+        var mainCate = $(this).text();
+        $('#main-cate').text(mainCate);
+        $('.food_list').addClass('hidden');
+        $('.clothing_list').addClass('hidden');
+        $('.housing_list').addClass('hidden');
+        $('.transportation_list').removeClass('hidden');
+        $('.education_list').addClass('hidden');
+        $('.entertainment_list').addClass('hidden');
+        $('.other_list').addClass('hidden');
+    });
+
+    $( '#education' ).click(function() {
+        var mainCate = $(this).text();
+        $('#main-cate').text(mainCate);
+        $('.food_list').addClass('hidden');
+        $('.clothing_list').addClass('hidden');
+        $('.housing_list').addClass('hidden');
+        $('.transportation_list').addClass('hidden');
+        $('.education_list').removeClass('hidden');
+        $('.entertainment_list').addClass('hidden');
+        $('.other_list').addClass('hidden');
+    });
+
+    $( '#entertainment' ).click(function() {
+        var mainCate = $(this).text();
+        $('#main-cate').text(mainCate);
+        $('.food_list').addClass('hidden');
+        $('.clothing_list').addClass('hidden');
+        $('.housing_list').addClass('hidden');
+        $('.transportation_list').addClass('hidden');
+        $('.education_list').addClass('hidden');
+        $('.entertainment_list').removeClass('hidden');
+        $('.other_list').addClass('hidden');
+    });
+
+    $( '#other' ).click(function() {
+        var mainCate = $(this).text();
+        $('#main-cate').text(mainCate);
+        $('.food_list').addClass('hidden');
+        $('.clothing_list').addClass('hidden');
+        $('.housing_list').addClass('hidden');
+        $('.transportation_list').addClass('hidden');
+        $('.education_list').addClass('hidden');
+        $('.entertainment_list').addClass('hidden');
+        $('.other_list').removeClass('hidden');
     });
 
 	// 當modal的確認被按下後，會提交給分類欄位
@@ -128,38 +191,6 @@ $(document).ready(function() {
             });
         }
     });
-/*
-    $( '.determin' ).click(function(){
-        var amount = $('#amount').val();
-        var cate = $('#costCategory').attr("value");
-        var memo = $('#memo').val();
-        var rowcontent;
-        if(amount){
-            if(cate==='預設類別'){
-                rowcontent = "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>未分類紀錄: "
-                            + amount + "</a></td></tr>";
-            }else{
-                if(memo!==''){
-                    rowcontent = "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>"
-                            + cate + "-" + memo + ": "+ amount + "</a></td></tr>";
-                }
-                else{
-                    rowcontent = "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>"
-                            + cate + ": "+ amount + "</a></td></tr>";
-                }
-            }
-
-            $('#cost-list').append(rowcontent);
-            $('#amount').val('');
-            $('#costCategory').attr("value", "預設類別");
-            $('#memo').val('');
-
-        }else{
-            alert("支出金額為必填");
-
-        }
-    });
-*/
 
 	// 復原與清空表單
     $('.clear').click(function(){
@@ -222,7 +253,7 @@ $(document).ready(function() {
             //$(".modal-body").append("<button type='button' class='btn btn-link' id='sec-category'>"
             //                         + newSub + "</button>");
             //subCategorySelected();
-            
+
             // 新增進資料庫
             alert("in");
             $.ajax({
@@ -248,7 +279,7 @@ $(document).ready(function() {
         $(".modal-btn").prop('disabled', false);
     });
 
-}); 
+});
 
 // 用來讓每個次分類被點擊的時候都會多一個class-selected
 // 且移除其他item 的selected class
@@ -277,7 +308,7 @@ function subCategorySelected(){
                 <a href="/dashboard/"><img src="../static/image/logo.png" alt="logo" class="navbar-brand glyphicon glyphicon-book" height="30px" width="200px" border="0" /></a>
             </div><!-- /.navbar-header -->
             <ul class="nav navbar-top-links navbar-right">
-                
+
                 <!-- start bell dropdown -->
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="color: white;">
@@ -321,10 +352,10 @@ function subCategorySelected(){
                         <li><a href="/logout/"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
                         </li>
                     </ul>
-                    
+
                 </li><!-- /.dropdown-user -->
-                
-            </ul><!-- /.dropdown -->            
+
+            </ul><!-- /.dropdown -->
         </nav><!-- /.navbar-top-links -->
 
 
@@ -381,7 +412,7 @@ function subCategorySelected(){
                         <div id="collapseTwo" class="panel-collapse collapse in">
                             <div class="panel-body">
                                 <table class="table">
-                                    
+
                                 </table>
                             </div>
                         </div>
@@ -394,7 +425,7 @@ function subCategorySelected(){
             <div id="page-wrapper" class="col-sm-9 col-md-9" style="min-height: 167px; background-color: rgb(229, 228, 219);">
 
                 <div class="container-fluid col-xs-12 col-sm-12">
-                    
+
                     <div class="row">
                         <div class="col-lg-12" style="background-color: #fff; margin-top: 20px;">
                             <div id="titleMenu" class="page-header" style="text-align: center;">
@@ -412,22 +443,22 @@ function subCategorySelected(){
                                 </form>
                             </div>
                             <div style="text-align: center;">
-                            
+
                                 <label class="test" style="font-size: 100px;padding-right: 20px;">$</label>
                                 <input type="number" id="amount">
                                 <br />
                                 <div class="row" style="text-align: center; margin-bottom: 20px;">
-                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category" style="background: #8D8F76 no-repeat;">食</button>
-                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category2" style="background: #BAB6AF no-repeat;">衣</button>
-                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category" style="background: #E19F81 no-repeat;">住</button>
-                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category" style="background: #73AFB8 no-repeat;">行</button>
-                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category" style="background: #BA736A no-repeat;">育</button>
-                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category" style="background: url('../static/image/yellow.png') no-repeat;">樂</button>
-                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category" style="background: url('../static/image/brown.png') no-repeat;">其</button>
+                                    <button type="button" class="btn btn-default btn-lg category" data-toggle="modal" data-target="#myModal" id="food" style="background: #8D8F76 no-repeat;">食</button>
+                                    <button type="button" class="btn btn-default btn-lg category" data-toggle="modal" data-target="#myModal" id="clothing" style="background: #BAB6AF no-repeat;">衣</button>
+                                    <button type="button" class="btn btn-default btn-lg category" data-toggle="modal" data-target="#myModal" id="housing" style="background: #E19F81 no-repeat;">住</button>
+                                    <button type="button" class="btn btn-default btn-lg category" data-toggle="modal" data-target="#myModal" id="transportation" style="background: #73AFB8 no-repeat;">行</button>
+                                    <button type="button" class="btn btn-default btn-lg category" data-toggle="modal" data-target="#myModal" id="education" style="background: #BA736A no-repeat;">育</button>
+                                    <button type="button" class="btn btn-default btn-lg category" data-toggle="modal" data-target="#myModal" id="entertainment" style="background: url('../static/image/yellow.png') no-repeat;">樂</button>
+                                    <button type="button" class="btn btn-default btn-lg category" data-toggle="modal" data-target="#myModal" id="other" style="background: url('../static/image/brown.png') no-repeat;">其</button>
                                 </div>
                                 <div class="row" style="margin-bottom: 20px;">
                                     <label style="font-size: 25px; padding-right: 5px;">分類</label>
-                                    <input type="text" id="costCategory" value="預設類別" readonly>
+                                    <input type="text" id="costCategory" value="預設類別" placeholder="預設分類" readonly>
                                 </div>
                                 <div class="row">
                                     <label style="font-size: 25px; padding-right: 5px;">備註</label>
@@ -444,7 +475,7 @@ function subCategorySelected(){
                 </div><!-- /.container-fluid -->
 
             </div><!-- /#page-wrapper (main container) -->
-        
+
         </div><!-- /.container-fluid (whole div below navbar) -->
 
     </div><!-- /#wrapper (whole page)-->
@@ -461,30 +492,27 @@ function subCategorySelected(){
 	            </div> <!-- /.modal-header -->
 
 	            <div class="modal-body" id="sectest">
-		            <button type="button" class="btn btn-link" id="sec-category">早餐</button> 
-		            <button type="button" class="btn btn-link" id="sec-category">午餐</button>
-		            <button type="button" class="btn btn-link" id="sec-category">晚餐</button>
-		            <button type="button" class="btn btn-link" id="add-category">點心</button>
-                    <button type="button" class="btn btn-link" id="sec-category">早餐</button> 
-                    <button type="button" class="btn btn-link" id="sec-category">午餐</button>
-                    <button type="button" class="btn btn-link" id="sec-category">晚餐</button>
-                    <button type="button" class="btn btn-link" id="add-category">點心</button> 
-                    <button type="button" class="btn btn-link" id="sec-category">早餐</button> 
-                    <button type="button" class="btn btn-link" id="sec-category">午餐</button>
-                    <button type="button" class="btn btn-link" id="sec-category">晚餐</button>
-                    <button type="button" class="btn btn-link" id="add-category">點心</button>    
-                    <button type="button" class="btn btn-link" id="sec-category">早餐</button> 
-                    <button type="button" class="btn btn-link" id="sec-category">午餐</button>
-                    <button type="button" class="btn btn-link" id="sec-category">晚餐</button>
-                    <button type="button" class="btn btn-link" id="add-category">點心</button> 
-                    <button type="button" class="btn btn-link" id="sec-category">早餐</button> 
-                    <button type="button" class="btn btn-link" id="sec-category">午餐</button>
-                    <button type="button" class="btn btn-link" id="sec-category">晚餐</button>
-                    <button type="button" class="btn btn-link" id="add-category">點心</button> 
-                    <button type="button" class="btn btn-link" id="sec-category">早餐</button> 
-                    <button type="button" class="btn btn-link" id="sec-category">午餐</button>
-                    <button type="button" class="btn btn-link" id="sec-category">晚餐</button>
-                    <button type="button" class="btn btn-link" id="add-category">點心</button> 
+                    {% for food in food_list %}
+                        <button type="button" class="btn btn-link food_list hidden" id="sec-category">{{ food.name }}</button>
+                    {% endfor %}
+                    {% for clothing in clothing_list %}
+                        <button type="button" class="btn btn-link clothing_list hidden" id="sec-category">{{ clothing.name }}</button>
+                    {% endfor %}
+                    {% for housing in housing_list %}
+                        <button type="button" class="btn btn-link housing_list hidden" id="sec-category">{{ housing.name }}</button>
+                    {% endfor %}
+                    {% for transportation in transportation_list %}
+                        <button type="button" class="btn btn-link transportation_list hidden" id="sec-category">{{ transportation.name }}</button>
+                    {% endfor %}
+                    {% for education in education_list %}
+                        <button type="button" class="btn btn-link education_list hidden" id="sec-category">{{ education.name }}</button>
+                    {% endfor %}
+                    {% for entertainment in entertainment_list %}
+                        <button type="button" class="btn btn-link entertainment_list hidden" id="sec-category">{{ entertainment.name }}</button>
+                    {% endfor %}
+                    {% for other in other_list %}
+                        <button type="button" class="btn btn-link other_list hidden" id="sec-category">{{ other.name }}</button>
+                    {% endfor %}
 		            <!-- <button type="button" class="btn btn-link" id="del-category">刪除</button> -->
 				</div> <!-- /.modal-body -->
                 

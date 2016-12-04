@@ -139,11 +139,7 @@ body {
     background: #eee;
     box-shadow: none;
 }
-.btn-default#category{
-  margin: 0px 10px 10px 0px;
-  color: #fff;
-}
-.btn-default#category2{
+.btn-default.category{
   margin: 0px 10px 10px 0px;
   color: #fff;
 }

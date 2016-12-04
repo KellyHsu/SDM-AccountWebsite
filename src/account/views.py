@@ -11,10 +11,19 @@ def dashboard(request):
         return HttpResponseRedirect('/login/')
     else:
         member = Member.objects.filter(user__username=request.user).first()
-        cost_list = Receipt.objects.filter(member=member).filter(date=date.today()).filter(incomeandexpense__income_type="expense")
-        print(cost_list)
+        cost_list = Receipt.objects.filter(member=member, date=date.today(), incomeandexpense__income_type="expense")
 
-    return render(request, 'dashboard.html', {"cost_list": cost_list, })
+        food_list = SubClassification.objects.filter(member=member, classification=1)
+        clothing_list = SubClassification.objects.filter(member=member, classification=2)
+        housing_list = SubClassification.objects.filter(member=member, classification=3)
+        transportation_list = SubClassification.objects.filter(member=member, classification=4)
+        education_list = SubClassification.objects.filter(member=member, classification=5)
+        entertainment_list = SubClassification.objects.filter(member=member, classification=6)
+        other_list = SubClassification.objects.filter(member=member, classification=7)
+    return render(request, 'dashboard.html', {"cost_list": cost_list, "food_list": food_list,
+                                              "clothing_list": clothing_list, "housing_list": housing_list,
+                                              "transportation_list": transportation_list, "education_list": education_list,
+                                              "entertainment_list": entertainment_list, "other_list": other_list})
 
 
 def setting(request):
