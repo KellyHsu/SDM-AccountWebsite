@@ -1,7 +1,7 @@
 #coding=utf8 
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
-from account.models import Receipt, SubClassification, Payment, IncomeAndExpense
+from account.models import Receipt, SubClassification, Payment, IncomeAndExpense, Classification
 from member.models import Member
 from datetime import datetime, date
 
@@ -9,7 +9,12 @@ from datetime import datetime, date
 def dashboard(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/')
-    return render(request, 'dashboard.html', {})
+    else:
+        member = Member.objects.filter(user__username=request.user).first()
+        cost_list = Receipt.objects.filter(member=member).filter(date=date.today()).filter(incomeandexpense__income_type="expense")
+        print(cost_list)
+
+    return render(request, 'dashboard.html', {"cost_list": cost_list, })
 
 
 def setting(request):
@@ -25,9 +30,8 @@ def filter(request):
 
 
 def create_receipt(request):
-
     if request.method == 'POST':
-        print(request.POST)
+        # print(request.POST)
         subclass = SubClassification.objects.filter(name=request.POST["category"].split("-", 1)[-1]).first()
         payment = Payment.objects.filter(payment_type=request.POST["payment"]).first()
         incomeandexpense = IncomeAndExpense.objects.filter(income_type=request.POST["record_type"]).first()
@@ -39,7 +43,9 @@ def create_receipt(request):
                                              payment=payment,
                                              incomeandexpense=incomeandexpense,
                                              member=member)
-    return HttpResponse(new_receipt)
+        rowcontent = "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>" \
+                     "" + new_receipt.subclassification.classification.classificaion_type + "- " + new_receipt.subclassification.name + "-" + new_receipt.remark + ": " + new_receipt.money + "</a></td></tr>";
+    return HttpResponse(rowcontent)
 
 
 def create_subClassification(request):
