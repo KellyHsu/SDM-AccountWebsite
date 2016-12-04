@@ -109,6 +109,24 @@ $(document).ready(function() {
     });
 
     $("#datepicker1").datepicker("setDate", new Date());
+
+    $("#datepicker1").change(function(){
+        alert($('#datepicker1').val())
+        var newDate = $('#datepicker1').val();
+        if(newDate){
+            $.ajax({
+                url: "/getNewDate/",
+                type:"POST",
+                data: {date : newDate},
+                success: function(new_receipt){
+                    // 要改哪兒(囧?
+                },
+                error: function(){
+                    alert("抓新日期失敗")
+                }
+            });
+        }
+    });
 /*
     $( '.determin' ).click(function(){
         var amount = $('#amount').val();

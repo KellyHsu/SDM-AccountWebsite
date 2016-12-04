@@ -50,3 +50,13 @@ def create_subClassification(request):
         member = Member.objects.filter(user__username=request.user).first()
         new_subClassification = SubClassification.objects.create(name=request.POST["newSub"], classification=category, member=member)
     return HttpResponse(new_subClassification)
+
+
+def get_date(request):
+
+    if request.method == 'POST':
+        print(request.POST)
+        date = datetime.strptime(request.POST["date"], "%Y/%m/%d")
+        receipt = Receipt.objects.all().filter(date=date)
+        print(receipt)
+    return HttpResponse(receipt)
