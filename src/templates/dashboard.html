@@ -156,10 +156,7 @@ $(document).ready(function() {
                 data: {amount : amount, category : category,
                     memo: memo, record_type: $('#recordType').val(), payment: $('#payment').val(),
                     date: $('#datepicker1').val()},
-                success: function(new_receipt){
-                    rowcontent = "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>"
-                                 + category + "-" + memo + ": "+ amount + "</a></td></tr>";
-
+                success: function(rowcontent){
                     $('#cost-list').append(rowcontent);
                     $('#amount').val('');
                     $('#costCategory').attr("value", "預設類別");
