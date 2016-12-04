@@ -13,7 +13,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Dashboard</title>
+    <title>MoneyKeeper</title>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -95,7 +95,11 @@ $(document).ready(function() {
     $( '#modal-submit' ).click(function(){
         var lv1 = $( '#main-cate' ).text();
         var lv2 = $( '.btn-link.selected').text();
-        $('#costCategory').attr("value", lv1+'-'+lv2);
+        if(lv2===''){
+           $('#costCategory').attr("value", lv1);
+        }else{
+           $('#costCategory').attr("value", lv1+'-'+lv2);
+        }
     });
 
     $('#datepicker1').datepicker({
@@ -105,6 +109,24 @@ $(document).ready(function() {
     });
 
     $("#datepicker1").datepicker("setDate", new Date());
+
+    $("#datepicker1").change(function(){
+        alert($('#datepicker1').val())
+        var newDate = $('#datepicker1').val();
+        if(newDate){
+            $.ajax({
+                url: "/getNewDate/",
+                type:"POST",
+                data: {date : newDate},
+                success: function(new_receipt){
+                    // 要改哪兒(囧?
+                },
+                error: function(){
+                    alert("抓新日期失敗")
+                }
+            });
+        }
+    });
 /*
     $( '.determin' ).click(function(){
         var amount = $('#amount').val();
@@ -198,8 +220,28 @@ $(document).ready(function() {
 	// 填完新次分類要增加到選單列表中
     $('.new-sub-handler.new-sub-submit').click(function(){
         var newSub = $('#new-sub-text').val();
-        $(".modal-body").append("<button type='button' class='btn btn-link' id='sec-category'>" + newSub + "</button>");
-        subCategorySelected();
+        alert($( '#main-cate' ).text());
+        if(newSub){
+            //$(".modal-body").append("<button type='button' class='btn btn-link' id='sec-category'>"
+            //                         + newSub + "</button>");
+            //subCategorySelected();
+            
+            // 新增進資料庫
+            alert("in");
+            $.ajax({
+                url: "/createSubCategory/",
+                type:"POST",
+                data: {newSub : newSub, category : $( '#main-cate' ).text()},
+                success: function(new_subCategory){
+                    rowcontent = "<button type='button' class='btn btn-link' id='sec-category'>"+ newSub + "</button>"
+                    $(".modal-body").append(rowcontent);
+                    subCategorySelected();
+                },
+                error: function(){
+                    alert("新增子分類失敗");
+                }
+            });
+        }
     });
 
 
@@ -234,12 +276,6 @@ function subCategorySelected(){
         <!-- Navigation -->
         <nav class="navbar navbar-light navbar-static-top" role="navigation">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".panel-group">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
                 <a class="navbar-brand glyphicon glyphicon-book" href="/dashboard/"></a>
                 <a href="/dashboard/"><img src="../static/image/logo.png" alt="logo" class="navbar-brand glyphicon glyphicon-book" height="30px" width="200px" border="0" /></a>
             </div><!-- /.navbar-header -->
@@ -447,7 +483,7 @@ function subCategorySelected(){
 	            <div class="modal-footer">
                     <div style="float: left;">
                         <button type="button" class="btn btn-default" id="subCategoryAdder">新增次分類</button>
-                        <input type="text" id="new-sub-text" class="new-sub-handler" placeholder="請輸入次分類名稱" />
+                        <input type="text" id="new-sub-text" class="new-sub-handler" placeholder="請輸入次分類名稱" maxlength="10" />
                         <button type="button" class="btn btn-success btn-sm new-sub-handler new-sub-submit">新增</button>
                         <button type="button" class="btn btn-danger btn-sm new-sub-handler">取消</button>
                     </div>

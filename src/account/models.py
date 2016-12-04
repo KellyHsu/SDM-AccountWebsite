@@ -58,3 +58,17 @@ class IncomeAndExpense(models.Model):
 
     def __unicode__(self):
         return self.income_type
+
+
+class CyclicalExpenditure(models.Model):
+    name = models.CharField(max_length=100)
+    expenditure_date = models.DateField()
+    reminder_date = models.DateField()
+    member = models.ForeignKey('member.Member', on_delete=models.CASCADE)
+
+
+class Budget(models.Model):
+    budget = models.IntegerField()
+    reminder = models.IntegerField()
+    classification = models.ForeignKey('Classification', on_delete=models.CASCADE)
+    member = models.ForeignKey('member.Member', on_delete=models.CASCADE)
