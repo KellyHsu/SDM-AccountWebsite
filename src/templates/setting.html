@@ -196,14 +196,11 @@
 
 
 		// periodic modal select element default value
-		periodicTimeFormatToggle($("#peridoic-type"));	// 先在loading時放入一次值
+		periodicTimeFormatToggle($("#periodic-type"));	// 先在loading時放入一次值
 		periodicTimeFormatToggle($("#alert-daytype"));
 
 		// 切換新增週期性項目裡的日期設定
-		$("#peridoic-type").change(function(){
-			periodicTimeFormatToggle($(this));
-		});
-		$("#alert-daytype").change(function(){
+		$("#periodic-type, #alert-daytype, #periodic-type-edit, #alert-daytype-edit").change(function(){
 			periodicTimeFormatToggle($(this));
 		});
 		
@@ -219,6 +216,7 @@
 			$(this).prev().show();
 			$(this).prev().prev().attr("readonly", "readonly");
 		});
+
 		
 	});	// end document.ready()
 
@@ -250,14 +248,14 @@
 					$(this).addClass("col-md-1");
 					break;
 				case 1:
-					$(this).removeClass("col-md-3");
-					$(this).addClass("col-md-3");
 					break;
 				case 2:
+					$(this).removeClass("col-md-4");
+					$(this).addClass("col-md-3");
 					break;
 				case 3:
-					$(this).removeClass("col-md-5");
-					$(this).addClass("col-md-4");
+					break;
+				case 4:
 					break;
 				default:
 					alert('內容顯示錯誤，請洽工程師');
@@ -292,54 +290,58 @@
 		var dayOfMonth = [];
 		var i;
 		for(i=1; i<=31; i++){
-			dayOfMonth.push(i + " 號");
+			dayOfMonth.push(i + "號");
 		}
 
 		var dayOfWeek = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
 
-		if(selector[0] == $("#peridoic-type")[0]){
-			$("#pay-date").empty();
-
-			if( selector.val() === "每月" ){
-				$.each(dayOfMonth, function(index, value){
-					$("#pay-date").append("<option>" +value+ "</option>");
-				});
-
-			}else{
-				$.each(dayOfWeek, function(index, value){
-					$("#pay-date").append("<option>" +value+ "</option>");
-				});
-			}
+		var optionItem;
+		if(selector[0] == $("#periodic-type")[0]){
+			// 新增週期性項目表單上的預計日期選項
+			optionItem = $("#pay-date");
 			
 		}else if(selector[0] == $("#alert-daytype")[0]){
-			$("#alert-date").empty();
+			// 週期性項目表單上的提醒日期選項
+			optionItem = $("#alert-date");
+			
+		}else if(selector[0] == $("#alert-daytype-edit")[0]){
+			// 編輯週期性項目表單上的提醒日期選項
+			optionItem = $("#alert-date-edit");
 
-			if( selector.val() === "每月" ){
-				$.each(dayOfMonth, function(index, value){
-					$("#alert-date").append("<option>" +value+ "</option>");
-				});
+		}else if(selector[0] == $("#periodic-type-edit")[0]){
+			// 編輯週期性項目表單上的預計日期選項
+			optionItem = $("#pay-date-edit");
 
-			}else{
-				$.each(dayOfWeek, function(index, value){
-					$("#alert-date").append("<option>" +value+ "</option>");
-				});
-
-			}
 		}
+
+
+		optionItem.empty();
+
+		if( selector.val() === "每月" ){
+			$.each(dayOfMonth, function(index, value){
+				optionItem.append("<option>" +value+ "</option>");
+			});
+
+		}else{
+			$.each(dayOfWeek, function(index, value){
+				optionItem.append("<option>" +value+ "</option>");
+			});
+		}
+
 	}	// end function periodicTimeFormatToggle()
 
 	
-	// 送出新增週期性項目的表單
-	function addPeriodicPaymentItem(){
+	// 送出新增週期性項目的表單 (submit event)
+	function addPeriodicPaymentItemSubmit(){
 		var title = $("#periodic-item-name").val();
-		var paymentDate = $("#peridoic-type").val() + ' ' + $("#pay-date").val();
+		var paymentDate = $("#periodic-type").val() + ' ' + $("#pay-date").val();
 		var alertDate = $("#alert-daytype").val() + ' ' + $("#alert-date").val();
 
 		if( title.trim() ){
-			$("#table4").append("<tr><td>" + title + "</td><td>" + paymentDate 
-							+ " <button type='button' class='btn btn-primary btn-sm'>設定</button></td><td>" + alertDate
-							+ " <button type='button' class='btn btn-primary btn-sm'>設定</button> " + 
-							"<input type='checkbox' /></td></tr>");
+			$("#table4").append("<tr><td>" + title + "</td><td>" + paymentDate + " </td><td>" + alertDate  
+				+ "</td><td><button type='button' class='btn btn-primary btn-sm periodic-date-setting' data-toggle='modal' data-target='#modal-periodic-edit'>設定</button> "
+				+ "<input type='checkbox' /></td></tr>");
+
 
 			// 在新的欄位上增加toggle button
 			$("#table4 tr:last-child td:last-child input").bootstrapToggle({
@@ -358,7 +360,7 @@
 
 
 	// 送出新增子分類的表單
-	function addSubCategory(){
+	function addSubCategorySubmit(){
 		var mainType = $("#main-type-choose").val();
 		var subType = $("#new-sub-type").val();
 
@@ -370,6 +372,53 @@
 			}
 		});
 	}
+
+
+	// 週期性項目的日期設定按鈕事件
+	$(document).on("click", ".periodic-date-setting", function(){
+		$(this).parent().siblings().addClass("editting");
+
+		// 把編輯的那一欄位資料抓進modal中
+		$(".editting").each(function(index){
+
+			switch(index){
+				case 0:
+					$("#periodic-item-edit-name").attr('value',$(this).text());
+					$("#periodic-item-edit-name").attr('disabled', 'disabled');
+					break;
+				case 1:
+					var str = $(this).text().split(' ');	// 用空白把時間切開 ex: ['每月','1號']
+					$("#periodic-type-edit").val(str[0]);	// 設定表單的第一個選單的值
+					periodicTimeFormatToggle($("#periodic-type-edit"));	// 建出第二個選單列表
+					$("#pay-date-edit").val(str[1]);	// 設定第二個選單的值
+					break;
+				case 2:
+					var str = $(this).text().split(' ');	// 用空白把時間切開 ex: ['每月','1號']
+					$("#alert-daytype-edit").val(str[0]);	// 設定表單的第一個選單的值
+					periodicTimeFormatToggle($("#alert-daytype-edit"));	// 建出第二個選單列表
+					$("#alert-date-edit").val(str[1]);	// 設定第二個選單的值
+					break;
+			}
+			
+		});
+	});
+
+
+	// 送出[編輯]週期性項目的表單 (submit event)
+	function editPeriodicPaymentItemSubmit(){
+		$(".editting").each(function(index){	
+			if(index == 1){
+				$(this).text($("#periodic-type-edit").val() + ' ' + $("#pay-date-edit").val());
+			}else if(index == 2){
+				$(this).text($("#alert-daytype-edit").val() + ' ' + $("#alert-date-edit").val());
+			}
+
+		});
+
+		$(".editting").removeClass("editting");
+
+	}
+
 
     </script>
 
@@ -673,38 +722,36 @@
 						      <tr> 
 							     <th class="col-md-3">週期性支出項目 </th>
 								 <th class="col-md-4">預定支出日期 </th>
-								 <th class="col-md-5">繳費提醒通知設定 </th>
+								 <th class="col-md-3">繳費提醒通知日期 </th>
+								 <th class="col-md-2">通知與日期設定 </th>
 							  </tr>
 							  <tr> 
 							     <td>房租
 						         </td>
-                                 <td>每月8號								 
-								    <button type='button' class='btn btn-primary btn-sm'>設定</button>
-						         </td>
-								 <td>每月3號
-						            <button type='button' class='btn btn-primary btn-sm'>設定</button>
-						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關"/>
+                                 <td>每週 星期三</td>
+								 <td>每月 3號</td>
+						         <td>
+						         	<button type='button' class='btn btn-primary btn-sm periodic-date-setting' data-toggle='modal' data-target='#modal-periodic-edit'>設定</button>
+						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" />
 						         </td>
 							  </tr>
 							  <tr> 
 							     <td>水費
 						         </td>
-                                 <td>每月10號								 
-								    <button type='button' class='btn btn-primary btn-sm'>設定</button>
-						         </td>
-								 <td>每月8號
-						            <button type='button' class='btn btn-primary btn-sm'>設定</button>
+                                 <td>每月 10號</td>
+								 <td>每月 8號</td>
+						         <td>
+						            <button type='button' class='btn btn-primary btn-sm periodic-date-setting' data-toggle='modal' data-target='#modal-periodic-edit'>設定</button>
 						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關"/>
 						         </td>
 							  </tr>
 							  <tr> 
 							     <td>電費
 						         </td>
-                                 <td>每月20號								 
-								    <button type='button' class='btn btn-primary btn-sm'>設定</button>
-						         </td>
-								 <td>每月18號
-						            <button type='button' class='btn btn-primary btn-sm'>設定</button>
+                                 <td>每月 20號</td>
+								 <td>每月 18號</td>
+						         <td>
+						            <button type='button' class='btn btn-primary btn-sm periodic-date-setting' data-toggle='modal' data-target='#modal-periodic-edit'>設定</button>
 						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關"/>
 						         </td>
 							  </tr>
@@ -746,7 +793,7 @@
 				</div> <!-- /.modal-body -->
 
 	            <div class="modal-footer">
-	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal" id="modal-subCategory-submit" onclick="addSubCategory()">確定</button>
+	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal" id="modal-subCategory-submit" onclick="addSubCategorySubmit()">確定</button>
 	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal">取消</button>
 	            </div> <!-- /.modal-footer -->
 	        </div>
@@ -754,7 +801,7 @@
 	</div>
     <!-- /.modal -->	
 
-	<!-- Modal 增加週期性支出項目 -->
+	<!-- Modal [[新增]]週期性支出項目 -->
 	<div class="modal fade" id="modal-periodic" role="dialog">
 	    <div class="modal-dialog">
 	        <!-- Modal content-->
@@ -771,7 +818,7 @@
 					</div>
 					<div class="form-group">
 						<label for="pay-date">支出日期</label><br>
-						<select class="form-control" id="peridoic-type" style="width: 40%; display: inline; margin-right: 20px;">
+						<select class="form-control" id="periodic-type" style="width: 40%; display: inline; margin-right: 20px;">
 							<option>每月</option>
 							<option>每週</option>
 						</select>
@@ -788,7 +835,50 @@
 				</div> <!-- /.modal-body -->
 
 	            <div class="modal-footer">
-	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal" id="modal-periodic-submit" onclick="addPeriodicPaymentItem()">確定</button>
+	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal" id="modal-periodic-submit" onclick="addPeriodicPaymentItemSubmit()">確定</button>
+	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal">取消</button>
+	            </div> <!-- /.modal-footer -->
+	        </div>
+	    </div>
+	</div>
+    <!-- /.modal -->	
+
+
+	<!-- Modal [[編輯]]週期性支出項目 -->
+	<div class="modal fade" id="modal-periodic-edit" role="dialog">
+	    <div class="modal-dialog">
+	        <!-- Modal content-->
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal">&times;</button>
+	                <h4 class="modal-title">編輯週期性支出項目</h4>
+	            </div> <!-- /.modal-header -->
+
+	            <div class="modal-body" id="sectest">
+					<div class="form-group">
+						<label for="periodic-item-edit-name">週期性支出項目</label>
+						<input type="text" class="form-control" id="periodic-item-edit-name" placeholder="新子分類">
+					</div>
+					<div class="form-group">
+						<label for="pay-date-edit">支出日期</label><br>
+						<select class="form-control" id="periodic-type-edit" style="width: 40%; display: inline; margin-right: 20px;">
+							<option>每月</option>
+							<option>每週</option>
+						</select>
+						<select class="form-control" id="pay-date-edit" style="width: 40%; display: inline;"> </select>
+					</div>
+					<div class="form-group">
+						<label for="alert-date-edit">繳費提醒通知日期</label><br>
+						<select class="form-control" id="alert-daytype-edit" style="width: 40%; display: inline; margin-right: 20px;">
+							<option>每月</option>
+							<option>每週</option>
+						</select>
+						<select class="form-control" id="alert-date-edit" style="width: 40%; display: inline;"> </select>
+					</div>
+				</div> <!-- /.modal-body -->
+
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal" id="modal-periodic-edit-submit" onclick="editPeriodicPaymentItemSubmit()">確定</button>
 	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal">取消</button>
 	            </div> <!-- /.modal-footer -->
 	        </div>
