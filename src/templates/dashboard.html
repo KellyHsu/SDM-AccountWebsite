@@ -72,6 +72,8 @@ $(document).ready(function() {
     $( '#food' ).click(function() {
         var mainCate = $(this).text();
         $('#main-cate').text(mainCate);
+        $("#main-cate").removeClass();
+        $("#main-cate").addClass("food");
         $('.food_list').removeClass('hidden');
         $('.clothing_list').addClass('hidden');
         $('.housing_list').addClass('hidden');
@@ -85,6 +87,8 @@ $(document).ready(function() {
     $( '#clothing' ).click(function() {
         var mainCate = $(this).text();
         $('#main-cate').text(mainCate);
+        $("#main-cate").removeClass();
+        $("#main-cate").addClass("clothing");
         $('.food_list').addClass('hidden');
         $('.clothing_list').removeClass('hidden');
         $('.housing_list').addClass('hidden');
@@ -97,6 +101,8 @@ $(document).ready(function() {
     $( '#housing' ).click(function() {
         var mainCate = $(this).text();
         $('#main-cate').text(mainCate);
+        $("#main-cate").removeClass();
+        $("#main-cate").addClass("housing");
         $('.food_list').addClass('hidden');
         $('.clothing_list').addClass('hidden');
         $('.housing_list').removeClass('hidden');
@@ -109,6 +115,8 @@ $(document).ready(function() {
     $( '#transportation' ).click(function() {
         var mainCate = $(this).text();
         $('#main-cate').text(mainCate);
+        $("#main-cate").removeClass();
+        $("#main-cate").addClass("transportation");
         $('.food_list').addClass('hidden');
         $('.clothing_list').addClass('hidden');
         $('.housing_list').addClass('hidden');
@@ -121,6 +129,8 @@ $(document).ready(function() {
     $( '#education' ).click(function() {
         var mainCate = $(this).text();
         $('#main-cate').text(mainCate);
+        $("#main-cate").removeClass();
+        $("#main-cate").addClass("education");
         $('.food_list').addClass('hidden');
         $('.clothing_list').addClass('hidden');
         $('.housing_list').addClass('hidden');
@@ -133,6 +143,8 @@ $(document).ready(function() {
     $( '#entertainment' ).click(function() {
         var mainCate = $(this).text();
         $('#main-cate').text(mainCate);
+        $("#main-cate").removeClass();
+        $("#main-cate").addClass("entertainment");
         $('.food_list').addClass('hidden');
         $('.clothing_list').addClass('hidden');
         $('.housing_list').addClass('hidden');
@@ -145,6 +157,8 @@ $(document).ready(function() {
     $( '#other' ).click(function() {
         var mainCate = $(this).text();
         $('#main-cate').text(mainCate);
+        $("#main-cate").removeClass();
+        $("#main-cate").addClass("others");
         $('.food_list').addClass('hidden');
         $('.clothing_list').addClass('hidden');
         $('.housing_list').addClass('hidden');
@@ -248,22 +262,16 @@ $(document).ready(function() {
 	// 填完新次分類要增加到選單列表中
     $('.new-sub-handler.new-sub-submit').click(function(){
         var newSub = $('#new-sub-text').val();
-        alert($( '#main-cate' ).text());
+        var classname = document.getElementById("main-cate").className;
         if(newSub){
-            //$(".modal-body").append("<button type='button' class='btn btn-link' id='sec-category'>"
-            //                         + newSub + "</button>");
-            //subCategorySelected();
-
-            // 新增進資料庫
-            alert("in");
             $.ajax({
                 url: "/createSubCategory/",
                 type:"POST",
-                data: {newSub : newSub, category : $( '#main-cate' ).text()},
-                success: function(new_subCategory){
-                    rowcontent = "<button type='button' class='btn btn-link' id='sec-category'>"+ newSub + "</button>"
-                    $(".modal-body").append(rowcontent);
+                data: {newSub : newSub, category : classname},
+                success: function(rowcontent){
+                    $(".modal-body").append(rowcontent)
                     subCategorySelected();
+                    $('#new-sub-text').val('');
                 },
                 error: function(){
                     alert("新增子分類失敗");

@@ -61,10 +61,18 @@ def create_subClassification(request):
 
     if request.method == 'POST':
         print(request.POST)
-        category = Classification.objects.filter(name=request.POST["category"]).first()
+        category = Classification.objects.filter(classificaion_type=request.POST["category"]).first()
         member = Member.objects.filter(user__username=request.user).first()
-        new_subClassification = SubClassification.objects.create(name=request.POST["newSub"], classification=category, member=member)
-    return HttpResponse(new_subClassification)
+        new_subclass, created = SubClassification.objects.get_or_create(member=member, classification=category,
+                                                                        name=request.POST["newSub"],
+                                                                        defaults={'name': request.POST["newSub"]})
+        rowcontent = ""
+        if created:
+            rowcontent='<button type="button" class="btn btn-link {0}" id="sec-category">' \
+                       '{1}</button>'.format(new_subclass.classification.classificaion_type +
+                                             "_list", new_subclass.name.encode('utf-8'))
+
+        return HttpResponse(rowcontent)
 
 
 def get_date(request):
