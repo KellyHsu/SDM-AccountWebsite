@@ -57,6 +57,7 @@ def get_date(request):
     if request.method == 'POST':
         print(request.POST)
         date = datetime.strptime(request.POST["date"], "%Y/%m/%d")
-        receipt = Receipt.objects.all().filter(date=date)
+        member = Member.objects.filter(user__username=request.user).first()
+        receipt = Receipt.objects.all().filter(date=date, member=member)
         print(receipt)
     return HttpResponse(receipt)
