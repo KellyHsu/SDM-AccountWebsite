@@ -111,15 +111,16 @@ $(document).ready(function() {
     $("#datepicker1").datepicker("setDate", new Date());
 
     $("#datepicker1").change(function(){
-        alert($('#datepicker1').val())
+
         var newDate = $('#datepicker1').val();
         if(newDate){
             $.ajax({
                 url: "/getNewDate/",
                 type:"POST",
                 data: {date : newDate},
-                success: function(new_receipt){
-                    // 要改哪兒(囧?
+                success: function(cost_rowcontent){
+                    $("#cost-list tbody tr").remove();
+                    $('#cost-list').append(cost_rowcontent);
                 },
                 error: function(){
                     alert("抓新日期失敗")

@@ -64,6 +64,12 @@ def get_date(request):
         print(request.POST)
         date = datetime.strptime(request.POST["date"], "%Y/%m/%d")
         member = Member.objects.filter(user__username=request.user).first()
-        receipt = Receipt.objects.all().filter(date=date, member=member)
-        print(receipt)
-    return HttpResponse(receipt)
+
+        cost_receipts = Receipt.objects.all().filter(date=date, member=member, incomeandexpense__income_type="expense")
+        cost_rowcontent = ""
+        for receipt in cost_receipts:
+            cost_rowcontent = "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>" \
+                         "{0}- {1}-{2}: {3}</a></td></tr>".format(receipt.subclassification.classification.classificaion_type.encode('utf-8'),
+                                                                  receipt.subclassification.name.encode('utf-8'),
+                                                                  receipt.remark.encode('utf-8'), receipt.money)
+    return HttpResponse(cost_rowcontent)
