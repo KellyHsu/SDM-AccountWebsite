@@ -85,7 +85,7 @@ def get_date(request):
         cost_receipts = Receipt.objects.all().filter(date=date, member=member, incomeandexpense__income_type="expense")
         cost_rowcontent = ""
         for receipt in cost_receipts:
-            cost_rowcontent = "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>" \
+            cost_rowcontent += "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>" \
                          "{0}- {1}-{2}: {3}</a></td></tr>".format(receipt.subclassification.classification.classificaion_type.encode('utf-8'),
                                                                   receipt.subclassification.name.encode('utf-8'),
                                                                   receipt.remark.encode('utf-8'), receipt.money)
