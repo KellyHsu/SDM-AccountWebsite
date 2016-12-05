@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Receipt, Classification, SubClassification, Payment,IncomeAndExpense
+from .models import Receipt, Classification, SubClassification, Payment,IncomeAndExpense,CyclicalExpenditure,Budget,MonthBudget
 
 
 class ReceiptAdmin(admin.ModelAdmin):
@@ -25,8 +25,24 @@ class PaymentAdmin(admin.ModelAdmin):
 class IncomeAndExpenseAdmin(admin.ModelAdmin):
     ordering = ('income_type',)
 
+
+class CyclicalExpenditureAdmin(admin.ModelAdmin):
+    ordering = ('is_reminded',)
+
+
+class BudgetAdmin(admin.ModelAdmin):
+    ordering = ('is_reminded',)
+
+
+class MonthBudgetAdmin(admin.ModelAdmin):
+    ordering = ('is_reminded',)
+
+
 admin.site.register(Receipt, ReceiptAdmin)
 admin.site.register(Classification, ClassificationAdmin)
 admin.site.register(SubClassification, SubClassificationAdmin)
 admin.site.register(Payment, PaymentAdmin)
 admin.site.register(IncomeAndExpense, IncomeAndExpenseAdmin)
+admin.site.register(CyclicalExpenditure, CyclicalExpenditureAdmin)
+admin.site.register(Budget, BudgetAdmin)
+admin.site.register(MonthBudget, MonthBudgetAdmin)

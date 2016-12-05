@@ -61,9 +61,15 @@ class IncomeAndExpense(models.Model):
 
 
 class CyclicalExpenditure(models.Model):
+    REMIND_TYPE = (
+        ('month', 'month'),
+        ('week', 'week'),
+    )
     name = models.CharField(max_length=100)
-    expenditure_date = models.DateField()
-    reminder_date = models.DateField()
+    expenditure_type = models.CharField(max_length=10, choices=REMIND_TYPE, default='month')
+    expenditure_date = models.IntegerField()
+    reminder_type = models.CharField(max_length=10, choices=REMIND_TYPE, default='month')
+    reminder_date = models.IntegerField()
     member = models.ForeignKey('member.Member', on_delete=models.CASCADE)
     is_reminded = models.BooleanField(default=False)
 

@@ -5,6 +5,7 @@ from account.models import Receipt, SubClassification, Payment, IncomeAndExpense
 from member.models import Member
 from datetime import datetime, date
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 
 def dashboard(request):
@@ -144,13 +145,15 @@ def delete_cyclicalExpenditure(request):
 
     if request.method == 'POST':
         print(request.POST)
+        names = request.POST.getlist("deltArr[]","None")
         member = Member.objects.filter(user__username=request.user).first()
-        expenditure_date = datetime.strptime(request.POST["expenditure_date"], "%Y/%m/%d")
-        reminder_date = datetime.strptime(request.POST["reminder_date"], "%Y/%m/%d")
-        cyclicalExpenditure = CyclicalExpenditure.objects.filter(name=request.POST["name"], member=member, expenditure_date=expenditure_date, reminder_date=reminder_date).first()
+        print(names)
+        print(member)
+        cyclicalExpenditure = CyclicalExpenditure.objects.filter(reduce(lambda x, y: x | y, [Q(name=item) for item in names]), member=member)
         if cyclicalExpenditure is not None:
+            print(cyclicalExpenditure)
             cyclicalExpenditure.delete()
-    return HttpResponse(new_cyclicalExpenditure)
+    return HttpResponse(cyclicalExpenditure)
 
 
 def update_cyclicalExpenditure_isreminded(request):
@@ -158,9 +161,7 @@ def update_cyclicalExpenditure_isreminded(request):
     if request.method == 'POST':
         print(request.POST)
         member = Member.objects.filter(user__username=request.user).first()
-        expenditure_date = datetime.strptime(request.POST["expenditure_date"], "%Y/%m/%d")
-        reminder_date = datetime.strptime(request.POST["reminder_date"], "%Y/%m/%d")
-        cyclicalExpenditure = CyclicalExpenditure.objects.filter(name=request.POST["name"], member=member, expenditure_date=expenditure_date, reminder_date=reminder_date).first()
+        cyclicalExpenditure = CyclicalExpenditure.objects.filter(name=request.POST["name"], member=member).first()
         if cyclicalExpenditure is not None:
             cyclicalExpenditure.is_reminded = isreminded
             cyclicalExpenditure.save()
