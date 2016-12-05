@@ -81,7 +81,12 @@ $(document).ready(function() {
         $('.education_list').addClass('hidden');
         $('.entertainment_list').addClass('hidden');
         $('.other_list').addClass('hidden');
-    });
+		$('.revenue_list').addClass('hidden');
+        $('.investRevenue_list').addClass('hidden');
+        $('.otherRevenue_list').addClass('hidden');
+        
+	
+	});
 	
 	// work-around方法---當"衣"被點擊時，會更改次分類內容
     $( '#clothing' ).click(function() {
@@ -96,7 +101,12 @@ $(document).ready(function() {
         $('.education_list').addClass('hidden');
         $('.entertainment_list').addClass('hidden');
         $('.other_list').addClass('hidden');
-    });
+		$('.revenue_list').addClass('hidden');
+		$('.investRevenue_list').addClass('hidden');
+        $('.otherRevenue_list').addClass('hidden');
+        
+		
+		});
 
     $( '#housing' ).click(function() {
         var mainCate = $(this).text();
@@ -110,7 +120,12 @@ $(document).ready(function() {
         $('.education_list').addClass('hidden');
         $('.entertainment_list').addClass('hidden');
         $('.other_list').addClass('hidden');
-    });
+		$('.revenue_list').addClass('hidden');
+        $('.investRevenue_list').addClass('hidden');
+        $('.otherRevenue_list').addClass('hidden');
+        
+	
+	});
 
     $( '#transportation' ).click(function() {
         var mainCate = $(this).text();
@@ -124,7 +139,12 @@ $(document).ready(function() {
         $('.education_list').addClass('hidden');
         $('.entertainment_list').addClass('hidden');
         $('.other_list').addClass('hidden');
-    });
+    	$('.revenue_list').addClass('hidden');
+	    $('.investRevenue_list').addClass('hidden');
+        $('.otherRevenue_list').addClass('hidden');
+        
+	
+	});
 
     $( '#education' ).click(function() {
         var mainCate = $(this).text();
@@ -138,7 +158,12 @@ $(document).ready(function() {
         $('.education_list').removeClass('hidden');
         $('.entertainment_list').addClass('hidden');
         $('.other_list').addClass('hidden');
-    });
+    	$('.revenue_list').addClass('hidden');
+	    $('.investRevenue_list').addClass('hidden');
+        $('.otherRevenue_list').addClass('hidden');
+        
+	
+	});
 
     $( '#entertainment' ).click(function() {
         var mainCate = $(this).text();
@@ -152,7 +177,11 @@ $(document).ready(function() {
         $('.education_list').addClass('hidden');
         $('.entertainment_list').removeClass('hidden');
         $('.other_list').addClass('hidden');
-    });
+    	$('.revenue_list').addClass('hidden');
+	    $('.investRevenue_list').addClass('hidden');
+        $('.otherRevenue_list').addClass('hidden');
+        
+	});
 
     $( '#other' ).click(function() {
         var mainCate = $(this).text();
@@ -166,7 +195,72 @@ $(document).ready(function() {
         $('.education_list').addClass('hidden');
         $('.entertainment_list').addClass('hidden');
         $('.other_list').removeClass('hidden');
-    });
+    	$('.revenue_list').addClass('hidden');
+		$('.investRevenue_list').addClass('hidden');
+        $('.otherRevenue_list').addClass('hidden');
+        
+	});
+	
+	
+		// 主分類被點擊的時候會在modal裡面放入主分類的名稱
+    $( '#revenue' ).click(function() {
+        var mainCate = $(this).text();
+        $('#main-cate').text(mainCate);
+        $("#main-cate").removeClass();
+        $("#main-cate").addClass("revenue");
+    
+   	    $('.food_list').addClassClass('hidden');
+        $('.clothing_list').addClass('hidden');
+        $('.housing_list').addClass('hidden');
+        $('.transportation_list').addClass('hidden');
+        $('.education_list').addClass('hidden');
+        $('.entertainment_list').addClass('hidden');
+        $('.other_list').addClass('hidden');
+        $('.investRevenue_list').addClass('hidden');
+        $('.otherRevenue_list').addClass('hidden');
+        $('.revenue_list').removeClass('hidden');
+        
+		});
+	
+	    $( '#investRevenue' ).click(function() {
+        var mainCate = $(this).text();
+        $('#main-cate').text(mainCate);
+        $("#main-cate").removeClass();
+        $("#main-cate").addClass("investRevenue");
+    
+   	    $('.food_list').addClassClass('hidden');
+        $('.clothing_list').addClass('hidden');
+        $('.housing_list').addClass('hidden');
+        $('.transportation_list').addClass('hidden');
+        $('.education_list').addClass('hidden');
+        $('.entertainment_list').addClass('hidden');
+        $('.other_list').addClass('hidden');
+	    $('.otherRevenue_list').addClass('hidden');
+		$('.revenue_list').addClass('hidden');
+		$('.investRevenue_list').removeClass('hidden');
+        
+		});
+	
+	    $( '#otherRevenue' ).click(function() {
+        var mainCate = $(this).text();
+        $('#main-cate').text(mainCate);
+        $("#main-cate").removeClass();
+        $("#main-cate").addClass("otherRevenue");
+    
+   	    $('.food_list').addClassClass('hidden');
+        $('.clothing_list').addClass('hidden');
+        $('.housing_list').addClass('hidden');
+        $('.transportation_list').addClass('hidden');
+        $('.education_list').addClass('hidden');
+        $('.entertainment_list').addClass('hidden');
+        $('.other_list').addClass('hidden');
+        $('.revenue_list').addClass('hidden');
+		$('.investRevenue_list').addClass('hidden');
+		$('.otherRevenue_list').removeClass('hidden');
+        
+		});
+	
+	
 
 	// 當modal的確認被按下後，會提交給分類欄位
     $( '#modal-submit' ).click(function(){
@@ -388,7 +482,7 @@ function subCategorySelected(){
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><span class="glyphicon glyphicon-list-alt">
-                                </span>支出</a>
+                                </span>支出  總計: </a>
                             </h4>
                         </div>
                         <div id="collapseOne" class="panel-collapse collapse in">
@@ -400,10 +494,12 @@ function subCategorySelected(){
                                             <span class='glyphicon glyphicon-file text-success'></span>
                                             {% if cost_receipt.remark %}
                                                 <a href='#'>{{cost_receipt.subclassification.classification.classificaion_type}}-{{cost_receipt.subclassification.name}}-{{cost_receipt.remark}}: {{cost_receipt.money}}
-                                                </a>
+            									  <button type="button" class="btn btn-success btn-md table4-del-submit" id="table4-del-finish">刪除</button>
+												</a>
                                             {% else %}
                                                 <a href='#'>{{cost_receipt.subclassification.classification.classificaion_type}}-{{cost_receipt.subclassification.name}}: {{cost_receipt.money}}
-                                                </a>
+                                                      <button type="button" class="btn btn-success btn-md table4-del-submit" id="table4-del-finish">刪除</button>
+												</a>
                                             {% endif %}
                                         </td>
                                     </tr>
@@ -418,17 +514,18 @@ function subCategorySelected(){
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><span class="glyphicon glyphicon-list-alt">
-                                </span>收入</a>
+                                </span>收入  總計: </a>
                             </h4>
                         </div>
                         <div id="collapseTwo" class="panel-collapse collapse in">
                             <div class="panel-body">
-                                <table class="table">
+                                
+								<table class="table">
 
                                 </table>
                             </div>
                         </div>
-                    </div>  <!-- /.panel 支出 -->
+                    </div>  <!-- /.panel 收入 -->
 
                 </div>  <!-- /.panel group -->
             </div>  <!-- /.left-side row -->
@@ -468,6 +565,13 @@ function subCategorySelected(){
                                     <button type="button" class="btn btn-default btn-lg category" data-toggle="modal" data-target="#myModal" id="entertainment" style="background: url('../static/image/yellow.png') no-repeat;">樂</button>
                                     <button type="button" class="btn btn-default btn-lg category" data-toggle="modal" data-target="#myModal" id="other" style="background: url('../static/image/brown.png') no-repeat;">其</button>
                                 </div>
+								
+								<div class="row" style="text-align: center; margin-bottom: 20px;">
+                                    <button type="button" class="btn btn-default btn-lg category" data-toggle="modal" data-target="#myModal" id="revenue" style="background: #8D8F76 no-repeat;">一般收入</button>
+                                    <button type="button" class="btn btn-default btn-lg category" data-toggle="modal" data-target="#myModal" id="investRevenue" style="background: #BAB6AF no-repeat;">投資收入</button>
+                                    <button type="button" class="btn btn-default btn-lg category" data-toggle="modal" data-target="#myModal" id="otherRevenue" style="background: #E19F81 no-repeat;">其他</button>
+                                </div>
+								
                                 <div class="row" style="margin-bottom: 20px;">
                                     <label style="font-size: 25px; padding-right: 5px;">分類</label>
                                     <input type="text" id="costCategory" value="食-早餐" readonly>
@@ -525,6 +629,18 @@ function subCategorySelected(){
                     {% for other in other_list %}
                         <button type="button" class="btn btn-link other_list hidden" id="sec-category">{{ other.name }}</button>
                     {% endfor %}
+			        {% for revenue in revenue_list %}
+                        <button type="button" class="btn btn-link revenue_list hidden" id="sec-category">{{ revenue.name }}</button>
+                    {% endfor %}
+           		    {% for investRevenue in investRevenue_list %}
+                        <button type="button" class="btn btn-link investRevenue_list hidden" id="sec-category">{{ investRevenue.name }}</button>
+                    {% endfor %}
+           		    {% for otherRevenue in OtherRevenue_list %}
+                        <button type="button" class="btn btn-link otherRevenue_list hidden" id="sec-category">{{ otherRevenue.name }}</button>
+                    {% endfor %}
+           		
+				
+					
 		            <!-- <button type="button" class="btn btn-link" id="del-category">刪除</button> -->
 				</div> <!-- /.modal-body -->
                 
