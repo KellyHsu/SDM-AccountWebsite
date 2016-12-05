@@ -65,6 +65,10 @@ class CyclicalExpenditure(models.Model):
     expenditure_date = models.DateField()
     reminder_date = models.DateField()
     member = models.ForeignKey('member.Member', on_delete=models.CASCADE)
+    is_reminded = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return self.name
 
 
 class Budget(models.Model):
@@ -72,3 +76,14 @@ class Budget(models.Model):
     reminder = models.IntegerField()
     classification = models.ForeignKey('Classification', on_delete=models.CASCADE)
     member = models.ForeignKey('member.Member', on_delete=models.CASCADE)
+    is_reminded = models.BooleanField(default=False)
+
+
+class MonthBudget(models.Model):
+    budget = models.IntegerField()
+    reminder = models.IntegerField()
+    member = models.ForeignKey('member.Member', on_delete=models.CASCADE)
+    is_reminded = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return self.member
