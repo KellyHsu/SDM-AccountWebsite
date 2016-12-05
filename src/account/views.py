@@ -115,7 +115,7 @@ def change_password(request):
 
     if request.method == 'POST':
         print(request.POST)
-        user = User.objects.get(user__username=request.user).first()
+        user = User.objects.get(username=request.user)
         user.set_password(request.POST["new_password"])
         user.save()
 
