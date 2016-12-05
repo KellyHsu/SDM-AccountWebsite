@@ -209,7 +209,7 @@ $(document).ready(function() {
 	// 復原與清空表單
     $('.clear').click(function(){
         $('#amount').val('');
-        $('#costCategory').attr("value", "預設類別");
+        $('#costCategory').attr("value", "食-早餐");
         $('#memo').val('');
     })
 
@@ -227,12 +227,12 @@ $(document).ready(function() {
                 success: function(rowcontent){
                     $('#cost-list').append(rowcontent);
                     $('#amount').val('');
-                    $('#costCategory').attr("value", "預設類別");
+                    $('#costCategory').attr("value", "食-早餐");
                     $('#memo').val('');
                 },
                 error: function(){
                     $('#amount').val('');
-                    $('#costCategory').attr("value", "預設類別");
+                    $('#costCategory').attr("value", "食-早餐");
                     $('#memo').val('');
                 }
             });
@@ -466,7 +466,7 @@ function subCategorySelected(){
                                 </div>
                                 <div class="row" style="margin-bottom: 20px;">
                                     <label style="font-size: 25px; padding-right: 5px;">分類</label>
-                                    <input type="text" id="costCategory" value="預設類別" placeholder="預設分類" readonly>
+                                    <input type="text" id="costCategory" value="食-早餐" readonly>
                                 </div>
                                 <div class="row">
                                     <label style="font-size: 25px; padding-right: 5px;">備註</label>
