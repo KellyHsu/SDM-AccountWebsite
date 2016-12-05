@@ -139,6 +139,23 @@ def create_cyclicalExpenditure(request):
     return HttpResponse(new_cyclicalExpenditure)
 
 
+def update_cyclicalExpenditure(request):
+
+    if request.method == 'POST':
+        print(request.POST)
+        member = Member.objects.filter(user__username=request.user).first()
+        cyclicalExpenditure = CyclicalExpenditure.objects.filter(name=request.POST["name"], member=member).first()
+        print(member)
+        print(cyclicalExpenditure)
+        if cyclicalExpenditure is not None:
+            cyclicalExpenditure.expenditure_date=request.POST["expenditure_date"]
+            cyclicalExpenditure.expenditure_type=request.POST["expenditure_type"]
+            cyclicalExpenditure.reminder_type=request.POST["reminder_type"]
+            cyclicalExpenditure.reminder_date=request.POST["reminder_date"]
+            cyclicalExpenditure.save()
+    return HttpResponse(cyclicalExpenditure)
+
+
 def delete_cyclicalExpenditure(request):
 
     if request.method == 'POST':

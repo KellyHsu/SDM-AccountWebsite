@@ -114,7 +114,35 @@
 		});
 		
 		// 密碼設定完成的確認按鈕
-		$(".passwd-submit").click(function(){
+		$("#new-passwd-submit").click(function(){
+			if($("#password").val() == $('#confirmpassword').val()){		
+				var new_password=$("#password").val();
+				$.ajax({
+            	    url: "/changePassword/",
+            	    type:"POST",
+            	    data: {new_password : new_password},
+            	    success: function(rowcontent){
+						$("#password").val('');
+						$('#confirmpassword').val('');
+						$(".passwd-set").animate({
+							height: 'toggle'
+						});
+						$("#go-passwd-set").show(1000);
+						alert("修改密碼成功");
+            	    },
+            	    error: function(){
+                		alert("修改密碼失敗")
+                	}
+            	});
+			}else{
+				alert("請確認密碼一致")
+			}
+		});
+
+		// 密碼設定取消的確認按鈕
+		$("#not-passwd-submit").click(function(){
+			$("#password").val('');
+			$('#confirmpassword').val('');
 			$(".passwd-set").animate({
 				height: 'toggle'
 			});
@@ -417,7 +445,7 @@
 				reminder_date=6;
 				break;
 			default :
-				var date = $("#pay-date").val().split("號");
+				var date = $("#alert-date").val().split("號");
 				reminder_date=date[0];
 		}
 		//post
@@ -442,7 +470,7 @@
 					alert("新增成功!");
                 },
                 error: function(){
-                	alert("刪除週期性項目失敗")
+                	alert("新增週期性項目失敗")
                 }
             });
 		}else{
@@ -498,17 +526,98 @@
 
 	// 送出[編輯]週期性項目的表單 (submit event)
 	function editPeriodicPaymentItemSubmit(){
-		$(".editting").each(function(index){	
-			if(index == 1){
-				$(this).text($("#periodic-type-edit").val() + ' ' + $("#pay-date-edit").val());
-			}else if(index == 2){
-				$(this).text($("#alert-daytype-edit").val() + ' ' + $("#alert-date-edit").val());
-			}
-
-		});
-
-		$(".editting").removeClass("editting");
-
+		//post
+		var getname = $("#periodic-item-edit-name").val().split(" ").split("	")
+		var name = getname[0];
+		var expenditure_type;
+		switch ($("#periodic-type-edit").val()){
+			case "每週" :
+				expenditure_type="week";
+				break;
+			default :
+				expenditure_type="month";
+		}
+		var expenditure_date;
+		switch ($("#pay-date-edit").val()){
+			case "星期日" :
+				expenditure_date=7;
+				break;
+			case "星期一" :
+				expenditure_date=1;
+				break;
+			case "星期二" :
+				expenditure_date=2;
+				break;
+			case "星期三" : 
+				expenditure_date=3;
+				break;
+			case "星期四" : 
+				expenditure_date=4;
+				break;
+			case "星期五" : 
+				expenditure_date=5;
+				break;
+			case "星期六" :
+				expenditure_date=6;
+				break;
+			default :
+				var date = $("#pay-date-edit").val().split("號");
+				expenditure_date=date[0];
+		}
+    	var reminder_type;
+		switch ($("#alert-daytype-edit").val()){
+			case "每週" :
+				reminder_type="week";
+				break;
+			default :
+				reminder_type="month";
+		}
+    	var reminder_date;
+		switch ($("#alert-date-edit").val()){
+			case "星期日" :
+				reminder_date=7;
+				break;
+			case "星期一" :
+				reminder_date=1;
+				break;
+			case "星期二" :
+				reminder_date=2;
+				break;
+			case "星期三" : 
+				reminder_date=3;
+				break;
+			case "星期四" : 
+				reminder_date=4;
+				break;
+			case "星期五" : 
+				reminder_date=5;
+				break;
+			case "星期六" :
+				reminder_date=6;
+				break;
+			default :
+				var date = $("alert-date-edit").val().split("號");
+				reminder_date=date[0];
+		}
+		$.ajax({
+            url: "/updateCyclicalExpenditure/",
+            type:"POST",
+            data: {name:name, expenditure_type:expenditure_type, expenditure_date:expenditure_date, reminder_type:reminder_type, reminder_date:reminder_date},
+            success: function(content){
+				$(".editting").each(function(index){	
+					if(index == 1){
+						$(this).text($("#periodic-type-edit").val() + ' ' + $("#pay-date-edit").val());
+					}else if(index == 2){
+						$(this).text($("#alert-daytype-edit").val() + ' ' + $("#alert-date-edit").val());
+					}
+				});
+				$(".editting").removeClass("editting");
+				 alert("更新成功")
+            },
+            error: function(){
+                alert("更新週期性項目失敗")
+            }
+        });
 	}
 
 
@@ -594,12 +703,12 @@
 						</p>
 						<div class="passwd-set">
 						    <span class="item-title">密 碼: </span>
-						    <input type="text" name="userName" placeholder="請輸入密碼" class="passwd-set">
+						    <input type="text" name="userName" placeholder="請輸入密碼" class="passwd-set" id="password">
 						    <span class="item-title">確認密碼: </span>
-						    <input type="text" name="userName" placeholder="再次輸入密碼" class="">
+						    <input type="text" name="userName" placeholder="再次輸入密碼" class="" id="confirmpassword">
 						        <button type="button" class="btn btn-default passwd-submit" id="new-passwd-submit">
 						        確認</button>
-						        <button type="button" class="btn btn-default passwd-submit">取消修改</button>
+						        <button type="button" class="btn btn-default passwd-submit" id="not-passwd-submit">取消修改</button>
 						</div>
 
                     </form>
