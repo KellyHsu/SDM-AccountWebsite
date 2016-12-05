@@ -182,6 +182,7 @@
                 	type:"POST",
                 	data: {deltArr : deltArr},
                 	success: function(rowcontent){
+						alert(rowcontent)
                 	    var cout = "";
 						$.each(deltArr, function(index, value){		// 印出陣列內容
 							cout = cout + value + ';';
@@ -348,23 +349,102 @@
 		var title = $("#periodic-item-name").val();
 		var paymentDate = $("#periodic-type").val() + ' ' + $("#pay-date").val();
 		var alertDate = $("#alert-daytype").val() + ' ' + $("#alert-date").val();
-
+		//
+		var expenditure_type;
+		switch ($("#periodic-type").val()){
+			case "每週" :
+				expenditure_type="week";
+				break;
+			default :
+				expenditure_type="month";
+		}
+		var expenditure_date;
+		switch ($("#pay-date").val()){
+			case "星期日" :
+				expenditure_date=7;
+				break;
+			case "星期一" :
+				expenditure_date=1;
+				break;
+			case "星期二" :
+				expenditure_date=2;
+				break;
+			case "星期三" : 
+				expenditure_date=3;
+				break;
+			case "星期四" : 
+				expenditure_date=4;
+				break;
+			case "星期五" : 
+				expenditure_date=5;
+				break;
+			case "星期六" :
+				expenditure_date=6;
+				break;
+			default :
+				var date = $("#pay-date").val().split("號");
+				expenditure_date=date[0];
+		}
+    	var reminder_type;
+		switch ($("#alert-daytype").val()){
+			case "每週" :
+				reminder_type="week";
+				break;
+			default :
+				reminder_type="month";
+		}
+    	var reminder_date;
+		switch ($("#alert-date").val()){
+			case "星期日" :
+				reminder_date=7;
+				break;
+			case "星期一" :
+				reminder_date=1;
+				break;
+			case "星期二" :
+				reminder_date=2;
+				break;
+			case "星期三" : 
+				reminder_date=3;
+				break;
+			case "星期四" : 
+				reminder_date=4;
+				break;
+			case "星期五" : 
+				reminder_date=5;
+				break;
+			case "星期六" :
+				reminder_date=6;
+				break;
+			default :
+				var date = $("#pay-date").val().split("號");
+				reminder_date=date[0];
+		}
+		//post
 		if( title.trim() ){
-			$("#table4").append("<tr><td>" + title + "</td><td>" + paymentDate + " </td><td>" + alertDate  
-				+ "</td><td><button type='button' class='btn btn-primary btn-sm periodic-date-setting' data-toggle='modal' data-target='#modal-periodic-edit'>設定</button> "
-				+ "<input type='checkbox' /></td></tr>");
-
-
-			// 在新的欄位上增加toggle button
-			$("#table4 tr:last-child td:last-child input").bootstrapToggle({
-				on: '通知開',
-				off: '通知關',
-				size: 'small',
-				onstyle: 'success',
-				offstyle: 'danger'
-			});
-
-			alert("新增成功!");
+            $.ajax({
+            	url: "/createCyclicalExpenditure/",
+            	type:"POST",
+            	data: {name:title, expenditure_type:expenditure_type, expenditure_date:expenditure_date, reminder_type:reminder_type, reminder_date:reminder_date},
+                success: function(repeated_name){
+					$("#table4").append("<tr><td>" + title + "</td><td>" + paymentDate + " </td><td>" + alertDate  
+					+ "</td><td><button type='button' class='btn btn-primary btn-sm periodic-date-setting' data-toggle='modal' data-target='#modal-periodic-edit'>設定</button> "
+					+ "<input type='checkbox' /></td></tr>");
+						
+					// 在新的欄位上增加toggle button
+					$("#table4 tr:last-child td:last-child input").bootstrapToggle({
+						on: '通知開',
+						off: '通知關',
+						size: 'small',
+						onstyle: 'success',
+						offstyle: 'danger'
+					});
+					alert("新增成功!");
+                },
+                error: function(){
+                	alert("刪除週期性項目失敗")
+                }
+            });
 		}else{
 			alert("缺少項目標題");
 		}

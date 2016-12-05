@@ -127,17 +127,15 @@ def create_cyclicalExpenditure(request):
     if request.method == 'POST':
         print(request.POST)
         member = Member.objects.filter(user__username=request.user).first()
-        expenditure_date = datetime.strptime(request.POST["expenditure_date"], "%Y/%m/%d")
-        reminder_date = datetime.strptime(request.POST["reminder_date"], "%Y/%m/%d")
-        cyclicalExpenditure = CyclicalExpenditure.objects.filter(name=request.POST["name"], member=member, expenditure_date=expenditure_date, reminder_date=reminder_date).first()
+        cyclicalExpenditure = CyclicalExpenditure.objects.filter(name=request.POST["name"], member=member).first()
         if cyclicalExpenditure is not None:
-            cyclicalExpenditure.expenditure_date = expenditure_date
-            cyclicalExpenditure.reminder_date = reminder_date
-            cyclicalExpenditure.save()
-            return HttpResponse(cyclicalExpenditure)
+            repeated_name="nameRepeated"
+            print(repeated_name)
+            return HttpResponse(repeated_name)
         else:
-            new_cyclicalExpenditure = Receipt.objects.create(name=request.POST["name"], expenditure_date=expenditure_date,
-                                             reminder_date=reminder_date, member=member)
+            new_cyclicalExpenditure = CyclicalExpenditure.objects.create(name=request.POST["name"], expenditure_date=request.POST["expenditure_date"],
+                                             expenditure_type=request.POST["expenditure_type"], reminder_type=request.POST["reminder_type"],
+                                             reminder_date=request.POST["reminder_date"], member=member,is_reminded=False)
     return HttpResponse(new_cyclicalExpenditure)
 
 
