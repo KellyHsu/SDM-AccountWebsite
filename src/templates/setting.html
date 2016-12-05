@@ -273,6 +273,22 @@
             });
 		});
 
+		//月預算提醒
+		$("#month-budget-reminder").click(function(){
+			var month_reminder = $("#m-b-r").val();
+			$.ajax({
+                url: "/updateMonthBudgetReminder/",
+                type:"POST",
+                data: {month_reminder : month_reminder},
+                success: function(rowcontent){
+					alert("更新月預算提醒成功");
+                },
+                error: function(){
+                	alert("更新月預算提醒失敗")
+                }
+            });
+		});
+
 	});	// end document.ready()
 
 
