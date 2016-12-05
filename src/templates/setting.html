@@ -210,7 +210,6 @@
                 	type:"POST",
                 	data: {deltArr : deltArr},
                 	success: function(rowcontent){
-						alert(rowcontent)
                 	    var cout = "";
 						$.each(deltArr, function(index, value){		// 印出陣列內容
 							cout = cout + value + ';';
@@ -258,7 +257,22 @@
 			$(this).prev().prev().attr("readonly", "readonly");
 		});
 
-		
+		//月預算
+		$("#month-budget").click(function(){
+			var month_budget = $("#m-b").val();
+			$.ajax({
+                url: "/updateMonthBudget/",
+                type:"POST",
+                data: {month_budget : month_budget},
+                success: function(rowcontent){
+					alert("更新月預算成功");
+                },
+                error: function(){
+                	alert("更新月預算失敗")
+                }
+            });
+		});
+
 	});	// end document.ready()
 
 
@@ -789,13 +803,13 @@
 							     <td>每個月總預算
                                  </td>
                                  <td>
-                                 	<input type="number" value="10000" readonly/>								 
+                                 	<input type="number" value="10000" id="m-b" readonly/>								 
 								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-								    <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
+								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" id="month-budget">確定</button>
 						         </td>
-								 <td><input type="number" value="8000" readonly/>
+								 <td><input type="number" value="8000" id="m-b-r" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button> 
-						            <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
+						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" id="month-budget-reminder">確定</button>
 						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關"/>
 						         </td>
 							  </tr>

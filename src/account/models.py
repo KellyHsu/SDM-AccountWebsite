@@ -90,6 +90,3 @@ class MonthBudget(models.Model):
     reminder = models.IntegerField()
     member = models.ForeignKey('member.Member', on_delete=models.CASCADE)
     is_reminded = models.BooleanField(default=False)
-
-    def __unicode__(self):
-        return self.member

@@ -233,7 +233,7 @@ def update_month_budget(request):
         month_budget = request.POST["month_budget"]
         month_budget_instance = MonthBudget.objects.filter(member=member).first()
         if month_budget_instance is not None:
-            month_budget_instance.budget=budget
+            month_budget_instance.budget=month_budget
             month_budget_instance.save()
     return HttpResponse()
 
