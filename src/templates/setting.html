@@ -289,6 +289,30 @@
             });
 		});
 
+		//開啟 月預算提醒
+		$("#m-b-r-checkbox").change(function(){
+			var isreminded;
+			if($(this).prop("checked") == true){
+				isreminded="True";
+			}else{
+				isreminded="False";
+			}
+			$.ajax({
+                url: "/updateMonthBudgetIsreminded/",
+                type:"POST",
+                data: {isreminded : isreminded},
+                success: function(rowcontent){
+					if(isreminded=="True"){
+						alert("開啟月提醒");
+					}else{
+						alert("關閉月提醒");
+					}
+                },
+                error: function(){
+                	alert("失敗")
+                }
+            });
+		});
 	});	// end document.ready()
 
 
@@ -826,7 +850,7 @@
 								 <td><input type="number" value="8000" id="m-b-r" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button> 
 						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" id="month-budget-reminder">確定</button>
-						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關"/>
+						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" id="m-b-r-checkbox"/>
 						         </td>
 							  </tr>
 						   </table>
