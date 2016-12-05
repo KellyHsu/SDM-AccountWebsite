@@ -71,9 +71,18 @@ def create_receipt(request):
                                              payment=payment,
                                              incomeandexpense=incomeandexpense,
                                              member=member)
-        rowcontent = "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>" \
-                     "" + new_receipt.subclassification.classification.classificaion_type + "- " + new_receipt.subclassification.name + "-" + new_receipt.remark + ": " + new_receipt.money + "</a></td></tr>";
-    return HttpResponse(rowcontent)
+        cost_rowcontent = ""
+        if new_receipt.remark:
+            cost_rowcontent += "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>" \
+                               "{0}-{1}-{2}: {3}</a></td></tr>".format(new_receipt.subclassification.classification.classificaion_type.encode('utf-8'),
+                                                                       new_receipt.subclassification.name.encode('utf-8'),
+                                                                       new_receipt.remark.encode('utf-8'), new_receipt.money)
+        else:
+            cost_rowcontent += "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>" \
+                               "{0}-{1}: {2}</a></td></tr>".format(new_receipt.subclassification.classification.classificaion_type.encode('utf-8'),
+                                                                   new_receipt.subclassification.name.encode('utf-8'),
+                                                                   new_receipt.money)
+    return HttpResponse(cost_rowcontent)
 
 
 def create_subClassification(request):
@@ -104,10 +113,17 @@ def get_date(request):
         cost_receipts = Receipt.objects.all().filter(date=date, member=member, incomeandexpense__income_type="expense")
         cost_rowcontent = ""
         for receipt in cost_receipts:
-            cost_rowcontent += "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>" \
-                         "{0}- {1}-{2}: {3}</a></td></tr>".format(receipt.subclassification.classification.classificaion_type.encode('utf-8'),
-                                                                  receipt.subclassification.name.encode('utf-8'),
-                                                                  receipt.remark.encode('utf-8'), receipt.money)
+            if receipt.remark:
+                cost_rowcontent += "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>" \
+                            "{0}-{1}-{2}: {3}</a></td></tr>".format(receipt.subclassification.classification.classificaion_type.encode('utf-8'),
+                                                                    receipt.subclassification.name.encode('utf-8'),
+                                                                    receipt.remark.encode('utf-8'), receipt.money)
+            else:
+                cost_rowcontent += "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>" \
+                                   "{0}-{1}: {2}</a></td></tr>".format(receipt.subclassification.classification.classificaion_type.encode('utf-8'),
+                                                                       receipt.subclassification.name.encode('utf-8'),
+                                                                       receipt.money)
+
     return HttpResponse(cost_rowcontent)
 
 

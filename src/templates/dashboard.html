@@ -398,9 +398,13 @@ function subCategorySelected(){
                                     <tr>
                                         <td>
                                             <span class='glyphicon glyphicon-file text-success'></span>
-                                            <a href='#'>{{cost_receipt.subclassification.classification.classificaion_type}}-
-                                                {{cost_receipt.subclassification.name}}-{{cost_receipt.remark}}: {{cost_receipt.money}}
-                                            </a>
+                                            {% if cost_receipt.remark %}
+                                                <a href='#'>{{cost_receipt.subclassification.classification.classificaion_type}}-{{cost_receipt.subclassification.name}}-{{cost_receipt.remark}}: {{cost_receipt.money}}
+                                                </a>
+                                            {% else %}
+                                                <a href='#'>{{cost_receipt.subclassification.classification.classificaion_type}}-{{cost_receipt.subclassification.name}}: {{cost_receipt.money}}
+                                                </a>
+                                            {% endif %}
                                         </td>
                                     </tr>
                                     {% endfor %}
