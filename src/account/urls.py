@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^getNewDate/$', views.get_date, name='get_date'),
     url(r'^changePassword/$', views.change_password, name='change_password'),
     url(r'^createCyclicalExpenditure/$', views.create_cyclicalExpenditure, name='create_cyclicalExpenditure'),
+    url(r'^updateCyclicalExpenditure/$', views.update_cyclicalExpenditure, name='update_cyclicalExpenditure'),
     url(r'^deleteCyclicalExpenditure/$', views.delete_cyclicalExpenditure, name='delete_cyclicalExpenditure'),
     url(r'^updateCyclicalExpenditureIsreminded/$', views.update_cyclicalExpenditure_isreminded, name='update_cyclicalExpenditure_isreminded'),
     url(r'^updateBudget/$', views.update_budget, name='update_budget'),
