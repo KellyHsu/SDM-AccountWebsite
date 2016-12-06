@@ -972,7 +972,7 @@
 								 <td><input type="number" value="{{ month_budget.reminder }}" id="m-b-r" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button> 
 						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" id="month-budget-reminder">確定</button>
-						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" id="m-b-r-checkbox"/>
+						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" id="m-b-r-checkbox" {% if month_budget.is_reminded %} checked {% endif %}/>
 						         </td>
 							  </tr>
 						   </table>
@@ -999,7 +999,7 @@
 								 <td><input type="number" value="{{ budget_food.reminder }}" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
 						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'food')">確定</button>
-								    <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'food')"/>
+								    <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'food')" {% if budget_food.is_reminded %} checked {% endif %}/>
 						         </td>
 							  </tr>
 							  <tr> 
@@ -1012,7 +1012,7 @@
 								 <td><input type="number" value="{{ budget_clothing.reminder }}" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
 						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'clothing')">確定</button>
-						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'clothing')"/>
+						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'clothing')" {% if budget_clothing.is_reminded %} checked {% endif %}/>
 						         </td>
 							  </tr>
 							  <tr> 
@@ -1025,7 +1025,7 @@
 								 <td><input type="number" value="{{ budget_housing.reminder }}" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
 						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'housing')">確定</button>
-						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'housing')"/>
+						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'housing')" {% if budget_housing.is_reminded %} checked {% endif %}/>
 						         </td>
 							  </tr>
 							  <tr> 
@@ -1038,7 +1038,7 @@
 								 <td><input type="number" value="{{ budget_transportation.reminder }}" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
 						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'transportation')">確定</button>
-						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'transportation')"/>
+						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'transportation')" {% if budget_transportation.is_reminded %} checked {% endif %}/>
 						         </td>
 							  </tr>
 							  <tr> 
@@ -1051,7 +1051,7 @@
 								 <td><input type="number" value="{{ budget_education.reminder }}" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
 						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'education')">確定</button>
-						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'education')"/>
+						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'education')" {% if budget_education.is_reminded %} checked {% endif %}/>
 						         </td>
 							  </tr>
 							  <tr> 
@@ -1064,7 +1064,7 @@
 								 <td><input type="number" value="{{ budget_entertainment.reminder }}" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
 						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'entertainment')">確定</button>
-						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'entertainment')"/>
+						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'entertainment')" {% if budget_entertainment.is_reminded %} checked {% endif %}/>
 						         </td>
 							  </tr>
 							  <tr> 
@@ -1077,7 +1077,7 @@
 								 <td><input type="number" value="{{ budget_other.reminder }}" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
 						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'others')">確定</button>
-						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'others')"/>
+						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'others')" {% if budget_other.is_reminded %} checked {% endif %}/>
 						         </td>
 							  </tr>
 						   </table>
@@ -1104,16 +1104,14 @@
 							  </tr>
 							  {% for cyclicalExpenditure in cyclicalExpenditure_list %}
 							  	<tr> 
-							    	<td>
-									 	{{ cyclicalExpenditure.name }}
-						         	</td>
-										<td>{{ cyclicalExpenditure.expenditure_type }} {{ cyclicalExpenditure.expenditure_date }}</td>
-								 		<td>{{ cyclicalExpenditure.reminder_type }} {{ cyclicalExpenditure.reminder_date }}</td>
+							    	<td>{{ cyclicalExpenditure.name }}</td>
+										<td>{% if cyclicalExpenditure.expenditure_type == "month" %}每月 {{cyclicalExpenditure.expenditure_date}}號{% else %}每週 星期{% if cyclicalExpenditure.expenditure_date == 1 %}一{% elif cyclicalExpenditure.expenditure_date == 2 %}二{% elif cyclicalExpenditure.expenditure_date == 3 %}三{% elif cyclicalExpenditure.expenditure_date == 4 %}四{% elif cyclicalExpenditure.expenditure_date == 5 %}五{% elif cyclicalExpenditure.expenditure_date == 6 %}六{% elif cyclicalExpenditure.expenditure_date == 7 %}日{% endif %}{% endif %}</td>
+								 		<td>{% if cyclicalExpenditure.reminder_type == "month" %}每月 {{cyclicalExpenditure.reminder_date}}號{% else %}每週 星期{% if cyclicalExpenditure.reminder_date == 1 %}一{% elif cyclicalExpenditure.reminder_date == 2 %}二{% elif cyclicalExpenditure.reminder_date == 3 %}三{% elif cyclicalExpenditure.reminder_date == 4 %}四{% elif cyclicalExpenditure.reminder_date == 5 %}五{% elif cyclicalExpenditure.reminder_date == 6 %}六{% elif cyclicalExpenditure.reminder_date == 7 %}日{% endif %}{% endif %}</td>
                                  		<!--<td>每週 星期三</td>-->
 								 		<!--<td>每月 3號</td>-->
 						         	<td>
 						         		<button type='button' class='btn btn-primary btn-sm periodic-date-setting' data-toggle='modal' data-target='#modal-periodic-edit'>設定</button>
-						            	<input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="cyc_checkbox(this)" />
+						            	<input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="cyc_checkbox(this)" {% if cyclicalExpenditure.is_reminded %} checked {% endif %}/>
 						         	</td>
 							  	</tr>
 							  {% endfor %}
