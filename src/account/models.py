@@ -22,10 +22,10 @@ class Classification(models.Model):
         ('entertainment', 'entertainment'),
         ('others', 'others'),
     )
-    classificaion_type = models.CharField(max_length=20, choices=CLASSIFICATION_TYPE)
+    classification_type = models.CharField(max_length=20, choices=CLASSIFICATION_TYPE)
 
     def __unicode__(self):
-        return self.classificaion_type
+        return self.classification_type
 
 
 class SubClassification(models.Model):
@@ -90,6 +90,3 @@ class MonthBudget(models.Model):
     reminder = models.IntegerField()
     member = models.ForeignKey('member.Member', on_delete=models.CASCADE)
     is_reminded = models.BooleanField(default=False)
-
-    def __unicode__(self):
-        return self.member

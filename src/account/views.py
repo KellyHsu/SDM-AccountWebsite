@@ -71,15 +71,16 @@ def create_receipt(request):
                                              payment=payment,
                                              incomeandexpense=incomeandexpense,
                                              member=member)
+
         cost_rowcontent = ""
         if new_receipt.remark:
             cost_rowcontent += "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>" \
-                               "{0}-{1}-{2}: {3}</a></td></tr>".format(new_receipt.subclassification.classification.classificaion_type.encode('utf-8'),
+                               "{0}-{1}-{2}: {3}</a></td></tr>".format(new_receipt.subclassification.classification.classification_type.encode('utf-8'),
                                                                        new_receipt.subclassification.name.encode('utf-8'),
                                                                        new_receipt.remark.encode('utf-8'), new_receipt.money)
         else:
             cost_rowcontent += "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>" \
-                               "{0}-{1}: {2}</a></td></tr>".format(new_receipt.subclassification.classification.classificaion_type.encode('utf-8'),
+                               "{0}-{1}: {2}</a></td></tr>".format(new_receipt.subclassification.classification.classification_type.encode('utf-8'),
                                                                    new_receipt.subclassification.name.encode('utf-8'),
                                                                    new_receipt.money)
     return HttpResponse(cost_rowcontent)
@@ -89,7 +90,7 @@ def create_subClassification(request):
 
     if request.method == 'POST':
         print(request.POST)
-        category = Classification.objects.filter(classificaion_type=request.POST["category"]).first()
+        category = Classification.objects.filter(classification_type=request.POST["category"]).first()
         member = Member.objects.filter(user__username=request.user).first()
         new_subclass, created = SubClassification.objects.get_or_create(member=member, classification=category,
                                                                         name=request.POST["newSub"],
@@ -97,7 +98,7 @@ def create_subClassification(request):
         rowcontent = ""
         if created:
             rowcontent='<button type="button" class="btn btn-link {0}" id="sec-category">' \
-                       '{1}</button>'.format(new_subclass.classification.classificaion_type +
+                       '{1}</button>'.format(new_subclass.classification.classification_type +
                                              "_list", new_subclass.name.encode('utf-8'))
 
         return HttpResponse(rowcontent)
@@ -113,17 +114,17 @@ def get_date(request):
         cost_receipts = Receipt.objects.all().filter(date=date, member=member, incomeandexpense__income_type="expense")
         cost_rowcontent = ""
         for receipt in cost_receipts:
+
             if receipt.remark:
                 cost_rowcontent += "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>" \
-                            "{0}-{1}-{2}: {3}</a></td></tr>".format(receipt.subclassification.classification.classificaion_type.encode('utf-8'),
+                            "{0}-{1}-{2}: {3}</a></td></tr>".format(receipt.subclassification.classification.classification_type.encode('utf-8'),
                                                                     receipt.subclassification.name.encode('utf-8'),
                                                                     receipt.remark.encode('utf-8'), receipt.money)
             else:
                 cost_rowcontent += "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>" \
-                                   "{0}-{1}: {2}</a></td></tr>".format(receipt.subclassification.classification.classificaion_type.encode('utf-8'),
+                                   "{0}-{1}: {2}</a></td></tr>".format(receipt.subclassification.classification.classification_type.encode('utf-8'),
                                                                        receipt.subclassification.name.encode('utf-8'),
                                                                        receipt.money)
-
     return HttpResponse(cost_rowcontent)
 
 
@@ -131,7 +132,7 @@ def change_password(request):
 
     if request.method == 'POST':
         print(request.POST)
-        user = User.objects.get(user__username=request.user).first()
+        user = User.objects.get(username=request.user)
         user.set_password(request.POST["new_password"])
         user.save()
 
@@ -153,6 +154,23 @@ def create_cyclicalExpenditure(request):
                                              expenditure_type=request.POST["expenditure_type"], reminder_type=request.POST["reminder_type"],
                                              reminder_date=request.POST["reminder_date"], member=member,is_reminded=False)
     return HttpResponse(new_cyclicalExpenditure)
+
+
+def update_cyclicalExpenditure(request):
+
+    if request.method == 'POST':
+        print(request.POST)
+        member = Member.objects.filter(user__username=request.user).first()
+        cyclicalExpenditure = CyclicalExpenditure.objects.filter(name=request.POST["name"], member=member).first()
+        print(member)
+        print(cyclicalExpenditure)
+        if cyclicalExpenditure is not None:
+            cyclicalExpenditure.expenditure_date=request.POST["expenditure_date"]
+            cyclicalExpenditure.expenditure_type=request.POST["expenditure_type"]
+            cyclicalExpenditure.reminder_type=request.POST["reminder_type"]
+            cyclicalExpenditure.reminder_date=request.POST["reminder_date"]
+            cyclicalExpenditure.save()
+    return HttpResponse(cyclicalExpenditure)
 
 
 def delete_cyclicalExpenditure(request):
@@ -187,9 +205,10 @@ def update_budget(request):
     if request.method == 'POST':
         print(request.POST)
         member = Member.objects.filter(user__username=request.user).first()
+        print(member)
         budget = request.POST["budget"]
-        category = Classification.objects.filter(classificaion_type=request.POST["category"]).first()
-        budget_instance = Budget.objects.filter(classificaion=category, member=member).first()
+        category = Classification.objects.filter(classification_type=request.POST["category"]).first()
+        budget_instance = Budget.objects.filter(classification=category, member=member).first()
         if budget_instance is not None:
             budget_instance.budget=budget
             budget_instance.save()
@@ -202,8 +221,8 @@ def update_budget_reminder(request):
         print(request.POST)
         member = Member.objects.filter(user__username=request.user).first()
         reminder = request.POST["reminder"]
-        category = Classification.objects.filter(classificaion_type=request.POST["category"]).first()
-        budget_instance = Budget.objects.filter(classificaion=category, member=member).first()
+        category = Classification.objects.filter(classification_type=request.POST["category"]).first()
+        budget_instance = Budget.objects.filter(classification=category, member=member).first()
         if budget_instance is not None:
             budget_instance.reminder=reminder
             budget_instance.save()
@@ -215,9 +234,10 @@ def update_budget_isreminded(request):
     if request.method == 'POST':
         print(request.POST)
         member = Member.objects.filter(user__username=request.user).first()
+        print(member)
         isreminded = request.POST["isreminded"]
-        category = Classification.objects.filter(classificaion_type=request.POST["category"]).first()
-        budget_instance = Budget.objects.filter(classificaion=category, member=member).first()
+        category = Classification.objects.filter(classification_type=request.POST["category"]).first()
+        budget_instance = Budget.objects.filter(classification=category, member=member).first()
         if budget_instance is not None:
             budget_instance.is_reminded=isreminded
             budget_instance.save()
@@ -232,7 +252,7 @@ def update_month_budget(request):
         month_budget = request.POST["month_budget"]
         month_budget_instance = MonthBudget.objects.filter(member=member).first()
         if month_budget_instance is not None:
-            month_budget_instance.budget=budget
+            month_budget_instance.budget=month_budget
             month_budget_instance.save()
     return HttpResponse()
 

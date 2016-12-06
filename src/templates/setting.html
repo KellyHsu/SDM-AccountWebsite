@@ -114,7 +114,39 @@
 		});
 		
 		// 密碼設定完成的確認按鈕
-		$(".passwd-submit").click(function(){
+		$("#new-passwd-submit").click(function(){
+			if ($("#password").val() !== null && $("#password").val() !== undefined && $("#password").val() !== '') { 
+			if($("#password").val() == $('#confirmpassword').val()){		
+				var new_password=$("#password").val();
+				$.ajax({
+            	    url: "/changePassword/",
+            	    type:"POST",
+            	    data: {new_password : new_password},
+            	    success: function(rowcontent){
+						$("#password").val('');
+						$('#confirmpassword').val('');
+						$(".passwd-set").animate({
+							height: 'toggle'
+						});
+						$("#go-passwd-set").show(1000);
+						alert("修改密碼成功");
+            	    },
+            	    error: function(){
+                		alert("修改密碼失敗")
+                	}
+            	});
+			}else{
+				alert("請確認密碼一致")
+			}
+			}else{
+				alert("請輸入密碼")
+			}
+		});
+
+		// 密碼設定取消的確認按鈕
+		$("#not-passwd-submit").click(function(){
+			$("#password").val('');
+			$('#confirmpassword').val('');
 			$(".passwd-set").animate({
 				height: 'toggle'
 			});
@@ -182,7 +214,6 @@
                 	type:"POST",
                 	data: {deltArr : deltArr},
                 	success: function(rowcontent){
-						alert(rowcontent)
                 	    var cout = "";
 						$.each(deltArr, function(index, value){		// 印出陣列內容
 							cout = cout + value + ';';
@@ -230,9 +261,121 @@
 			$(this).prev().prev().attr("readonly", "readonly");
 		});
 
-		
+		//月預算
+		$("#month-budget").click(function(){
+			var month_budget = $("#m-b").val();
+			$.ajax({
+                url: "/updateMonthBudget/",
+                type:"POST",
+                data: {month_budget : month_budget},
+                success: function(rowcontent){
+					alert("更新月預算成功");
+                },
+                error: function(){
+                	alert("更新月預算失敗")
+                }
+            });
+		});
+
+		//月預算提醒
+		$("#month-budget-reminder").click(function(){
+			var month_reminder = $("#m-b-r").val();
+			$.ajax({
+                url: "/updateMonthBudgetReminder/",
+                type:"POST",
+                data: {month_reminder : month_reminder},
+                success: function(rowcontent){
+					alert("更新月預算提醒成功");
+                },
+                error: function(){
+                	alert("更新月預算提醒失敗")
+                }
+            });
+		});
+
+		//開啟 月預算提醒
+		$("#m-b-r-checkbox").change(function(){
+			var isreminded;
+			if($(this).prop("checked") == true){
+				isreminded="True";
+			}else{
+				isreminded="False";
+			}
+			$.ajax({
+                url: "/updateMonthBudgetIsreminded/",
+                type:"POST",
+                data: {isreminded : isreminded},
+                success: function(rowcontent){
+					if(isreminded=="True"){
+						alert("開啟月提醒");
+					}else{
+						alert("關閉月提醒");
+					}
+                },
+                error: function(){
+                	alert("失敗")
+                }
+            });
+		});
+
 	});	// end document.ready()
 
+	//category設定預算
+	function category_budget(object,category){
+		var budget = $(object).prev().prev('input').val();
+		$.ajax({
+                url: "/updateBudget/",
+                type:"POST",
+                data: {budget : budget, category : category},
+                success: function(rowcontent){
+					alert("更新預算成功")
+                },
+                error: function(){
+                	alert("失敗")
+                }
+            });
+	}
+
+	//category提醒 設定預算
+	function category_reminder(object,category){
+		var reminder = $(object).prev().prev('input').val();
+		$.ajax({
+                url: "/updateBudgetReminder/",
+                type:"POST",
+                data: {reminder : reminder, category : category},
+                success: function(rowcontent){
+					alert("更新提醒預算成功")
+                },
+                error: function(){
+                	alert("失敗")
+                }
+            });
+	}
+
+	//category提醒 開啟/關閉
+	function category_reminder_checkbox(object,category){
+		var isreminded;
+			if($(object).prop("checked") == true){
+				isreminded="True";
+			}else{
+				isreminded="False";
+			}
+			$.ajax({
+                url: "/updateBudgetIsreminded/",
+                type:"POST",
+                data: {isreminded : isreminded, category : category},
+                success: function(rowcontent){
+					if(isreminded=="True"){
+						alert("開啟提醒");
+					}else{
+						alert("關閉提醒");
+					}
+                },
+                error: function(){
+                	alert("失敗")
+                }
+            });
+	}
 
     // 用來在一開始隱藏不需要的欄位
     function defaultHiding(){
@@ -417,7 +560,7 @@
 				reminder_date=6;
 				break;
 			default :
-				var date = $("#pay-date").val().split("號");
+				var date = $("#alert-date").val().split("號");
 				reminder_date=date[0];
 		}
 		//post
@@ -442,7 +585,7 @@
 					alert("新增成功!");
                 },
                 error: function(){
-                	alert("刪除週期性項目失敗")
+                	alert("新增週期性項目失敗")
                 }
             });
 		}else{
@@ -498,17 +641,98 @@
 
 	// 送出[編輯]週期性項目的表單 (submit event)
 	function editPeriodicPaymentItemSubmit(){
-		$(".editting").each(function(index){	
-			if(index == 1){
-				$(this).text($("#periodic-type-edit").val() + ' ' + $("#pay-date-edit").val());
-			}else if(index == 2){
-				$(this).text($("#alert-daytype-edit").val() + ' ' + $("#alert-date-edit").val());
-			}
-
-		});
-
-		$(".editting").removeClass("editting");
-
+		//post
+		var getname = $("#periodic-item-edit-name").val().split(" ").split("	")
+		var name = getname[0];
+		var expenditure_type;
+		switch ($("#periodic-type-edit").val()){
+			case "每週" :
+				expenditure_type="week";
+				break;
+			default :
+				expenditure_type="month";
+		}
+		var expenditure_date;
+		switch ($("#pay-date-edit").val()){
+			case "星期日" :
+				expenditure_date=7;
+				break;
+			case "星期一" :
+				expenditure_date=1;
+				break;
+			case "星期二" :
+				expenditure_date=2;
+				break;
+			case "星期三" : 
+				expenditure_date=3;
+				break;
+			case "星期四" : 
+				expenditure_date=4;
+				break;
+			case "星期五" : 
+				expenditure_date=5;
+				break;
+			case "星期六" :
+				expenditure_date=6;
+				break;
+			default :
+				var date = $("#pay-date-edit").val().split("號");
+				expenditure_date=date[0];
+		}
+    	var reminder_type;
+		switch ($("#alert-daytype-edit").val()){
+			case "每週" :
+				reminder_type="week";
+				break;
+			default :
+				reminder_type="month";
+		}
+    	var reminder_date;
+		switch ($("#alert-date-edit").val()){
+			case "星期日" :
+				reminder_date=7;
+				break;
+			case "星期一" :
+				reminder_date=1;
+				break;
+			case "星期二" :
+				reminder_date=2;
+				break;
+			case "星期三" : 
+				reminder_date=3;
+				break;
+			case "星期四" : 
+				reminder_date=4;
+				break;
+			case "星期五" : 
+				reminder_date=5;
+				break;
+			case "星期六" :
+				reminder_date=6;
+				break;
+			default :
+				var date = $("alert-date-edit").val().split("號");
+				reminder_date=date[0];
+		}
+		$.ajax({
+            url: "/updateCyclicalExpenditure/",
+            type:"POST",
+            data: {name:name, expenditure_type:expenditure_type, expenditure_date:expenditure_date, reminder_type:reminder_type, reminder_date:reminder_date},
+            success: function(content){
+				$(".editting").each(function(index){	
+					if(index == 1){
+						$(this).text($("#periodic-type-edit").val() + ' ' + $("#pay-date-edit").val());
+					}else if(index == 2){
+						$(this).text($("#alert-daytype-edit").val() + ' ' + $("#alert-date-edit").val());
+					}
+				});
+				$(".editting").removeClass("editting");
+				 alert("更新成功")
+            },
+            error: function(){
+                alert("更新週期性項目失敗")
+            }
+        });
 	}
 
 
@@ -594,12 +818,12 @@
 						</p>
 						<div class="passwd-set">
 						    <span class="item-title">密 碼: </span>
-						    <input type="text" name="userName" placeholder="請輸入密碼" class="passwd-set">
+						    <input type="text" name="userName" placeholder="請輸入密碼" class="passwd-set" id="password">
 						    <span class="item-title">確認密碼: </span>
-						    <input type="text" name="userName" placeholder="再次輸入密碼" class="">
+						    <input type="text" name="userName" placeholder="再次輸入密碼" class="" id="confirmpassword">
 						        <button type="button" class="btn btn-default passwd-submit" id="new-passwd-submit">
 						        確認</button>
-						        <button type="button" class="btn btn-default passwd-submit">取消修改</button>
+						        <button type="button" class="btn btn-default passwd-submit" id="not-passwd-submit">取消修改</button>
 						</div>
 
                     </form>
@@ -680,14 +904,14 @@
 							     <td>每個月總預算
                                  </td>
                                  <td>
-                                 	<input type="number" value="10000" readonly/>								 
+                                 	<input type="number" value="10000" id="m-b" readonly/>								 
 								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-								    <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
+								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" id="month-budget">確定</button>
 						         </td>
-								 <td><input type="number" value="8000" readonly/>
+								 <td><input type="number" value="8000" id="m-b-r" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button> 
-						            <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
-						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關"/>
+						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" id="month-budget-reminder">確定</button>
+						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" id="m-b-r-checkbox"/>
 						         </td>
 							  </tr>
 						   </table>
@@ -709,12 +933,12 @@
                                  </td>
                                  <td><input type="number" value="10000" readonly/>								 
 								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-								    <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
+								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'food')">確定</button>
 						         </td>
 								 <td><input type="number" value="8000" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-						            <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
-								    <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關"/>
+						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'food')">確定</button>
+								    <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'food')"/>
 						         </td>
 							  </tr>
 							  <tr> 
@@ -722,12 +946,12 @@
                                  </td>
                                  <td><input type="number" value="10000" readonly/>								 
 								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-								    <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
+								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'clothing')">確定</button>
 						         </td>
 								 <td><input type="number" value="8000" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-						            <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
-						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關"/>
+						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'clothing')">確定</button>
+						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'clothing')"/>
 						         </td>
 							  </tr>
 							  <tr> 
@@ -735,12 +959,12 @@
                                  </td>
                                  <td><input type="number" value="10000" readonly/>								 
 								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-								    <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
+								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'housing')">確定</button>
 						         </td>
 								 <td><input type="number" value="8000" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-						            <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
-						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關"/>
+						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'housing')">確定</button>
+						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'housing')"/>
 						         </td>
 							  </tr>
 							  <tr> 
@@ -748,12 +972,12 @@
                                  </td>
                                  <td><input type="number" value="10000" readonly/>								 
 								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-								    <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
+								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'transportation')">確定</button>
 						         </td>
 								 <td><input type="number" value="8000" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-						            <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
-						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關"/>
+						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'transportation')">確定</button>
+						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'transportation')"/>
 						         </td>
 							  </tr>
 							  <tr> 
@@ -761,12 +985,12 @@
                                  </td>
                                  <td><input type="number" value="10000" readonly/>								 
 								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-								    <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
+								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'education')">確定</button>
 						         </td>
 								 <td><input type="number" value="8000" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-						            <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
-						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關"/>
+						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'education')">確定</button>
+						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'education')"/>
 						         </td>
 							  </tr>
 							  <tr> 
@@ -774,12 +998,12 @@
                                  </td>
                                  <td><input type="number" value="10000" readonly/>								 
 								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-								    <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
+								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'entertainment')">確定</button>
 						         </td>
 								 <td><input type="number" value="8000" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-						            <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
-						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關"/>
+						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'entertainment')">確定</button>
+						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'entertainment')"/>
 						         </td>
 							  </tr>
 							  <tr> 
@@ -787,12 +1011,12 @@
                                  </td>
                                  <td><input type="number" value="10000" readonly/>								 
 								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-								    <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
+								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'others')">確定</button>
 						         </td>
 								 <td><input type="number" value="8000" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-						            <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
-						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關"/>
+						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'others')">確定</button>
+						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'others')"/>
 						         </td>
 							  </tr>
 						   </table>
