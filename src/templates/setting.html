@@ -583,7 +583,7 @@
                 success: function(repeated_name){
 					$("#table4").append("<tr><td>" + title + "</td><td>" + paymentDate + " </td><td>" + alertDate  
 					+ "</td><td><button type='button' class='btn btn-primary btn-sm periodic-date-setting' data-toggle='modal' data-target='#modal-periodic-edit'>設定</button> "
-					+ "<input type='checkbox' /></td></tr>");
+					+ "<input type='checkbox' onchange='cyc_checkbox(this)' /></td></tr>");
 						
 					// 在新的欄位上增加toggle button
 					$("#table4 tr:last-child td:last-child input").bootstrapToggle({
@@ -604,6 +604,31 @@
 		}
 	}
 
+	//週期性項目提醒 開啟/關閉
+	function cyc_checkbox(object){
+		var name=$(object).parent().parent().prev().prev().prev().text();
+		var isreminded;
+			if($(object).prop("checked") == true){
+				isreminded="True";
+			}else{
+				isreminded="False";
+			}
+			$.ajax({
+                url: "/updateCyclicalExpenditureIsreminded/",
+                type:"POST",
+                data: {isreminded : isreminded, name : name},
+                success: function(rowcontent){
+					if(isreminded=="True"){
+						alert("開啟提醒");
+					}else{
+						alert("關閉提醒");
+					}
+                },
+                error: function(){
+                	alert("失敗")
+                }
+            });
+	}
 
 	// 送出新增子分類的表單
 	function addSubCategorySubmit(){
@@ -665,8 +690,7 @@
 	// 送出[編輯]週期性項目的表單 (submit event)
 	function editPeriodicPaymentItemSubmit(){
 		//post
-		var getname = $("#periodic-item-edit-name").val().split(" ").split("	")
-		var name = getname[0];
+		var name = $("#periodic-item-edit-name").val();
 		var expenditure_type;
 		switch ($("#periodic-type-edit").val()){
 			case "每週" :
@@ -734,8 +758,8 @@
 				reminder_date=6;
 				break;
 			default :
-				var date = $("alert-date-edit").val().split("號");
-				reminder_date=date[0];
+				var date1 = $("#alert-date-edit").val().split("號");
+				reminder_date=date1[0];
 		}
 		$.ajax({
             url: "/updateCyclicalExpenditure/",
@@ -750,14 +774,13 @@
 					}
 				});
 				$(".editting").removeClass("editting");
-				 alert("更新成功")
+				alert("更新成功")
             },
             error: function(){
                 alert("更新週期性項目失敗")
             }
         });
 	}
-
 
     </script>
 
@@ -1079,36 +1102,21 @@
 								 <th class="col-md-3">繳費提醒通知日期 </th>
 								 <th class="col-md-2">通知與日期設定 </th>
 							  </tr>
-							  <tr> 
-							     <td>房租
-						         </td>
-                                 <td>每週 星期三</td>
-								 <td>每月 3號</td>
-						         <td>
-						         	<button type='button' class='btn btn-primary btn-sm periodic-date-setting' data-toggle='modal' data-target='#modal-periodic-edit'>設定</button>
-						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" />
-						         </td>
-							  </tr>
-							  <tr> 
-							     <td>水費
-						         </td>
-                                 <td>每月 10號</td>
-								 <td>每月 8號</td>
-						         <td>
-						            <button type='button' class='btn btn-primary btn-sm periodic-date-setting' data-toggle='modal' data-target='#modal-periodic-edit'>設定</button>
-						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關"/>
-						         </td>
-							  </tr>
-							  <tr> 
-							     <td>電費
-						         </td>
-                                 <td>每月 20號</td>
-								 <td>每月 18號</td>
-						         <td>
-						            <button type='button' class='btn btn-primary btn-sm periodic-date-setting' data-toggle='modal' data-target='#modal-periodic-edit'>設定</button>
-						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關"/>
-						         </td>
-							  </tr>
+							  {% for cyclicalExpenditure in cyclicalExpenditure_list %}
+							  	<tr> 
+							    	<td>
+									 	{{ cyclicalExpenditure.name }}
+						         	</td>
+										<td>{{ cyclicalExpenditure.paytime }}</td>
+								 		<td>{{ cyclicalExpenditure.remindtime }}</td>
+                                 		<!--<td>每週 星期三</td>-->
+								 		<!--<td>每月 3號</td>-->
+						         	<td>
+						         		<button type='button' class='btn btn-primary btn-sm periodic-date-setting' data-toggle='modal' data-target='#modal-periodic-edit'>設定</button>
+						            	<input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" />
+						         	</td>
+							  	</tr>
+							  {% endfor %}
 						   </table>
 			           </form>
                 </div>

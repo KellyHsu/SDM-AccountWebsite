@@ -194,10 +194,11 @@ def update_cyclicalExpenditure_isreminded(request):
         print(request.POST)
         member = Member.objects.filter(user__username=request.user).first()
         cyclicalExpenditure = CyclicalExpenditure.objects.filter(name=request.POST["name"], member=member).first()
+        isreminded = request.POST["isreminded"]
         if cyclicalExpenditure is not None:
             cyclicalExpenditure.is_reminded = isreminded
             cyclicalExpenditure.save()
-    return HttpResponse(new_cyclicalExpenditure)
+    return HttpResponse(cyclicalExpenditure)
 
 
 def update_budget(request):
