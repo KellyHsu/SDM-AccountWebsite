@@ -234,6 +234,7 @@ def update_budget_isreminded(request):
     if request.method == 'POST':
         print(request.POST)
         member = Member.objects.filter(user__username=request.user).first()
+        print(member)
         isreminded = request.POST["isreminded"]
         category = Classification.objects.filter(classification_type=request.POST["category"]).first()
         budget_instance = Budget.objects.filter(classification=category, member=member).first()
