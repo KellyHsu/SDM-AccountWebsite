@@ -15,7 +15,7 @@ class SubClassificationAdmin(admin.ModelAdmin):
 
 
 class ClassificationAdmin(admin.ModelAdmin):
-    ordering = ('classificaion_type',)
+    ordering = ('classification_type',)
 
 
 class PaymentAdmin(admin.ModelAdmin):

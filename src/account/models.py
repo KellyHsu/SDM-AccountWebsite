@@ -22,10 +22,10 @@ class Classification(models.Model):
         ('entertainment', 'entertainment'),
         ('others', 'others'),
     )
-    classificaion_type = models.CharField(max_length=20, choices=CLASSIFICATION_TYPE)
+    classification_type = models.CharField(max_length=20, choices=CLASSIFICATION_TYPE)
 
     def __unicode__(self):
-        return self.classificaion_type
+        return self.classification_type
 
 
 class SubClassification(models.Model):

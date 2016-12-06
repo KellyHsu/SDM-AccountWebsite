@@ -115,6 +115,7 @@
 		
 		// 密碼設定完成的確認按鈕
 		$("#new-passwd-submit").click(function(){
+			if ($("#password").val() !== null && $("#password").val() !== undefined && $("#password").val() !== '') { 
 			if($("#password").val() == $('#confirmpassword').val()){		
 				var new_password=$("#password").val();
 				$.ajax({
@@ -136,6 +137,9 @@
             	});
 			}else{
 				alert("請確認密碼一致")
+			}
+			}else{
+				alert("請輸入密碼")
 			}
 		});
 
@@ -313,8 +317,40 @@
                 }
             });
 		});
+
 	});	// end document.ready()
 
+	//category設定預算
+	function category_budget(object,category){
+		var budget = $(object).prev().prev('input').val();
+		$.ajax({
+                url: "/updateBudget/",
+                type:"POST",
+                data: {budget : budget, category : category},
+                success: function(rowcontent){
+					alert("更新預算成功")
+                },
+                error: function(){
+                	alert("失敗")
+                }
+            });
+	}
+
+	//category提醒 設定預算
+	function category_reminder(object,category){
+		var reminder = $(object).prev().prev('input').val();
+		$.ajax({
+                url: "/updateBudgetReminder/",
+                type:"POST",
+                data: {reminder : reminder, category : category},
+                success: function(rowcontent){
+					alert("更新提醒預算成功")
+                },
+                error: function(){
+                	alert("失敗")
+                }
+            });
+	}
 
     // 用來在一開始隱藏不需要的欄位
     function defaultHiding(){
@@ -872,12 +908,12 @@
                                  </td>
                                  <td><input type="number" value="10000" readonly/>								 
 								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-								    <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
+								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'food')">確定</button>
 						         </td>
 								 <td><input type="number" value="8000" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-						            <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
-								    <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關"/>
+						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'food')">確定</button>
+								    <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關""/>
 						         </td>
 							  </tr>
 							  <tr> 
@@ -885,11 +921,11 @@
                                  </td>
                                  <td><input type="number" value="10000" readonly/>								 
 								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-								    <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
+								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'clothing')">確定</button>
 						         </td>
 								 <td><input type="number" value="8000" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-						            <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
+						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'clothing')">確定</button>
 						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關"/>
 						         </td>
 							  </tr>
@@ -898,11 +934,11 @@
                                  </td>
                                  <td><input type="number" value="10000" readonly/>								 
 								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-								    <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
+								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'housing')">確定</button>
 						         </td>
 								 <td><input type="number" value="8000" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-						            <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
+						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'housing')">確定</button>
 						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關"/>
 						         </td>
 							  </tr>
@@ -911,11 +947,11 @@
                                  </td>
                                  <td><input type="number" value="10000" readonly/>								 
 								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-								    <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
+								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'transportation')">確定</button>
 						         </td>
 								 <td><input type="number" value="8000" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-						            <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
+						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'transportation')">確定</button>
 						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關"/>
 						         </td>
 							  </tr>
@@ -924,11 +960,11 @@
                                  </td>
                                  <td><input type="number" value="10000" readonly/>								 
 								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-								    <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
+								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'education')">確定</button>
 						         </td>
 								 <td><input type="number" value="8000" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-						            <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
+						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'education')">確定</button>
 						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關"/>
 						         </td>
 							  </tr>
@@ -937,11 +973,11 @@
                                  </td>
                                  <td><input type="number" value="10000" readonly/>								 
 								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-								    <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
+								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'entertainment')">確定</button>
 						         </td>
 								 <td><input type="number" value="8000" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-						            <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
+						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'entertainment')">確定</button>
 						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關"/>
 						         </td>
 							  </tr>
@@ -950,11 +986,11 @@
                                  </td>
                                  <td><input type="number" value="10000" readonly/>								 
 								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-								    <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
+								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'others')">確定</button>
 						         </td>
 								 <td><input type="number" value="8000" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-						            <button type="button" class="btn btn-success btn-sm amount-setting-submit">確定</button>
+						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'others')">確定</button>
 						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關"/>
 						         </td>
 							  </tr>
