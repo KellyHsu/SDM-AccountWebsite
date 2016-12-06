@@ -139,10 +139,12 @@ body {
     background: #eee;
     box-shadow: none;
 }
-.btn-default.category{
+.btn-default.cost-category, .btn-default.revenue-category {
   margin: 0px 10px 10px 0px;
   color: #fff;
 }
+
+
 
 /***********************
   END CUSTOM BTN
