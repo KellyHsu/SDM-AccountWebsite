@@ -435,6 +435,17 @@ $(document).ready(function() {
         $(".modal-btn").prop('disabled', false);    // 如果在新增子分類時按了背景，要把被鎖定的按鈕解鎖
     });
 
+    $("#cost-list tr td")
+    .mouseenter(function(){
+        $(this).children("span:last-child").text("×");
+        $(this).children("span:last-child").addClass("deletedRecord");
+    })
+    .mouseleave(function(){
+        $(this).children("span:last-child").empty();
+        $(this).children("span:last-child").removeClass("deletedRecord");
+    });
+
+
 }); // end document ready
 
 // 用來讓每個次分類被點擊的時候都會多一個class-selected
@@ -453,6 +464,21 @@ function defaultHiding(){
     $('.revenue-category').hide();  // 初始隱藏收入分類
 }
 
+// 左方記錄如果刪除的listenser
+// 會先把叉叉標記class="deletedRecord"
+// 這邊是click 事件
+$(document).on("click", ".deletedRecord", function(){
+    var record = $(this).parents("tr");
+    var recordValue = $(this).prev().text().trim();
+
+    var result = confirm("你真的要刪掉：" + recordValue + "嗎？");
+    if(result){
+        record.remove();    // 如果要做post做在這邊
+        alert("刪除了" + recordValue);
+    }else{
+    }
+
+}); // end document on click class='deletedRecord'
 
 
 </script>
@@ -560,6 +586,7 @@ function defaultHiding(){
                                                 <a href='#'>{{cost_receipt.subclassification.classification.classificaion_type}}-{{cost_receipt.subclassification.name}}: {{cost_receipt.money}}
 												</a>
                                             {% endif %}
+                                            <span style='float: right; margin-right: 10px; color: #9D9D9D;'></span>
                                         </td>
                                     </tr>
                                     {% endfor %}
