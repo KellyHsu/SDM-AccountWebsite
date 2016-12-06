@@ -33,18 +33,38 @@ def setting(request):
         return HttpResponseRedirect('/login/')
     else:
         member = Member.objects.filter(user__username=request.user).first()
-        month_budget = MonthBudget.objects.filter(member=member).first()
-        cyclicalExpenditure = CyclicalExpenditure.objects.filter(member=member)
-        budget = Budget.objects.filter(member=member)
+        
+        c1 = Classification.objects.filter(classification_type='food').first()
+        food_list = SubClassification.objects.filter(member=member, classification=c1)
+        print(food_list)
+        c2 = Classification.objects.filter(classification_type='clothing').first()
+        clothing_list = SubClassification.objects.filter(member=member, classification=c2)
+        c3 = Classification.objects.filter(classification_type='housing').first()
+        housing_list = SubClassification.objects.filter(member=member, classification=c3)
+        c4 = Classification.objects.filter(classification_type='transportation').first()
+        transportation_list = SubClassification.objects.filter(member=member, classification=c4)
+        c5 = Classification.objects.filter(classification_type='education').first()
+        education_list = SubClassification.objects.filter(member=member, classification=c5)
+        c6 = Classification.objects.filter(classification_type='entertainment').first()
+        entertainment_list = SubClassification.objects.filter(member=member, classification=c6)
+        c7 = Classification.objects.filter(classification_type='others').first()
+        other_list = SubClassification.objects.filter(member=member, classification=c7)
+        
+        month_budget = MonthBudget.objects.filter(member=member).first()      
+        
+        budget_food = Budget.objects.filter(member=member, classification=c1).first()
+        budget_clothing = Budget.objects.filter(member=member, classification=c2).first()
+        budget_housing = Budget.objects.filter(member=member, classification=c3).first()
+        budget_transportation = Budget.objects.filter(member=member, classification=c4).first()
+        budget_education = Budget.objects.filter(member=member, classification=c5).first()
+        budget_entertainment = Budget.objects.filter(member=member, classification=c6).first()
+        budget_other = Budget.objects.filter(member=member, classification=c7).first()
+        
+        cyclicalExpenditure_list = CyclicalExpenditure.objects.filter(member=member)
 
-        food_list = SubClassification.objects.filter(member=member, classification=1)
-        clothing_list = SubClassification.objects.filter(member=member, classification=2)
-        housing_list = SubClassification.objects.filter(member=member, classification=3)
-        transportation_list = SubClassification.objects.filter(member=member, classification=4)
-        education_list = SubClassification.objects.filter(member=member, classification=5)
-        entertainment_list = SubClassification.objects.filter(member=member, classification=6)
-        other_list = SubClassification.objects.filter(member=member, classification=7)
-    return render(request, 'setting.html', {"budget": budget, "cyclicalExpenditure": cyclicalExpenditure,
+    return render(request, 'setting.html', {"member": member, "cyclicalExpenditure_list": cyclicalExpenditure_list,
+                                            "budget_food": budget_food, "budget_clothing": budget_clothing, "budget_housing": budget_housing, "budget_transportation": budget_transportation,
+                                            "budget_education": budget_education, "budget_entertainment": budget_entertainment, "budget_other": budget_other,
                                             "month_budget": month_budget, "food_list": food_list,
                                             "clothing_list": clothing_list, "housing_list": housing_list,
                                             "transportation_list": transportation_list, "education_list": education_list,
