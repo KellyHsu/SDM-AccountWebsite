@@ -281,3 +281,28 @@ def update_month_budget_isreminded(request):
             month_budget_instance.is_reminded=isreminded
             month_budget_instance.save()
     return HttpResponse()
+
+
+def create_subClassification_in_settingPage(request):
+
+    if request.method == 'POST':
+        print(request.POST)
+        category = Classification.objects.filter(classification_type=request.POST["category"]).first()
+        member = Member.objects.filter(user__username=request.user).first()
+        new_subclass, created = SubClassification.objects.get_or_create(member=member, classification=category,
+                                                                        name=request.POST["newSub"],
+                                                                        defaults={'name': request.POST["newSub"]})
+        rowcontent = ""
+        if created:
+            rowcontent='<button type="button" class="btn btn-link btn-md sub-category">{0}</button>'.format(new_subclass.name.encode('utf-8'))
+
+        return HttpResponse(rowcontent)
+
+
+def delete_subClassification_in_settingPage(request):
+
+    if request.method == 'POST':
+        print(request.POST)
+        member = Member.objects.filter(user__username=request.user).first()
+        delsub = SubClassification.objects.filter(name=request.POST["name"], member=member).delete()
+        return HttpResponse(delsub)

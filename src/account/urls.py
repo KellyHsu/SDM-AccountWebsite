@@ -20,4 +20,6 @@ urlpatterns = [
     url(r'^updateMonthBudget/$', views.update_month_budget, name='update_month_budget'),
     url(r'^updateMonthBudgetReminder/$', views.update_month_budget_reminder, name='update_month_budget_reminder'),
     url(r'^updateMonthBudgetIsreminded/$', views.update_month_budget_isreminded, name='update_month_budget_isreminded'),
+    url(r'^createSubClassificationInSettingPage/$', views.create_subClassification_in_settingPage, name='create_subClassification_in_settingPage'),
+    url(r'^deleteSubClassificationInSettingPage/$', views.delete_subClassification_in_settingPage, name='delete_subClassification_in_settingPage'),
 ]

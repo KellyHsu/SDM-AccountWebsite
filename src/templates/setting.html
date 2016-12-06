@@ -431,8 +431,19 @@
 
 				var result = confirm("你真的要刪掉次分類：" + btnText + "嗎？");
 				if(result){
-					delSub.remove();	// 如果要做post做在這邊
-					alert("刪除了" + btnText);
+					delSub.remove();	
+					//post
+					$.ajax({
+                		url: "/deleteSubClassificationInSettingPage/",
+                		type:"POST",
+                		data: {name:btnText},
+                		success: function(rowcontent){
+							alert("刪除了" + btnText);
+                		},
+                		error: function(){
+                    		alert("刪除子分類失敗");
+               		 	}
+            		});
 				}else{
 					delSub.children().text("×");
 				}
@@ -597,15 +608,27 @@
 	// 送出新增子分類的表單
 	function addSubCategorySubmit(){
 		var mainType = $("#main-type-choose").val();
-		var subType = $("#new-sub-type").val();
-
-		$("#table1 tr td:first-child").each(function(){
-			if($(this).text() === mainType ){
-				$(this).next().append("<button type='button' class='btn btn-link btn-md sub-category'>" 
-								+ subType + "</button>");	
-				alert("您新增了: " + mainType + "-" + subType);
-			}
-		});
+		var newSub = $("#new-sub-type").val();
+		//post
+ 		if(newSub){
+            $.ajax({
+                url: "/createSubClassificationInSettingPage/",
+                type:"POST",
+                data: {newSub : newSub, category : mainType},
+                success: function(rowcontent){
+                    $("#table1 tr td:first-child").each(function(){
+						if($(this).attr('id') === mainType ){
+							$(this).next().append(rowcontent);	
+							alert("您新增了: " + subType);
+						}
+					});
+                },
+                error: function(){
+                    alert("新增子分類失敗");
+                }
+            });
+        }
+		
 	}
 
 
@@ -844,45 +867,60 @@
 							  </thead>
 							  <tbody>
 								  <tr> 
-								     <td>食</td>
+								     <td id="food">食</td>
 									 <td>
-									    <button type="button" class="btn btn-link btn-md sub-category">早餐</button>
-									    <button type="button" class="btn btn-link btn-md sub-category">午餐</button>
-									    <button type="button" class="btn btn-link btn-md sub-category">晚餐</button>
+										{% for food in food_list %}
+									    	<button type="button" class="btn btn-link btn-md sub-category">{{ food.name }}</button>
+										{% endfor %}
 									</td>
-
 								  </tr>
 								  <tr> 
-								     <td>衣</td>
+								     <td id="clothing">衣</td>
 								     <td>
-								     	<button type="button" class="btn btn-link btn-md sub-category">包包</button>
-								     	<button type="button" class="btn btn-link btn-md sub-category">鞋子</button>
-								     	<button type="button" class="btn btn-link btn-md sub-category">上衣</button>
-								     </td>
+										{% for clothing in clothing_list %}
+								     		<button type="button" class="btn btn-link btn-md sub-category">{{ clothing.name }}</button>
+										{% endfor %}
+									 </td>
 								  </tr>
 								  <tr> 
-								     <td>住</td>
+								     <td id="housing">住</td>
 								     <td>
-							     		<button type="button" class="btn btn-link btn-md sub-category">房租</button>
-								     </td>
+										{% for housing in housing_list %}
+							     			<button type="button" class="btn btn-link btn-md sub-category">{{ housing.name }}</button>
+								     	{% endfor %}
+									 </td>
 								  </tr>
 								  <tr> 
-								     <td>行</td>
+								     <td id="transportation">行</td>
 								     <td>
-								     	<button type="button" class="btn btn-link btn-md sub-category">計程車</button>
-								     </td>
+										{% for transportation in transportation_list %}
+								    	 	<button type="button" class="btn btn-link btn-md sub-category">{{ transportation.name }}</button>
+										{% endfor %}
+									 </td>
 								  </tr>
 								  <tr> 
-								     <td>育</td>
-								     <td></td>
+								     <td id="education">育</td>
+								     <td>
+										{% for education in education_list %}
+										 	<button type="button" class="btn btn-link btn-md sub-category">{{ education.name }}</button>
+                    					{% endfor %}
+									 </td>
 								  </tr>
 								  <tr> 
-								     <td>樂</td>
-								     <td></td>
+								     <td id="entertainment">樂</td>
+								     <td>
+										{% for entertainment in entertainment_list %}
+										 	<button type="button" class="btn btn-link btn-md sub-category">{{ entertainment.name }}</button>
+                    					{% endfor %}
+									 </td>
 								  </tr>
 								  <tr> 
-								     <td>其他</td>
-								     <td></td>
+								     <td id="others">其他</td>
+								     <td>
+										{% for other in other_list %}
+										 	<button type="button" class="btn btn-link btn-md sub-category">{{ other.name }}</button>
+                    					{% endfor %}
+									 </td>
 								  </tr>
 							  </tbody>
 						   </table>
@@ -1093,13 +1131,13 @@
 					<div class="form-group">
 						<label for="main-type-choose">主分類選擇</label>
 						<select class="form-control" id="main-type-choose">
-							<option>食</option>
-							<option>衣</option>
-							<option>住</option>
-							<option>行</option>
-							<option>育</option>
-							<option>樂</option>
-							<option>其他</option>
+							<option value="food">食</option>
+							<option value="clothing">衣</option>
+							<option value="housing">住</option>
+							<option value="transportation">行</option>
+							<option value="education">育</option>
+							<option value="entertainment">樂</option>
+							<option value="others">其他</option>
 						</select>
 					</div>
 					<div class="form-group">
