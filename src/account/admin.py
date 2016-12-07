@@ -31,11 +31,11 @@ class CyclicalExpenditureAdmin(admin.ModelAdmin):
 
 
 class BudgetAdmin(admin.ModelAdmin):
-    ordering = ('is_reminded',)
+    list_display = ('member', 'classification', 'budget', 'reminder', 'is_reminded')
 
 
 class MonthBudgetAdmin(admin.ModelAdmin):
-    ordering = ('is_reminded',)
+    list_display = ('member', 'budget', 'reminder', 'is_reminded')
 
 
 admin.site.register(Receipt, ReceiptAdmin)
