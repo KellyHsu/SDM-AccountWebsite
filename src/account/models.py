@@ -21,6 +21,9 @@ class Classification(models.Model):
         ('education', 'education'),
         ('entertainment', 'entertainment'),
         ('others', 'others'),
+        ('revenue', 'revenue'),
+        ('invest_revenue', 'invest_revenue'),
+        ('other_revenue', 'other_revenue'),
     )
     classification_type = models.CharField(max_length=20, choices=CLASSIFICATION_TYPE)
 
