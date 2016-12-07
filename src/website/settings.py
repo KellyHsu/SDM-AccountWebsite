@@ -11,10 +11,11 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 from os.path import dirname, join, exists
+from django.core.urlresolvers import reverse_lazy
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = dirname(dirname(dirname(__file__)))
+BASE_DIR = dirname(dirname(__file__))
 
 
 # Quick-start development settings - unsuitable for production
@@ -48,6 +49,7 @@ THIRD_PARTY_APPS = (
 
 LOCAL_APPS = (
     'account',
+    'member',
 
 )
 
@@ -145,3 +147,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = join(BASE_DIR, 'assets')
 
 STATICFILES_DIRS = [join(BASE_DIR, 'static')]
+
+LOGIN_URL = reverse_lazy('login')
+LOGIN_REDIRECT_URL = "/dashboard/"
+LOGOUT_REDIRECT_URL = "/login/"
