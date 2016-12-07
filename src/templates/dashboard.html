@@ -561,8 +561,8 @@ $(document).on("click", ".deletedRecord", function(){
                     {% for entertainment in entertainment_list %}
                         <button type="button" class="btn btn-link entertainment_list hidden sec-category">{{ entertainment.name }}</button>
                     {% endfor %}
-                    {% for other in other_list %}
-                        <button type="button" class="btn btn-link other_list hidden sec-category">{{ other.name }}</button>
+                    {% for others in others_list %}
+                        <button type="button" class="btn btn-link others_list hidden sec-category">{{ others.name }}</button>
                     {% endfor %}
 					
 				</div> <!-- /.modal-body -->

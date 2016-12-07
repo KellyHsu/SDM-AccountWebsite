@@ -21,11 +21,12 @@ def dashboard(request):
         transportation_list = SubClassification.objects.filter(member=member, classification=4)
         education_list = SubClassification.objects.filter(member=member, classification=5)
         entertainment_list = SubClassification.objects.filter(member=member, classification=6)
-        other_list = SubClassification.objects.filter(member=member, classification=7)
+        others_list = SubClassification.objects.filter(member=member, classification=7)
+        print(others_list)
     return render(request, 'dashboard.html', {"cost_list": cost_list, "food_list": food_list,
                                               "clothing_list": clothing_list, "housing_list": housing_list,
                                               "transportation_list": transportation_list, "education_list": education_list,
-                                              "entertainment_list": entertainment_list, "other_list": other_list})
+                                              "entertainment_list": entertainment_list, "others_list": others_list})
 
 
 def setting(request):
@@ -48,7 +49,7 @@ def setting(request):
         c6 = Classification.objects.filter(classification_type='entertainment').first()
         entertainment_list = SubClassification.objects.filter(member=member, classification=c6)
         c7 = Classification.objects.filter(classification_type='others').first()
-        other_list = SubClassification.objects.filter(member=member, classification=c7)
+        others_list = SubClassification.objects.filter(member=member, classification=c7)
         
         month_budget = MonthBudget.objects.filter(member=member).first()      
         
@@ -68,7 +69,7 @@ def setting(request):
                                             "month_budget": month_budget, "food_list": food_list,
                                             "clothing_list": clothing_list, "housing_list": housing_list,
                                             "transportation_list": transportation_list, "education_list": education_list,
-                                            "entertainment_list": entertainment_list, "other_list": other_list})
+                                            "entertainment_list": entertainment_list, "others_list": others_list})
 
 
 def filter(request):
