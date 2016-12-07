@@ -201,11 +201,15 @@
 		// 按下週期性項目[確定刪除]
 		$("#table4-del-finish").click(function(){
 			var deltArr = [];
+			var commaCounter = 0;	// 用來在alert加逗點用
 			
 			$("#table4 tr td:first-child input:checked").each(function(index){
 				var deltItem = $(this).parent().next().text().trim();
 				deltArr.push( deltItem );	// 把要刪除的筆數加進陣列
+				commaCounter += 1;
 			});
+
+			commaCounter--;	// 逗號要比項目少一
 
 			//post
 			if(deltArr){
@@ -215,11 +219,21 @@
                 	data: {deltArr : deltArr},
                 	success: function(rowcontent){
                 	    var cout = "";
+
 						$.each(deltArr, function(index, value){		// 印出陣列內容
-							cout = cout + value + ';';
-							$("#table4 tr td:contains('"+value+"')").parent().remove();		// 把蘊含該值的記錄整個列刪除
+							cout = cout + value;
+							if( commaCounter > 0){
+								cout += ",";
+								commaCounter--;
+							}
+
+							$("#table4 tr td").filter(function(){
+								return $(this).text() === value;
+
+							}).parent().remove();
+							// $("#table4 tr td:contains('"+value+"')").parent().remove();		// 把蘊含該值的記錄整個列刪除
 						});
-						alert("刪除的記錄有：" + cout);
+						alert("刪除的項目有：" + cout);
                 	},
                 	error: function(){
                 	    alert("刪除週期性項目失敗")
