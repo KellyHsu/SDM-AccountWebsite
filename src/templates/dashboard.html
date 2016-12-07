@@ -265,13 +265,16 @@ $(document).ready(function() {
 
 	// 當modal的確認被按下後，會提交給分類欄位
     $( '.modal-btn.modal-submit' ).click(function(){
-        var lv1 = $( '#main-cate' ).text();
+        var mainCate = $(this).parents(".modal-content").children(".modal-header").children("h1#main-cate");
+        var lv1 = mainCate.text();
         var lv2 = $( '.btn-link.selected').text();
         if(lv2===''){
            $('#costCategory').attr("value", lv1);
         }else{
            $('#costCategory').attr("value", lv1+'-'+lv2);
         }
+
+        mainCate.text("");
     });
 
     $('#datepicker1').datepicker({
@@ -375,8 +378,8 @@ $(document).ready(function() {
 
 
 	// 實作新增次分類的動畫效果
-    $('#subCategoryAdder').click(function(){
-        $("#subCategoryAdder").hide();
+    $('.subCategoryAdder').click(function(){
+        $(".subCategoryAdder").hide();
         $('.new-sub-handler').animate({
             width: 'toggle'
         });
@@ -386,24 +389,34 @@ $(document).ready(function() {
 
     $('.btn.new-sub-handler').click(function(){
         $('.new-sub-handler').hide();
-        $("#subCategoryAdder").show();
+        $(".subCategoryAdder").show();
         $(".modal-btn").prop('disabled', false);
 
     });
 
 	// 填完新次分類要增加到選單列表中
     $('.new-sub-handler.new-sub-submit').click(function(){
-        var newSub = $('#new-sub-text').val();
+        var modalPopupID = $(this).parents(".modal.fade").attr("id");
+
+        var newSub;
+        if(modalPopupID === 'myModal-cost'){
+            newSub = $('#new-expense-sub-text');
+        }else if(modalPopupID === 'myModal-revenue'){
+            newSub = $('#new-income-sub-text');            
+        }
+
+        var newSubText = newSub.val();
+
         var classname = document.getElementById("main-cate").className;
         if(newSub){
             $.ajax({
                 url: "/createSubCategory/",
                 type:"POST",
-                data: {newSub : newSub, category : classname},
+                data: {newSub : newSubText, category : classname},
                 success: function(rowcontent){
                     $(".modal-body").append(rowcontent)
                     subCategorySelected();
-                    $('#new-sub-text').val('');
+                    newSub.val('');
                 },
                 error: function(){
                     alert("新增子分類失敗");
@@ -431,7 +444,7 @@ $(document).ready(function() {
     // 如果在選擇次分類的畫面時，按到背景的其他地方要做的事情
     $('.modal.fade').on('hidden.bs.modal', function () {
         $('.new-sub-handler').hide();   // 新增子分類的確定按鈕要隱藏
-        $("#subCategoryAdder").show();
+        $(".subCategoryAdder").show();
         $(".modal-btn").prop('disabled', false);    // 如果在新增子分類時按了背景，要把被鎖定的按鈕解鎖
     });
 
@@ -690,7 +703,7 @@ $(document).on("click", ".deletedRecord", function(){
 	                <h4 class="modal-title">請選擇子分類</h4>
 	            </div> <!-- /.modal-header -->
 
-	            <div class="modal-body" id="sectest">
+	            <div class="modal-body">
                     {% for food in food_list %}
                         <button type="button" class="btn btn-link food_list hidden sec-category">{{ food.name }}</button>
                     {% endfor %}
@@ -717,8 +730,8 @@ $(document).on("click", ".deletedRecord", function(){
                 
 	            <div class="modal-footer">
                     <div style="float: left;">
-                        <button type="button" class="btn btn-default" id="subCategoryAdder">新增子分類</button>
-                        <input type="text" id="new-sub-text" class="new-sub-handler" placeholder="請輸入次分類名稱" maxlength="10" />
+                        <button type="button" class="btn btn-default subCategoryAdder">新增子分類</button>
+                        <input type="text" id="new-expense-sub-text" class="new-sub-handler" placeholder="請輸入次分類名稱" maxlength="10" />
                         <button type="button" class="btn btn-success btn-sm new-sub-handler new-sub-submit">新增</button>
                         <button type="button" class="btn btn-danger btn-sm new-sub-handler">取消</button>
                     </div>
@@ -742,7 +755,7 @@ $(document).on("click", ".deletedRecord", function(){
                     <h4 class="modal-title">請選擇子分類</h4>
                 </div> <!-- /.modal-header -->
 
-                <div class="modal-body" id="sectest">
+                <div class="modal-body">
 
                             <!-- 要動態印出所有資料庫list 內的 button 放在這邊 -->
 
@@ -752,8 +765,8 @@ $(document).on("click", ".deletedRecord", function(){
                 
                 <div class="modal-footer">
                     <div style="float: left;">
-                        <button type="button" class="btn btn-default" id="subCategoryAdder">新增子分類</button>
-                        <input type="text" id="new-sub-text" class="new-sub-handler" placeholder="請輸入次分類名稱" maxlength="10" />
+                        <button type="button" class="btn btn-default subCategoryAdder">新增子分類</button>
+                        <input type="text" id="new-income-sub-text" class="new-sub-handler" placeholder="請輸入次分類名稱" maxlength="10" />
                         <button type="button" class="btn btn-success btn-sm new-sub-handler new-sub-submit">新增</button>
                         <button type="button" class="btn btn-danger btn-sm new-sub-handler">取消</button>
                     </div>
