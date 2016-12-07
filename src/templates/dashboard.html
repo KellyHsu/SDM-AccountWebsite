@@ -69,198 +69,37 @@ $(document).ready(function() {
     
     subCategorySelected();	// 增加次分類的selected屬性
 
-	// 主分類被點擊的時候會在modal裡面放入主分類的名稱
-    $( '#food' ).click(function() {
-        var mainCate = $(this).text();
-        $('#main-cate').text(mainCate);
-        $("#main-cate").removeClass();
-        $("#main-cate").addClass("food");
-        $('.food_list').removeClass('hidden');
-        $('.clothing_list').addClass('hidden');
-        $('.housing_list').addClass('hidden');
-        $('.transportation_list').addClass('hidden');
-        $('.education_list').addClass('hidden');
-        $('.entertainment_list').addClass('hidden');
-        $('.other_list').addClass('hidden');
-		$('.revenue_list').addClass('hidden');
-        $('.investRevenue_list').addClass('hidden');
-        $('.otherRevenue_list').addClass('hidden');
-        
-	
-	});
-	
-	// work-around方法---當"衣"被點擊時，會更改次分類內容
-    $( '#clothing' ).click(function() {
-        var mainCate = $(this).text();
-        $('#main-cate').text(mainCate);
-        $("#main-cate").removeClass();
-        $("#main-cate").addClass("clothing");
-        $('.food_list').addClass('hidden');
-        $('.clothing_list').removeClass('hidden');
-        $('.housing_list').addClass('hidden');
-        $('.transportation_list').addClass('hidden');
-        $('.education_list').addClass('hidden');
-        $('.entertainment_list').addClass('hidden');
-        $('.other_list').addClass('hidden');
-		$('.revenue_list').addClass('hidden');
-		$('.investRevenue_list').addClass('hidden');
-        $('.otherRevenue_list').addClass('hidden');
-        
-		
-		});
+	// 支出主分類被點擊的時候跳出的子分類視窗呈現
+    $(".cost-category").click(function(){
+        var categoryType = $(this).attr('id');
+        var categoryName = $(this).text();
+        var mainCate = $("#myModal-cost").find("div.modal-header").children("#main-cate");
+        mainCate.text(categoryName);    // 主分類被點擊的時候會在modal裡面放入主分類的名稱
+        mainCate.removeClass();
+        mainCate.addClass(categoryType);
 
-    $( '#housing' ).click(function() {
-        var mainCate = $(this).text();
-        $('#main-cate').text(mainCate);
-        $("#main-cate").removeClass();
-        $("#main-cate").addClass("housing");
-        $('.food_list').addClass('hidden');
-        $('.clothing_list').addClass('hidden');
-        $('.housing_list').removeClass('hidden');
-        $('.transportation_list').addClass('hidden');
-        $('.education_list').addClass('hidden');
-        $('.entertainment_list').addClass('hidden');
-        $('.other_list').addClass('hidden');
-		$('.revenue_list').addClass('hidden');
-        $('.investRevenue_list').addClass('hidden');
-        $('.otherRevenue_list').addClass('hidden');
-        
-	
-	});
+        var allButtonList = $("#myModal-cost").find("div.modal-body").children();
+        allButtonList.addClass('hidden');
+        var selectedList = "." + categoryType + "_list";
+        $(selectedList).removeClass('hidden');
 
-    $( '#transportation' ).click(function() {
-        var mainCate = $(this).text();
-        $('#main-cate').text(mainCate);
-        $("#main-cate").removeClass();
-        $("#main-cate").addClass("transportation");
-        $('.food_list').addClass('hidden');
-        $('.clothing_list').addClass('hidden');
-        $('.housing_list').addClass('hidden');
-        $('.transportation_list').removeClass('hidden');
-        $('.education_list').addClass('hidden');
-        $('.entertainment_list').addClass('hidden');
-        $('.other_list').addClass('hidden');
-    	$('.revenue_list').addClass('hidden');
-	    $('.investRevenue_list').addClass('hidden');
-        $('.otherRevenue_list').addClass('hidden');
-        
-	
-	});
+    });
 
-    $( '#education' ).click(function() {
-        var mainCate = $(this).text();
-        $('#main-cate').text(mainCate);
-        $("#main-cate").removeClass();
-        $("#main-cate").addClass("education");
-        $('.food_list').addClass('hidden');
-        $('.clothing_list').addClass('hidden');
-        $('.housing_list').addClass('hidden');
-        $('.transportation_list').addClass('hidden');
-        $('.education_list').removeClass('hidden');
-        $('.entertainment_list').addClass('hidden');
-        $('.other_list').addClass('hidden');
-    	$('.revenue_list').addClass('hidden');
-	    $('.investRevenue_list').addClass('hidden');
-        $('.otherRevenue_list').addClass('hidden');
-        
-	
-	});
+    // 收入主分類被點擊的時候跳出的子分類視窗呈現
+    $(".revenue-category").click(function(){
+        var categoryType = $(this).attr('id');
+        var categoryName = $(this).text();
+        var mainCate = $("#myModal-revenue").find("div.modal-header").children("#main-cate");
+        mainCate.text(categoryName);
+        mainCate.removeClass();
+        mainCate.addClass(categoryType);
 
-    $( '#entertainment' ).click(function() {
-        var mainCate = $(this).text();
-        $('#main-cate').text(mainCate);
-        $("#main-cate").removeClass();
-        $("#main-cate").addClass("entertainment");
-        $('.food_list').addClass('hidden');
-        $('.clothing_list').addClass('hidden');
-        $('.housing_list').addClass('hidden');
-        $('.transportation_list').addClass('hidden');
-        $('.education_list').addClass('hidden');
-        $('.entertainment_list').removeClass('hidden');
-        $('.other_list').addClass('hidden');
-    	$('.revenue_list').addClass('hidden');
-	    $('.investRevenue_list').addClass('hidden');
-        $('.otherRevenue_list').addClass('hidden');
-        
-	});
+        var allButtonList = $("#myModal-cost").find("div.modal-body").children();
+        allButtonList.addClass('hidden');
+        var selectedList = "." + categoryType + "_list";
+        $(selectedList).removeClass('hidden');
 
-    $( '#other' ).click(function() {
-        var mainCate = $(this).text();
-        $('#main-cate').text(mainCate);
-        $("#main-cate").removeClass();
-        $("#main-cate").addClass("others");
-        $('.food_list').addClass('hidden');
-        $('.clothing_list').addClass('hidden');
-        $('.housing_list').addClass('hidden');
-        $('.transportation_list').addClass('hidden');
-        $('.education_list').addClass('hidden');
-        $('.entertainment_list').addClass('hidden');
-        $('.other_list').removeClass('hidden');
-    	$('.revenue_list').addClass('hidden');
-		$('.investRevenue_list').addClass('hidden');
-        $('.otherRevenue_list').addClass('hidden');
-        
-	});
-	
-	
-		// 主分類被點擊的時候會在modal裡面放入主分類的名稱
-    $( '#revenue' ).click(function() {
-        var mainCate = $(this).text();
-        $('#main-cate').text(mainCate);
-        $("#main-cate").removeClass();
-        $("#main-cate").addClass("revenue");
-    
-   	    $('.food_list').addClass('hidden');
-        $('.clothing_list').addClass('hidden');
-        $('.housing_list').addClass('hidden');
-        $('.transportation_list').addClass('hidden');
-        $('.education_list').addClass('hidden');
-        $('.entertainment_list').addClass('hidden');
-        $('.other_list').addClass('hidden');
-        $('.investRevenue_list').addClass('hidden');
-        $('.otherRevenue_list').addClass('hidden');
-        $('.revenue_list').removeClass('hidden');
-        
-		});
-	
-	    $( '#investRevenue' ).click(function() {
-        var mainCate = $(this).text();
-        $('#main-cate').text(mainCate);
-        $("#main-cate").removeClass();
-        $("#main-cate").addClass("investRevenue");
-    
-   	    $('.food_list').addClass('hidden');
-        $('.clothing_list').addClass('hidden');
-        $('.housing_list').addClass('hidden');
-        $('.transportation_list').addClass('hidden');
-        $('.education_list').addClass('hidden');
-        $('.entertainment_list').addClass('hidden');
-        $('.other_list').addClass('hidden');
-	    $('.otherRevenue_list').addClass('hidden');
-		$('.revenue_list').addClass('hidden');
-		$('.investRevenue_list').removeClass('hidden');
-        
-		});
-	
-	    $( '#otherRevenue' ).click(function() {
-        var mainCate = $(this).text();
-        $('#main-cate').text(mainCate);
-        $("#main-cate").removeClass();
-        $("#main-cate").addClass("otherRevenue");
-    
-   	    $('.food_list').addClass('hidden');
-        $('.clothing_list').addClass('hidden');
-        $('.housing_list').addClass('hidden');
-        $('.transportation_list').addClass('hidden');
-        $('.education_list').addClass('hidden');
-        $('.entertainment_list').addClass('hidden');
-        $('.other_list').addClass('hidden');
-        $('.revenue_list').addClass('hidden');
-		$('.investRevenue_list').addClass('hidden');
-		$('.otherRevenue_list').removeClass('hidden');
-        
-		});
-	
+    });
 	
 
 	// 當modal的確認被按下後，會提交給分類欄位
