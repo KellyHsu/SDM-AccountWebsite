@@ -21,7 +21,7 @@ def register(request):
             c5, created5 = Classification.objects.get_or_create(classification_type='education')
             c6, created6 = Classification.objects.get_or_create(classification_type='entertainment')
             c7, created7 = Classification.objects.get_or_create(classification_type='others')
-            c8, created8 = Classification.objects.get_or_create(classification_type='revenue')
+            c8, created8 = Classification.objects.get_or_create(classification_type='general_revenue')
             c9, created9 = Classification.objects.get_or_create(classification_type='invest_revenue')
             c10, created10 = Classification.objects.get_or_create(classification_type='other_revenue')
             Budget.objects.create(budget=0, reminder=0, classification=c1, member=member, is_reminded=False)

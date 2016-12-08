@@ -94,7 +94,7 @@ $(document).ready(function() {
         mainCate.removeClass();
         mainCate.addClass(categoryType);
 
-        var allButtonList = $("#myModal-cost").find("div.modal-body").children();
+        var allButtonList = $("#myModal-revenue").find("div.modal-body").children();
         allButtonList.addClass('hidden');
         var selectedList = "." + categoryType + "_list";
         $(selectedList).removeClass('hidden');
@@ -165,8 +165,6 @@ $(document).ready(function() {
         var memo = $('#memo').val();
         var record_type = $('#recordType').val();
         if(amount){
-            if(record_type === 'expense'){      // 後端之後把這層拿掉
-
                 $.ajax({
                     url: "/createReceipt/",
                     type:"POST",
@@ -175,11 +173,13 @@ $(document).ready(function() {
                         date: $('#datepicker1').val()},
                     success: function(rowcontent){
                         if(record_type === 'expense'){
+                            rowcontent = rowcontent.replace("food-", "食-").replace("clothing-", "衣-").replace("housing-", "住-").replace("transportation-", "行-").replace("education-", "育-").replace("entertainment-", "樂-").replace("others-", "其-");
                             $('#cost-list').append(rowcontent);
                             $('#costCategory').attr("value", "食-早餐");
 
                         }else if(record_type === 'income'){
-                            // $('#revenue-list').append(rowcontent);   // 我猜後端應該要這樣寫?
+                            rowcontent = rowcontent.replace("general_revenue-", "收入-").replace("invest_revenue-", "投資-").replace("other_revenue-", "其他-");
+                            $('#revenue-list').append(rowcontent);
                             $('#costCategory').attr("value", "一般收入");
                         }
                         $('#amount').val('');
@@ -196,19 +196,6 @@ $(document).ready(function() {
                         alert("記帳失敗");
                     }
                 });
-
-            }   // end condition record_type === 'expense'
-            else if(record_type === 'income'){
-                if(memo){
-                   $('#revenue-list').append("<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>"+ category + "-" + memo + ": " + amount +"</a></td></tr>");
-                }else{
-                    $('#revenue-list').append("<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>"+ category + ": " + amount +"</a></td></tr>");
-                }
-                $('#amount').val('');
-                $('#memo').val('');
-
-            }   // end condition record_type === 'income'
-
         }else{
             alert("支出金額為必填");
 
@@ -238,15 +225,16 @@ $(document).ready(function() {
         var modalPopupID = $(this).parents(".modal.fade").attr("id");
 
         var newSub;
+        var classname;
         if(modalPopupID === 'myModal-cost'){
             newSub = $('#new-expense-sub-text');
+            classname = $("#myModal-cost").find("div.modal-header").children("#main-cate").attr('class');
         }else if(modalPopupID === 'myModal-revenue'){
-            newSub = $('#new-income-sub-text');            
+            newSub = $('#new-income-sub-text');       
+            classname = $("#myModal-revenue").find("div.modal-header").children("#main-cate").attr('class');     
         }
 
         var newSubText = newSub.val();
-
-        var classname = document.getElementById("main-cate").className;
         if(newSub){
             $.ajax({
                 url: "/createSubCategory/",
@@ -432,10 +420,10 @@ $(document).on("click", ".deletedRecord", function(){
                                         <td>
                                             <span class='glyphicon glyphicon-file text-success'></span>
                                             {% if cost_receipt.remark %}
-                                                <a href='#'>{{cost_receipt.subclassification.classification.classificaion_type}}-{{cost_receipt.subclassification.name}}-{{cost_receipt.remark}}: {{cost_receipt.money}}
+                                                <a href='#'>{% if cost_receipt.subclassification.classification.classification_type == "food" %}食{% elif cost_receipt.subclassification.classification.classification_type == "clothing" %}衣{% elif cost_receipt.subclassification.classification.classification_type == "housing" %}住{% elif cost_receipt.subclassification.classification.classification_type == "transportation" %}行{% elif cost_receipt.subclassification.classification.classification_type == "education" %}育{% elif cost_receipt.subclassification.classification.classification_type == "entertainment" %}樂{% else %}其{% endif %}-{{cost_receipt.subclassification.name}}-{{cost_receipt.remark}}: {{cost_receipt.money}}
 												</a>
                                             {% else %}
-                                                <a href='#'>{{cost_receipt.subclassification.classification.classificaion_type}}-{{cost_receipt.subclassification.name}}: {{cost_receipt.money}}
+                                                <a href='#'>{% if cost_receipt.subclassification.classification.classification_type == "food" %}食{% elif cost_receipt.subclassification.classification.classification_type == "clothing" %}衣{% elif cost_receipt.subclassification.classification.classification_type == "housing" %}住{% elif cost_receipt.subclassification.classification.classification_type == "transportation" %}行{% elif cost_receipt.subclassification.classification.classification_type == "education" %}育{% elif cost_receipt.subclassification.classification.classification_type == "entertainment" %}樂{% else %}其{% endif %}-{{cost_receipt.subclassification.name}}: {{cost_receipt.money}}
 												</a>
                                             {% endif %}
                                             <span style='float: right; margin-right: 10px; color: #9D9D9D;'></span>
@@ -457,9 +445,22 @@ $(document).on("click", ".deletedRecord", function(){
                         </div>
                         <div id="collapseTwo" class="panel-collapse collapse in">
                             <div class="panel-body">
-                                
 								<table class="table" id="revenue-list">
-
+                                    {% for revenue_receipt in revenue_list %}
+                                    <tr>
+                                        <td>
+                                            <span class='glyphicon glyphicon-file text-success'></span>
+                                            {% if revenue_receipt.remark %}
+                                                <a href='#'>{% if revenue_receipt.subclassification.classification.classification_type == "general_revenue" %}收入{% elif revenue_receipt.subclassification.classification.classification_type == "invest_revenue" %}投資{% else %}其他{% endif %}-{{revenue_receipt.subclassification.name}}-{{revenue_receipt.remark}}: {{revenue_receipt.money}}
+												</a>
+                                            {% else %}
+                                                <a href='#'>{% if revenue_receipt.subclassification.classification.classification_type == "general_revenue" %}收入{% elif revenue_receipt.subclassification.classification.classification_type == "invest_revenue" %}投資{% else %}其他{% endif %}-{{revenue_receipt.subclassification.name}}: {{revenue_receipt.money}}
+												</a>
+                                            {% endif %}
+                                            <span style='float: right; margin-right: 10px; color: #9D9D9D;'></span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
                                 </table>
                             </div>
                         </div>
@@ -502,7 +503,7 @@ $(document).on("click", ".deletedRecord", function(){
                                     <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="education" style="background: #BA736A no-repeat;">育</button>
                                     <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="entertainment" style="background: url('../static/image/yellow.png') no-repeat;">樂</button>
                                     <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="others" style="background: url('../static/image/brown.png') no-repeat;">其</button>
-                                    <button type="button" class="btn btn-default btn-lg revenue-category" data-toggle="modal" data-target="#myModal-revenue" id="revenue" style="background: #8D8F76 no-repeat;">一般收入</button>
+                                    <button type="button" class="btn btn-default btn-lg revenue-category" data-toggle="modal" data-target="#myModal-revenue" id="general_revenue" style="background: #8D8F76 no-repeat;">一般收入</button>
                                     <button type="button" class="btn btn-default btn-lg revenue-category" data-toggle="modal" data-target="#myModal-revenue" id="invest_revenue" style="background: #BAB6AF no-repeat;">投資收入</button>
                                     <button type="button" class="btn btn-default btn-lg revenue-category" data-toggle="modal" data-target="#myModal-revenue" id="other_revenue" style="background: #E19F81 no-repeat;">其他</button>
                                 </div>
@@ -595,11 +596,15 @@ $(document).on("click", ".deletedRecord", function(){
                 </div> <!-- /.modal-header -->
 
                 <div class="modal-body">
-
-                            <!-- 要動態印出所有資料庫list 內的 button 放在這邊 -->
-
-                    <button type="button" class="btn btn-link sec-category">店租</button>
-                    <button type="button" class="btn btn-link sec-category">賣蛋餅</button>
+                    {% for general_revenue in general_revenue_list %}
+                        <button type="button" class="btn btn-link general_revenue_list hidden sec-category">{{ general_revenue.name }}</button>
+                    {% endfor %}
+                    {% for invest_revenue in invest_revenue_list %}
+                        <button type="button" class="btn btn-link invest_revenue_list hidden sec-category">{{ invest_revenue.name }}</button>
+                    {% endfor %}
+                    {% for other_revenue in other_revenue_list %}
+                        <button type="button" class="btn btn-link other_revenue_list hidden sec-category">{{ other_revenue.name }}</button>
+                    {% endfor %}
                 </div> <!-- /.modal-body -->
                 
                 <div class="modal-footer">

@@ -21,7 +21,7 @@ class Classification(models.Model):
         ('education', 'education'),
         ('entertainment', 'entertainment'),
         ('others', 'others'),
-        ('revenue', 'revenue'),
+        ('general_revenue', 'general_revenue'),
         ('invest_revenue', 'invest_revenue'),
         ('other_revenue', 'other_revenue'),
     )

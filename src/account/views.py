@@ -14,6 +14,7 @@ def dashboard(request):
     else:
         member = Member.objects.filter(user__username=request.user).first()
         cost_list = Receipt.objects.filter(member=member, date=date.today(), incomeandexpense__income_type="expense")
+        revenue_list = Receipt.objects.filter(member=member, date=date.today(), incomeandexpense__income_type="income")
 
         food_list = SubClassification.objects.filter(member=member, classification=1)
         clothing_list = SubClassification.objects.filter(member=member, classification=2)
@@ -22,11 +23,22 @@ def dashboard(request):
         education_list = SubClassification.objects.filter(member=member, classification=5)
         entertainment_list = SubClassification.objects.filter(member=member, classification=6)
         others_list = SubClassification.objects.filter(member=member, classification=7)
-        print(others_list)
-    return render(request, 'dashboard.html', {"cost_list": cost_list, "food_list": food_list,
+
+
+        c8 = Classification.objects.filter(classification_type='general_revenue').first()
+        c9 = Classification.objects.filter(classification_type='invest_revenue').first()
+        c10 = Classification.objects.filter(classification_type='other_revenue').first()
+        general_revenue_list = SubClassification.objects.filter(member=member, classification=c8)
+        invest_revenue_list = SubClassification.objects.filter(member=member, classification=c9)
+        other_revenue_list = SubClassification.objects.filter(member=member, classification=c10)
+
+        print(invest_revenue_list)
+    return render(request, 'dashboard.html', {"cost_list": cost_list, "revenue_list": revenue_list, "food_list": food_list,
                                               "clothing_list": clothing_list, "housing_list": housing_list,
                                               "transportation_list": transportation_list, "education_list": education_list,
-                                              "entertainment_list": entertainment_list, "others_list": others_list})
+                                              "entertainment_list": entertainment_list, "others_list": others_list,
+                                              "general_revenue_list": general_revenue_list, "invest_revenue_list": invest_revenue_list,
+                                              "other_revenue_list": other_revenue_list})
 
 
 def setting(request):
@@ -80,7 +92,7 @@ def filter(request):
 
 def create_receipt(request):
     if request.method == 'POST':
-        # print(request.POST)
+        print(request.POST)
         subclass = SubClassification.objects.filter(name=request.POST["category"].split("-", 1)[-1]).first()
         payment = Payment.objects.filter(payment_type=request.POST["payment"]).first()
         incomeandexpense = IncomeAndExpense.objects.filter(income_type=request.POST["record_type"]).first()
@@ -95,12 +107,12 @@ def create_receipt(request):
 
         cost_rowcontent = ""
         if new_receipt.remark:
-            cost_rowcontent += "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>" \
+            cost_rowcontent += "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'> " \
                                "{0}-{1}-{2}: {3}</a></td></tr>".format(new_receipt.subclassification.classification.classification_type.encode('utf-8'),
                                                                        new_receipt.subclassification.name.encode('utf-8'),
                                                                        new_receipt.remark.encode('utf-8'), new_receipt.money)
         else:
-            cost_rowcontent += "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>" \
+            cost_rowcontent += "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'> " \
                                "{0}-{1}: {2}</a></td></tr>".format(new_receipt.subclassification.classification.classification_type.encode('utf-8'),
                                                                    new_receipt.subclassification.name.encode('utf-8'),
                                                                    new_receipt.money)
