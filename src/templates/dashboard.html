@@ -281,7 +281,8 @@ $(document).ready(function() {
         $(".modal-btn").prop('disabled', false);    // 如果在新增子分類時按了背景，要把被鎖定的按鈕解鎖
     });
 
-    $("#cost-list tr td")
+    // 左方支出清單的滑鼠事件
+    $("#cost-list tr td, #revenue-list tr td")
     .mouseenter(function(){
         $(this).children("span:last-child").text("×");
         $(this).children("span:last-child").addClass("deletedRecord");
@@ -321,6 +322,8 @@ $(document).on("click", ".deletedRecord", function(){
     var amount = recordArray[1];
     var recordArray1 = recordArray[0].split("-");
     var category = recordArray1[0];
+
+    // 把中文的分類轉換回英文傳回server.
     switch(category){
         case "食":
             category="food";
@@ -339,6 +342,15 @@ $(document).on("click", ".deletedRecord", function(){
             break;
         case "樂":
             category="entertainment";
+            break;
+        case "收入":
+            category="general_revenue";
+            break;
+        case "投資":
+            category="invest_revenue";
+            break;
+        case "其他":
+            category="other_revenue";
             break;
         default:
             category="others";
