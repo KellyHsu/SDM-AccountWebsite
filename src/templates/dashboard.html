@@ -310,14 +310,55 @@ function defaultHiding(){
 $(document).on("click", ".deletedRecord", function(){
     var record = $(this).parents("tr");
     var recordValue = $(this).prev().text().trim();
-
+    
+    var recordArray = recordValue.split(":");
+    var amount = recordArray[1];
+    var recordArray1 = recordArray[0].split("-");
+    var category = recordArray1[0];
+    switch(category){
+        case "食":
+            category="food";
+            break;
+        case "衣":
+            category="clothing";
+            break;
+        case "住":
+            category="housing";
+            break;
+        case "行":
+            category="transportation";
+            break;
+        case "育":
+            category="education";
+            break;
+        case "樂":
+            category="entertainment";
+            break;
+        default:
+            category="others";
+            break;
+    }
+    var subcategory = recordArray1[1];
+    var memo = "";
+    if(recordArray1.length == 3){
+        memo = recordArray1[2];
+    }
     var result = confirm("你真的要刪掉：" + recordValue + "嗎？");
     if(result){
-        record.remove();    // 如果要做post做在這邊
-        alert("刪除了" + recordValue);
-    }else{
+        $.ajax({
+            url: "/deleteReceipt/",
+            type:"POST",
+            data: {amount : amount, subcategory : subcategory, category : category,
+                memo: memo, date: $('#datepicker1').val()},
+            success: function(rowcontent){
+                record.remove();
+                alert("刪除了" + recordValue);
+            },
+            error: function(){
+                alert("刪除" + recordValue+"失敗");
+            }                
+        });
     }
-
 }); // end document on click class='deletedRecord'
 
 

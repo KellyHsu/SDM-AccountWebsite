@@ -119,6 +119,22 @@ def create_receipt(request):
     return HttpResponse(cost_rowcontent)
 
 
+def delete_receipt(request):
+
+    if request.method == 'POST':
+        print(request.POST)
+        member = Member.objects.filter(user__username=request.user).first()
+        classification = Classification.objects.filter(classification_type=request.POST["category"]).first()
+        subclass = SubClassification.objects.filter(name=request.POST["subcategory"], member=member, classification=classification).first()
+        receipt = Receipt.objects.filter(money=request.POST["amount"], remark=request.POST["memo"],
+                                        date=datetime.strptime(request.POST["date"], "%Y/%m/%d"),
+                                        subclassification=subclass, member=member)
+        if receipt is not None:
+            # print(receipt)
+            receipt.delete()
+    return HttpResponse(receipt)
+
+
 def create_subClassification(request):
 
     if request.method == 'POST':
