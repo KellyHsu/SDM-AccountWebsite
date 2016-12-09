@@ -172,12 +172,16 @@ $(document).ready(function() {
         var record_type = $('#recordType').val();
         if(amount){
                 $.ajax({
+                    dataType: 'json',
                     url: "/createReceipt/",
                     type:"POST",
                     data: {amount : amount, category : category,
                         memo: memo, record_type: record_type, payment: $('#payment').val(),
                         date: $('#datepicker1').val()},
-                    success: function(rowcontent){
+                    success: function(result){
+                        var rowcontent = result.rowcontent;
+                        var notificationMessage = result.budget_check;
+
                         if(record_type === 'expense'){
                             rowcontent = rowcontent.replace("food-", "食-").replace("clothing-", "衣-").replace("housing-", "住-").replace("transportation-", "行-").replace("education-", "育-").replace("entertainment-", "樂-").replace("others-", "其-");
                             $('#cost-list').append(rowcontent);
@@ -190,6 +194,8 @@ $(document).ready(function() {
                         }
                         $('#amount').val('');
                         $('#memo').val('');
+
+                        checkNotificationBellMessage(notificationMessage)
                     },
                     error: function(){
                         if(record_type === 'expense'){
@@ -279,6 +285,12 @@ $(document).ready(function() {
         $('.new-sub-handler').hide();   // 新增子分類的確定按鈕要隱藏
         $(".subCategoryAdder").show();
         $(".modal-btn").prop('disabled', false);    // 如果在新增子分類時按了背景，要把被鎖定的按鈕解鎖
+    });
+
+    // 處理按下通知鈴鐺後的改變
+    $("#notification-bell").click(function(){
+        $(".fa-bell").removeClass("notification-icon");
+        $(".fa-bell").removeAttr("data-count");
     });
 
 
@@ -384,6 +396,38 @@ $(document).on({
 }, "#cost-list tr td, #revenue-list tr td");    // end document on mouse event.
 
 
+// 檢查是否有通知訊息需要發出
+function checkNotificationBellMessage(message){
+    console.log("訊息" + message);
+    if(message === "正常")    // 如果檢查正常不用警告
+        return;
+    else if(message === null || message === "") // 如果沒訊息
+        return;
+    else{
+        if( $(".dropdown-alerts").children().length > 0 ){
+            if( $(".fa-bell").hasClass("notification-icon") ){
+               var count = parseInt( $(".fa-bell").attr("data-count") );
+                count = count + 1;
+                $(".fa-bell").attr("data-count", count);
+            }else{
+                $(".fa-bell").addClass("notification-icon");
+                $(".fa-bell").attr("data-count","1");
+            }
+
+            $(".dropdown-alerts").prepend("<li><a href='#'><div><i class='fa fa-comment fa-fw'></i>" 
+                                + message + "</div></a></li><li class='divider'></li>");
+        }else{
+            $(".fa-bell").addClass("notification-icon");
+            $(".fa-bell").attr("data-count","1");
+
+            $(".dropdown-alerts").append("<li><a href='#'><div><i class='fa fa-comment fa-fw'></i>" 
+                                    + message + "</div></a></li>");
+            $(".dropdown-alerts").append("<li class='divider'></li><li><a href='#'><strong>Clear All Alerts</strong>" +
+                                    "<i class='fa fa-angle-right'></i></a></li>");
+        }   
+    }
+}
+
 </script>
 
 </head>
@@ -403,32 +447,10 @@ $(document).on({
 
                 <!-- start bell dropdown -->
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="color: white;">
-                        <i data-count="2" class="fa fa-bell fa-fw notification-icon"></i> <i class="fa fa-caret-down"></i>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="color: white;" id="notification-bell">
+                        <i class="fa fa-bell fa-fw"></i> <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-alerts">
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-comment fa-fw"></i> 以後會放提醒內容
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-comment fa-fw"></i> 以後會放提醒內容
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <strong>See All Alerts</strong>
-                                <i class="fa fa-angle-right"></i>
-                            </a>
-                        </li>
                     </ul><!-- /.dropdown-alerts -->
                 </li><!-- /.dropdown -->
 

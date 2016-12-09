@@ -117,7 +117,19 @@ def create_receipt(request):
                                "{0}-{1}: {2}</a></td></tr>".format(new_receipt.subclassification.classification.classification_type.encode('utf-8'),
                                                                    new_receipt.subclassification.name.encode('utf-8'),
                                                                    new_receipt.money)
-    return HttpResponse(cost_rowcontent)
+        
+        # 只有支出才要計算預算
+        # budget_check_result = ""
+        # print(incomeandexpense)
+        # if incomeandexpense == 'expense':  
+            budget_check_result = budget_calculate(member)
+            print(budget_check_result)
+
+
+
+        message = {"rowcontent" : cost_rowcontent, "budget_check" : budget_check_result}
+
+    return HttpResponse( json.JSONEncoder().encode(message) )
 
 
 def delete_receipt(request):
@@ -398,3 +410,59 @@ def delete_subClassification_in_settingPage(request):
         member = Member.objects.filter(user__username=request.user).first()
         delsub = SubClassification.objects.filter(name=request.POST["name"], member=member).delete()
         return HttpResponse(delsub)
+
+
+# 計算當月的各項預算和總預算是否有超過上限
+def budget_calculate(member):
+    c1 = Classification.objects.filter(classification_type='food').first()
+    c2 = Classification.objects.filter(classification_type='clothing').first()
+    c3 = Classification.objects.filter(classification_type='housing').first()
+    c4 = Classification.objects.filter(classification_type='transportation').first()
+    c5 = Classification.objects.filter(classification_type='education').first()
+    c6 = Classification.objects.filter(classification_type='entertainment').first()
+    c7 = Classification.objects.filter(classification_type='others').first()
+
+    monthly_budget = MonthBudget.objects.filter(member=member).first()      
+        
+    food_budget_food = Budget.objects.filter(member=member, classification=c1).first()
+    clothing_budget_clothing = Budget.objects.filter(member=member, classification=c2).first()
+    housing_budget = Budget.objects.filter(member=member, classification=c3).first()
+    transportation_budget = Budget.objects.filter(member=member, classification=c4).first()
+    education_budget = Budget.objects.filter(member=member, classification=c5).first()
+    entertainment_budget = Budget.objects.filter(member=member, classification=c6).first()
+    other_budget = Budget.objects.filter(member=member, classification=c7).first()
+
+    currentDate = datetime.now()
+    if(currentDate.month == 2):
+        dayOfMonth = 28
+    elif(currentDate.month == 4 or currentDate.month == 6 or currentDate.month == 9 or currentDate.month == 11):
+        dayOfMonth = 30
+    else:
+        dayOfMonth = 31
+
+    startDay = date(currentDate.year, currentDate.month, 1)
+    lastDay = date(currentDate.year, currentDate.month, dayOfMonth)
+
+    receipt = Receipt.objects.all().filter(date__range=["2016-12-01", "2016-12-31"] , member=member , incomeandexpense__income_type="expense")
+
+    sumOfExpense = 0
+    for entry in receipt:
+        sumOfExpense += entry.money
+
+    alertMessage = ""
+    monthlyBudget = monthly_budget.budget
+    alertThreshold = monthly_budget.reminder
+
+    # print(sumOfExpense)
+
+    if(sumOfExpense > monthlyBudget):
+        alertMessage = "警告：預算已超過當月預算"
+    elif(sumOfExpense > alertThreshold):
+        alertMessage = "警告：本月花費已超過" + alertThreshold
+    else:
+        alertMessage = "正常"
+
+    
+    return alertMessage
+
+
