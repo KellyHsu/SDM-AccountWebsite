@@ -6,6 +6,7 @@ from member.models import Member
 from datetime import datetime, date
 from django.contrib.auth.models import User
 from django.db.models import Q
+from django.http import JsonResponse
 
 
 def dashboard(request):
@@ -162,19 +163,34 @@ def get_date(request):
 
         cost_receipts = Receipt.objects.all().filter(date=date, member=member, incomeandexpense__income_type="expense")
         cost_rowcontent = ""
-        for receipt in cost_receipts:
+        for cost_receipt in cost_receipts:
 
-            if receipt.remark:
-                cost_rowcontent += "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>" \
-                            "{0}-{1}-{2}: {3}</a></td></tr>".format(receipt.subclassification.classification.classification_type.encode('utf-8'),
-                                                                    receipt.subclassification.name.encode('utf-8'),
-                                                                    receipt.remark.encode('utf-8'), receipt.money)
+            if cost_receipt.remark:
+                cost_rowcontent += "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'> " \
+                            "{0}-{1}-{2}: {3}</a></td></tr>".format(cost_receipt.subclassification.classification.classification_type.encode('utf-8'),
+                                                                    cost_receipt.subclassification.name.encode('utf-8'),
+                                                                    cost_receipt.remark.encode('utf-8'), cost_receipt.money)
             else:
-                cost_rowcontent += "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>" \
-                                   "{0}-{1}: {2}</a></td></tr>".format(receipt.subclassification.classification.classification_type.encode('utf-8'),
-                                                                       receipt.subclassification.name.encode('utf-8'),
-                                                                       receipt.money)
-    return HttpResponse(cost_rowcontent)
+                cost_rowcontent += "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'> " \
+                                   "{0}-{1}: {2}</a></td></tr>".format(cost_receipt.subclassification.classification.classification_type.encode('utf-8'),
+                                                                       cost_receipt.subclassification.name.encode('utf-8'),
+                                                                       cost_receipt.money)
+        revenue_receipts = Receipt.objects.all().filter(date=date, member=member, incomeandexpense__income_type="income")
+        revenue_rowcontent = ""
+        for revenue_receipt in revenue_receipts:
+
+            if revenue_receipt.remark:
+                revenue_rowcontent += "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'> " \
+                            "{0}-{1}-{2}: {3}</a></td></tr>".format(revenue_receipt.subclassification.classification.classification_type.encode('utf-8'),
+                                                                    revenue_receipt.subclassification.name.encode('utf-8'),
+                                                                    revenue_receipt.remark.encode('utf-8'), revenue_receipt.money)
+            else:
+                revenue_rowcontent += "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'> " \
+                                   "{0}-{1}: {2}</a></td></tr>".format(revenue_receipt.subclassification.classification.classification_type.encode('utf-8'),
+                                                                       revenue_receipt.subclassification.name.encode('utf-8'),
+                                                                       revenue_receipt.money)
+    return  JsonResponse({'cost_rowcontent': cost_rowcontent, 'revenue_rowcontent': revenue_rowcontent})
+    #return HttpResponse(cost_rowcontent)
 
 
 def change_password(request):

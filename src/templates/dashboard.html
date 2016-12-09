@@ -134,9 +134,15 @@ $(document).ready(function() {
                 url: "/getNewDate/",
                 type:"POST",
                 data: {date : newDate},
-                success: function(cost_rowcontent){
+                success: function(data){
+                    var cost_rowcontent = data['cost_rowcontent'];
+                    var revenue_rowcontent = data['revenue_rowcontent'];
                     $("#cost-list tbody tr").remove();
+                    cost_rowcontent = cost_rowcontent.replace(/food-/g, "食-").replace(/clothing-/g, "衣-").replace(/housing-/g, "住-").replace(/transportation-/g, "行-").replace(/education-/g, "育-").replace(/entertainment-/g, "樂-").replace(/others-/g, "其-");
                     $('#cost-list').append(cost_rowcontent);
+                    $("#revenue-list tbody tr").remove();
+                    revenue_rowcontent = revenue_rowcontent.replace(/general_revenue-/g, "收入-").replace(/invest_revenue-/g, "投資-").replace(/other_revenue-/g, "其他-");
+                    $('#revenue-list').append(revenue_rowcontent);
                 },
                 error: function(){
                     alert("抓新日期失敗")
