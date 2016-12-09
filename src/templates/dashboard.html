@@ -131,14 +131,18 @@ $(document).ready(function() {
         var newDate = $('#datepicker1').val();
         if(newDate){
             $.ajax({
+                dataType: 'json',
                 url: "/getNewDate/",
                 type:"POST",
                 data: {date : newDate},
-                success: function(cost_rowcontent){
+                success: function(rowcontent){
                     $("#cost-list tbody tr").remove();
-                    $('#cost-list').append(cost_rowcontent);
+                    $('#cost-list').append(rowcontent.cost);
+                    $("#revenue-list tbody tr").remove();
+                    $("#revenue-list").append(rowcontent.revenue);
                 },
-                error: function(){
+                error: function(rowcontent, status){
+                    console.log(status);
                     alert("抓新日期失敗")
                 }
             });
@@ -275,17 +279,6 @@ $(document).ready(function() {
         $(".modal-btn").prop('disabled', false);    // 如果在新增子分類時按了背景，要把被鎖定的按鈕解鎖
     });
 
-    // 左方支出清單的滑鼠事件
-    $("#cost-list tr td, #revenue-list tr td")
-    .mouseenter(function(){
-        $(this).children("span:last-child").text("×");
-        $(this).children("span:last-child").addClass("deletedRecord");
-    })
-    .mouseleave(function(){
-        $(this).children("span:last-child").empty();
-        $(this).children("span:last-child").removeClass("deletedRecord");
-    });
-
 
 }); // end document ready
 
@@ -372,6 +365,21 @@ $(document).on("click", ".deletedRecord", function(){
         });
     }
 }); // end document on click class='deletedRecord'
+
+
+// 左方支出與收入清單的滑鼠事件 （把滑入進入和離開事件一起寫）
+$(document).on({
+    mouseenter: function(){
+        //stuff
+        $(this).children("span:last-child").text("×");
+        $(this).children("span:last-child").addClass("deletedRecord");
+    },
+    mouseleave: function(){
+        //stuff
+        $(this).children("span:last-child").empty();
+        $(this).children("span:last-child").removeClass("deletedRecord");
+    }
+}, "#cost-list tr td, #revenue-list tr td");    // end document on mouse event.
 
 
 </script>
