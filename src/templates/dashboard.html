@@ -34,6 +34,8 @@
     <link href="{% static 'css/bootstrap-datepicker.css' %}" rel="stylesheet">
     <link href="{% static 'css/datepicker.css' %}" rel="stylesheet">
 
+        <!-- bootstrap notification bell -->
+    <link href="{% static 'dist/css/bootstrap-notifications.min.css' %}" rel="stylesheet">
 
     	<!-- Custom Fonts -->
     <link href="{% static 'font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
@@ -402,7 +404,7 @@ $(document).on({
                 <!-- start bell dropdown -->
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="color: white;">
-                        <i class="fa fa-bell fa-fw"></i> <i class="fa fa-caret-down"></i>
+                        <i data-count="2" class="fa fa-bell fa-fw notification-icon"></i> <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-alerts">
                         <li>
