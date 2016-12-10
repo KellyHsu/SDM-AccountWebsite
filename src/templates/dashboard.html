@@ -195,7 +195,9 @@ $(document).ready(function() {
                         $('#amount').val('');
                         $('#memo').val('');
 
-                        checkNotificationBellMessage(notificationMessage)
+                        checkNotificationBellMessage(notificationMessage.monthly);
+                        checkNotificationBellMessage(notificationMessage.class);
+
                     },
                     error: function(){
                         if(record_type === 'expense'){
@@ -287,10 +289,29 @@ $(document).ready(function() {
         $(".modal-btn").prop('disabled', false);    // 如果在新增子分類時按了背景，要把被鎖定的按鈕解鎖
     });
 
-    // 處理按下通知鈴鐺後的改變
-    $("#notification-bell").click(function(){
-        $(".fa-bell").removeClass("notification-icon");
-        $(".fa-bell").removeAttr("data-count");
+
+// 處理從Django - views pass的data
+// 
+// 
+    var periodic_notification_list =  {{ periodic_notification_list | safe }} ;
+    var notification_len = periodic_notification_list.length;
+    if(notification_len > 0){
+        $(".fa-bell").addClass('notification-icon');
+        $(".fa-bell").attr("data-count", notification_len);
+    }
+
+    // 這一段原本是要放在 498~508行備註解掉的地方
+    // 但因為那邊每個物件中還要再塞入<li class='divider'></li>
+    // 才想要改來上面動態加DOM
+    // 
+    $.each( periodic_notification_list, function(index, element){
+        if(index === (periodic_notification_list.length - 1) ){
+            $(".dropdown-alerts").append("<li><a href='#'><div><i class='fa fa-comment fa-fw'></i>" + element);
+        
+        }else{
+            $(".dropdown-alerts").append("<li><a href='#'><div><i class='fa fa-comment fa-fw'></i>" + element
+                                + "</div></a></li><li class='divider'></li>");
+        }
     });
 
 
@@ -422,13 +443,39 @@ function checkNotificationBellMessage(message){
 
             $(".dropdown-alerts").append("<li><a href='#'><div><i class='fa fa-comment fa-fw'></i>" 
                                     + message + "</div></a></li>");
-            $(".dropdown-alerts").append("<li class='divider'></li><li><a href='#'><strong>Clear All Alerts</strong>" +
-                                    "<i class='fa fa-angle-right'></i></a></li>");
+            $(".dropdown-alerts").append("<li class='divider'></li><li id='clear-alert'><a href='#'><strong>清除所有警告</strong>" +
+                                    "</a></li>");
         }   
     }
 }
 
+
+// 處理按下通知鈴鐺後的改變
+$(document).on("click", "#notification-bell", function(){
+    if( $(".dropdown-alerts").children().length > 1 ){
+        $(".fa-bell").removeClass("notification-icon");
+        $(".fa-bell").removeAttr("data-count");
+
+    }else{
+		// 如果沒通知卻按下鈴鐺要有相對應文字
+        var expandedAttr = $("#notification-bell").attr("aria-expanded");
+
+        if( expandedAttr === "true" ){
+            $(".dropdown-alerts").append("<li><a href='#'><strong>目前沒有通知</strong></a></li>");
+        }else{
+            $(".dropdown-alerts").empty();	// 關閉視窗
+        }
+    }
+});
+
+$(document).on("click", "#clear-alert", function(){
+    $(".dropdown-alerts").empty();
+});
+    
+
 </script>
+
+
 
 </head>
 
@@ -451,6 +498,17 @@ function checkNotificationBellMessage(message){
                         <i class="fa fa-bell fa-fw"></i> <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-alerts">
+                        <!-- {% for notification in periodic_notification_list %}
+                            <li>
+                                <a href='#'>
+                                    <div>
+                                        <i class='fa fa-comment fa-fw'></i>
+                                        {{notification}}
+                                    </div>
+                                </a>
+                            </li>
+
+                        {% endfor %} -->
                     </ul><!-- /.dropdown-alerts -->
                 </li><!-- /.dropdown -->
 
@@ -706,7 +764,6 @@ function checkNotificationBellMessage(message){
         </div>
     </div>
     <!-- /.modal2 -->
-
 </body>
 
 </html>

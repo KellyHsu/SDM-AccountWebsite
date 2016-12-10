@@ -27,5 +27,6 @@ urlpatterns = [
     url(r'^getReceiptByWeek/$', views.getreceipt_week, name='getreceipt_week'),
     url(r'^getReceiptByMon/$', views.getreceipt_mon, name='getreceipt_mon'),
     url(r'^getReceiptByYr/$', views.getreceipt_yr, name='getreceipt_yr'),
-    url(r'^backwardTime/$', views.backwardtime, name='backwardtime')
+    url(r'^backwardTime/$', views.backwardtime, name='backwardtime'),
+    url(r'^countClassBudget/$', views.classification_budget_calculate, name='classification_budget_calculate'),
 ]
