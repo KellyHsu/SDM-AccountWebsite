@@ -3,9 +3,9 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from account.models import Receipt, SubClassification, Payment, IncomeAndExpense, Classification, CyclicalExpenditure, Budget, MonthBudget
 from member.models import Member
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from django.contrib.auth.models import User
-from django.db.models import Q
+from django.db.models import Q, Sum
 import json
 
 
@@ -88,7 +88,26 @@ def setting(request):
 def filter(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/')
-    return render(request, 'filter.html', {})
+    else:
+    	#currentDate = datetime.now()
+        #receipts = Receipt.objects.filter(member=member,date__date=datetime.date(currentDate.year, currentDate.month, currentDate.day))
+        member = Member.objects.filter(user__username=request.user).first()
+        receipts = Receipt.objects.filter(member=member,date=date.today())
+        currentDate = datetime.strftime(datetime.now(), '%Y/%m/%d')
+        totalCost = Receipt.objects.filter(member=member,date=date.today(), incomeandexpense__income_type="expense").aggregate(Sum('money'))
+        totalIncome = Receipt.objects.filter(member=member,date=date.today(), incomeandexpense__income_type="income").aggregate(Sum('money'))
+        # print type(str(totalIncome['money__sum']))
+        if str(totalIncome['money__sum']) == "None":
+            income = 0
+        else:
+            income = int(totalIncome['money_sum'])
+        if str(totalCost['money__sum']) == "None":
+            cost = 0
+        else:
+            cost = int(totalCost['money__sum'])
+        balance = income - cost
+        print balance,type(balance)
+    return render(request, 'filter.html', {"member": member, "receipts": receipts, "title": currentDate, "totalCost": cost, "totalIncome": income, "balance": balance})
 
 
 def create_receipt(request):
@@ -465,4 +484,152 @@ def budget_calculate(member):
     
     return alertMessage
 
+def getreceipt_week(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    else:
+        member = Member.objects.filter(user__username=request.user).first()
+        today = date.today()
+        weekday =  today.weekday()
+        if weekday == 2:
+            startDay = today - timedelta(days = 3)
+            endDay = today + timedelta(days = 3)
+        else:
+            forward = today + timedelta(days = 1)
+            while forward.weekday()!= 2:
+                forward = forward + timedelta(days = 1)
+            dateForward = forward
+            backward = today - timedelta(days = 1)
+            while backward.weekday() != 2:
+                backward = backward - timedelta(days = 1)
+            dateBackward = backward
+            diff1 = today - dateBackward
+            diff2 = dateForward - today
+            if diff1 < diff2:
+                startDay = dateBackward - timedelta(days = 3)
+                endDay = dateBackward + timedelta(days = 3)
+            else:
+                startDay = dateForward - timedelta(days = 3)
+                endDay = dateForward + timedelta(days = 3)
+        receipts = Receipt.objects.filter(member=member, date__range=[startDay, endDay])
+        week = datetime.strftime(startDay, '%Y/%m/%d') + "-" + datetime.strftime(endDay, '%Y/%m/%d')
 
+        totalCost = Receipt.objects.filter(member=member,date__range=[startDay, endDay], incomeandexpense__income_type="expense").aggregate(Sum('money'))
+        totalIncome = Receipt.objects.filter(member=member,date__range=[startDay, endDay], incomeandexpense__income_type="income").aggregate(Sum('money'))
+        # print type(str(totalIncome['money__sum']))
+        if str(totalIncome['money__sum']) == "None":
+            income = 0
+        else:
+            income = int(totalIncome['money_sum'])
+        if str(totalCost['money__sum']) == "None":
+            cost = 0
+        else:
+            cost = int(totalCost['money__sum'])
+        balance = income - cost
+        print balance,type(balance)
+    return render(request, 'filter.html', {"member": member, "receipts": receipts, "title": week, "totalCost": cost, "totalIncome": income, "balance": balance})
+
+def getreceipt_mon(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    else:
+    	member = Member.objects.filter(user__username=request.user).first()
+    	currentDate = datetime.now()
+    	title = datetime.strftime(currentDate, "%Y/%m")
+        receipts = Receipt.objects.filter(date__month=currentDate.month , member=member)
+        totalCost = Receipt.objects.filter(member=member,date__month=currentDate.month, incomeandexpense__income_type="expense").aggregate(Sum('money'))
+        totalIncome = Receipt.objects.filter(member=member,date__month=currentDate.month, incomeandexpense__income_type="income").aggregate(Sum('money'))
+        # print type(str(totalIncome['money__sum']))
+        if str(totalIncome['money__sum']) == "None":
+            income = 0
+        else:
+            income = int(totalIncome['money_sum'])
+        if str(totalCost['money__sum']) == "None":
+            cost = 0
+        else:
+            cost = int(totalCost['money__sum'])
+        balance = income - cost
+        print balance,type(balance)
+    return render(request, 'filter.html', {"member": member, "receipts": receipts, "title": title, "totalCost": cost, "totalIncome": income, "balance": balance})
+
+def getreceipt_yr(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    else:
+    	member = Member.objects.filter(user__username=request.user).first()
+    	currentDate = datetime.now()
+    	yr= str(currentDate.year)
+        receipts = Receipt.objects.filter(date__year=currentDate.year , member=member)
+        totalCost = Receipt.objects.filter(member=member,date__year=currentDate.year, incomeandexpense__income_type="expense").aggregate(Sum('money'))
+        totalIncome = Receipt.objects.filter(member=member,date__year=currentDate.year, incomeandexpense__income_type="income").aggregate(Sum('money'))
+        # print type(str(totalIncome['money__sum']))
+        if str(totalIncome['money__sum']) == "None":
+            income = 0
+        else:
+            income = int(totalIncome['money_sum'])
+        if str(totalCost['money__sum']) == "None":
+            cost = 0
+        else:
+            cost = int(totalCost['money__sum'])
+        balance = income - cost
+        print balance,type(balance)
+    return render(request, 'filter.html', {"member": member, "receipts": receipts, "title": yr, "totalCost": cost, "totalIncome": income, "balance": balance})
+
+def backwardtime(request):
+    if request.method == 'POST':
+        # print(request.POST)
+        print type(request.POST["pageHeader_date"]),request.POST["sign"]
+        member = Member.objects.filter(user__username=request.user).first()
+        if request.POST["sign"] == "day":
+            pageHeader_date = datetime.strptime(request.POST["pageHeader_date"], "%Y/%m/%d")
+            target = pageHeader_date - timedelta(days=1)
+            receipts = Receipt.objects.filter(member=member,date=target.today())
+            targetOutput = datetime.strftime(target, '%Y/%m/%d')
+            totalCost = Receipt.objects.filter(member=member,date=target, incomeandexpense__income_type="expense").aggregate(Sum('money'))
+            totalIncome = Receipt.objects.filter(member=member,date=target, incomeandexpense__income_type="income").aggregate(Sum('money'))   
+        elif request.POST["sign"] == "week":
+            temp=request.POST["pageHeader_date"].split('-')
+            print temp[0],temp[1]
+            temp[0] = datetime.strptime(temp[0], "%Y/%m/%d")
+            temp[1] = datetime.strptime(temp[1], "%Y/%m/%d")
+            targetStart = temp[0] - timedelta(days=7)
+            targetEnd = temp[1] - timedelta(days=7)
+            receipts = Receipt.objects.filter(member=member, date__range=[targetStart, targetEnd])
+            targetOutput = datetime.strftime(targetStart, '%Y/%m/%d') + "-" + datetime.strftime(targetEnd, '%Y/%m/%d')
+            totalCost = Receipt.objects.filter(member=member,date__range=[targetStart, targetEnd], incomeandexpense__income_type="expense").aggregate(Sum('money'))
+            totalIncome = Receipt.objects.filter(member=member,date__range=[targetStart, targetEnd], incomeandexpense__income_type="income").aggregate(Sum('money'))
+        elif request.POST["sign"] == "month":
+            target = datetime.strptime(request.POST["pageHeader_date"], "%Y/%m") - timedelta(days=365/12)
+            receipts = Receipt.objects.filter(date__month=target.month , member=member)
+            targetOutput = datetime.strftime(target, '%Y/%m')
+            totalCost = Receipt.objects.filter(member=member,date__month=target.month, incomeandexpense__income_type="expense").aggregate(Sum('money'))
+            totalIncome = Receipt.objects.filter(member=member,date__month=target.month, incomeandexpense__income_type="income").aggregate(Sum('money'))
+        else:
+            target = datetime.strptime(request.POST["pageHeader_date"], "%Y") - timedelta(days=365)
+            receipts = Receipt.objects.filter(date__year=target.year , member=member)
+            targetOutput = datetime.strftime(target, '%Y')
+            totalCost = Receipt.objects.filter(member=member,date__year=target.year, incomeandexpense__income_type="expense").aggregate(Sum('money'))
+            totalIncome = Receipt.objects.filter(member=member,date__year=target.year, incomeandexpense__income_type="income").aggregate(Sum('money'))
+
+        if str(totalIncome['money__sum']) == "None":
+            income = 0
+        else:
+            income = int(totalIncome['money_sum'])
+        if str(totalCost['money__sum']) == "None":
+                cost = 0
+        else:
+            cost = int(totalCost['money__sum'])
+        print income,cost
+        balance = income - cost
+        print balance,type(balance)
+        print targetOutput
+        table = ""
+        for receipt in receipts:
+            print type(receipt.subclassification.classification.classification_type),receipt.subclassification.classification.classification_type
+            table += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td>"\
+            "<td>{6}</td><td>{7}</td></tr>".format(receipt.subclassification.classification.classification_type.encode('utf-8'),
+            receipt.subclassification.encode('utf-8'),receipt.remark.encode('utf-8'),receipt.incomeandexpense,
+            receipt.payment,receipt.date,receipt.money,receipt.member)
+            print table
+        jsonResult = {'tableContent': table , 'title': targetOutput, 'balance': balance, 'income': income, 'cost': cost}
+    return HttpResponse(json.JSONEncoder().encode(jsonResult))
