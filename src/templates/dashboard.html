@@ -195,7 +195,9 @@ $(document).ready(function() {
                         $('#amount').val('');
                         $('#memo').val('');
 
-                        checkNotificationBellMessage(notificationMessage)
+                        checkNotificationBellMessage(notificationMessage.monthly);
+                        checkNotificationBellMessage(notificationMessage.class);
+
                     },
                     error: function(){
                         if(record_type === 'expense'){
@@ -287,11 +289,8 @@ $(document).ready(function() {
         $(".modal-btn").prop('disabled', false);    // 如果在新增子分類時按了背景，要把被鎖定的按鈕解鎖
     });
 
-    // 處理按下通知鈴鐺後的改變
-    $("#notification-bell").click(function(){
-        $(".fa-bell").removeClass("notification-icon");
-        $(".fa-bell").removeAttr("data-count");
-    });
+
+
 
 
 }); // end document ready
@@ -422,11 +421,31 @@ function checkNotificationBellMessage(message){
 
             $(".dropdown-alerts").append("<li><a href='#'><div><i class='fa fa-comment fa-fw'></i>" 
                                     + message + "</div></a></li>");
-            $(".dropdown-alerts").append("<li class='divider'></li><li><a href='#'><strong>Clear All Alerts</strong>" +
-                                    "<i class='fa fa-angle-right'></i></a></li>");
+            $(".dropdown-alerts").append("<li class='divider'></li><li><a href='#'><strong>清除所有警告</strong>" +
+                                    "</a></li>");
         }   
     }
 }
+
+
+// 處理按下通知鈴鐺後的改變
+$(document).on("click", "#notification-bell", function(){
+    if( $(".dropdown-alerts").children().length > 1 ){
+        $(".fa-bell").removeClass("notification-icon");
+        $(".fa-bell").removeAttr("data-count");
+
+    }else{
+		// 如果沒通知卻按下鈴鐺要有相對應文字
+        var expandedAttr = $("#notification-bell").attr("aria-expanded");
+
+        if( expandedAttr === "true" ){
+            $(".dropdown-alerts").append("<li><a href='#'><strong>目前沒有通知</strong></a></li>");
+        }else{
+            $(".dropdown-alerts").empty();	// 關閉視窗
+        }
+    }
+});
+    
 
 </script>
 

@@ -24,4 +24,5 @@ urlpatterns = [
     url(r'^createSubClassificationInSettingPage/$', views.create_subClassification_in_settingPage, name='create_subClassification_in_settingPage'),
     url(r'^deleteSubClassificationInSettingPage/$', views.delete_subClassification_in_settingPage, name='delete_subClassification_in_settingPage'),
     url(r'^countForMaxBudget/$', views.budget_calculate, name='budget_calculate'),
+    url(r'^countClassBudget/$', views.classification_budget_calculate, name='classification_budget_calculate'),
 ]
