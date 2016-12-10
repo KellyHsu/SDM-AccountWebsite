@@ -290,7 +290,29 @@ $(document).ready(function() {
     });
 
 
+// 處理從Django - views pass的data
+// 
+// 
+    var periodic_notification_list =  {{ periodic_notification_list | safe }} ;
+    var notification_len = periodic_notification_list.length;
+    if(notification_len > 0){
+        $(".fa-bell").addClass('notification-icon');
+        $(".fa-bell").attr("data-count", notification_len);
+    }
 
+    // 這一段原本是要放在 498~508行備註解掉的地方
+    // 但因為那邊每個物件中還要再塞入<li class='divider'></li>
+    // 才想要改來上面動態加DOM
+    // 
+    $.each( periodic_notification_list, function(index, element){
+        if(index === (periodic_notification_list.length - 1) ){
+            $(".dropdown-alerts").append("<li><a href='#'><div><i class='fa fa-comment fa-fw'></i>" + element);
+        
+        }else{
+            $(".dropdown-alerts").append("<li><a href='#'><div><i class='fa fa-comment fa-fw'></i>" + element
+                                + "</div></a></li><li class='divider'></li>");
+        }
+    });
 
 
 }); // end document ready
@@ -453,6 +475,8 @@ $(document).on("click", "#clear-alert", function(){
 
 </script>
 
+
+
 </head>
 
 <body>
@@ -474,6 +498,17 @@ $(document).on("click", "#clear-alert", function(){
                         <i class="fa fa-bell fa-fw"></i> <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-alerts">
+                        <!-- {% for notification in periodic_notification_list %}
+                            <li>
+                                <a href='#'>
+                                    <div>
+                                        <i class='fa fa-comment fa-fw'></i>
+                                        {{notification}}
+                                    </div>
+                                </a>
+                            </li>
+
+                        {% endfor %} -->
                     </ul><!-- /.dropdown-alerts -->
                 </li><!-- /.dropdown -->
 
@@ -729,7 +764,6 @@ $(document).on("click", "#clear-alert", function(){
         </div>
     </div>
     <!-- /.modal2 -->
-
 </body>
 
 </html>

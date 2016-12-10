@@ -33,13 +33,15 @@ def dashboard(request):
         invest_revenue_list = SubClassification.objects.filter(member=member, classification=c9)
         other_revenue_list = SubClassification.objects.filter(member=member, classification=c10)
 
+        periodic_notification_list = periodicItemDateCheck(member)
+
         print(invest_revenue_list)
     return render(request, 'dashboard.html', {"cost_list": cost_list, "revenue_list": revenue_list, "food_list": food_list,
                                               "clothing_list": clothing_list, "housing_list": housing_list,
                                               "transportation_list": transportation_list, "education_list": education_list,
                                               "entertainment_list": entertainment_list, "others_list": others_list,
                                               "general_revenue_list": general_revenue_list, "invest_revenue_list": invest_revenue_list,
-                                              "other_revenue_list": other_revenue_list})
+                                              "other_revenue_list": other_revenue_list, "periodic_notification_list": periodic_notification_list})
 
 
 def setting(request):
@@ -514,4 +516,58 @@ def classification_budget_calculate(member, classification):
         alertMessage = "正常"
 
     return alertMessage
+
+
+# 檢查是否有週期性項目的日期到了要提醒使用者
+def periodicItemDateCheck(member):
+    periodicItemList = CyclicalExpenditure.objects.all().filter(member = member)
+    notification_list = []
+
+    for entry in periodicItemList:
+        if( entry.is_reminded == True ):
+            if entry.reminder_type == 'week':
+                if entry.reminder_date == date.today().isoweekday() :
+                    payingTimeTitle = ""
+                    payingTimeContent = ""
+
+                    if (entry.expenditure_date >= entry.reminder_date) :
+                        payingTimeTitle = "本週"
+                    else:
+                        payingTimeTitle = "下週"
+                    weekday = {
+                        1: "星期一",
+                        2: "星期二",
+                        3: "星期三",
+                        4: "星期四",
+                        5: "星期五",
+                        6: "星期六",
+                        7: "星期日"
+                    }
+                    payingTimeContent = weekday.get( entry.expenditure_date, "星期天" )
+
+                    message = "繳費提醒：{0}須於{1}{2}進行繳費".format(entry.name.encode('utf-8'),
+                                                                    payingTimeTitle,
+                                                                    payingTimeContent)
+                    notification_list.append(message)
+
+            else:
+                if entry.reminder_date == date.today().day :
+                    payingTimeTitle = ""
+                    payingTimeContent = ""
+                    if (entry.expenditure_date >= entry.reminder_date) :
+                        payingTimeTitle = "本月"
+                    else:
+                        payingTimeTitle = "下個月"
+                    payingTimeContent = str(entry.expenditure_date) + "號"
+
+                    message = "繳費提醒：{0}須於{1}{2}進行繳費".format(entry.name.encode('utf-8'),
+                                                                    payingTimeTitle,
+                                                                    payingTimeContent)
+                    notification_list.append(message)
+
+            # end if-else 'week'
+        # end if is_reminded
+
+    return notification_list
+
 
