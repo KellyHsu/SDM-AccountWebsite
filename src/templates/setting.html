@@ -294,6 +294,7 @@
 		//月預算提醒
 		$("#month-budget-reminder").click(function(){
 			var month_reminder = $("#m-b-r").val();
+			console.log(month_reminder);
 			$.ajax({
                 url: "/updateMonthBudgetReminder/",
                 type:"POST",

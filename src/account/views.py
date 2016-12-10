@@ -117,13 +117,22 @@ def create_receipt(request):
                                "{0}-{1}: {2}</a></td></tr>".format(new_receipt.subclassification.classification.classification_type.encode('utf-8'),
                                                                    new_receipt.subclassification.name.encode('utf-8'),
                                                                    new_receipt.money)
-        
+
+        month_budget_instance = MonthBudget.objects.filter(member=member).first()
+
+        classification = classNameTranslate_zhtwToen( request.POST["category"].split("-")[0].encode('utf-8') )
+        category = Classification.objects.filter(classification_type=classification).first()
+        category_budget_instance = Budget.objects.filter(classification=category, member=member).first()
+
+
         # 只有支出才要計算預算
         monthly_budget_check_result = ""
         class_budget_check_result = ""
         if incomeandexpense.income_type == 'expense':
-            monthly_budget_check_result = budget_calculate(member)
-            class_budget_check_result = classification_budget_calculate(member, request.POST["category"].split("-")[0] )
+            if month_budget_instance.is_reminded == True:
+                monthly_budget_check_result = budget_calculate(member)
+            if category_budget_instance.is_reminded == True:
+                class_budget_check_result = classification_budget_calculate(member, classification )
 
 
         message = {"rowcontent" : cost_rowcontent , "budget_check" : {"monthly" : monthly_budget_check_result, "class" : class_budget_check_result} }
@@ -464,9 +473,8 @@ def budget_calculate(member):
 
 # 計算分類支出是否有超過預算上限
 def classification_budget_calculate(member, classification):
-    type = classNameTranslate_zhtwToen(classification.encode('utf-8'))
 
-    c1 = Classification.objects.filter(classification_type=type).first()
+    c1 = Classification.objects.filter(classification_type=classification).first()
     budget_Object = Budget.objects.filter(member=member, classification=c1).first()
 
 	# 以月為範圍做查詢
@@ -496,11 +504,12 @@ def classification_budget_calculate(member, classification):
     alertMessage = ""
     classBudget = budget_Object.budget
     classBudgetThreshold = budget_Object.reminder
-
+    classification = classNameTranslate_enTozhtw(classification)
+    print(classification)
     if(classBudget > 0 and sumOfExpense > classBudget):
-        alertMessage = "警告：本月 {0} 分類 花費已超過當月預算".format(classification.encode('utf-8'))
+        alertMessage = "警告：本月{0}分類花費已超過當月預算".format(classification)
     elif(classBudgetThreshold > 0 and sumOfExpense > classBudgetThreshold):
-        alertMessage = "警告：本月 {0} 分類 花費已超過 {1}".format(classification.encode('utf-8'), classBudgetThreshold.encode('utf-8'))
+        alertMessage = "警告：本月{0}分類花費已超過 {1}".format(classification, classBudgetThreshold.encode('utf-8'))
     else:
         alertMessage = "正常"
 

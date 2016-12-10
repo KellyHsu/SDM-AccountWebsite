@@ -421,7 +421,7 @@ function checkNotificationBellMessage(message){
 
             $(".dropdown-alerts").append("<li><a href='#'><div><i class='fa fa-comment fa-fw'></i>" 
                                     + message + "</div></a></li>");
-            $(".dropdown-alerts").append("<li class='divider'></li><li><a href='#'><strong>清除所有警告</strong>" +
+            $(".dropdown-alerts").append("<li class='divider'></li><li id='clear-alert'><a href='#'><strong>清除所有警告</strong>" +
                                     "</a></li>");
         }   
     }
@@ -444,6 +444,10 @@ $(document).on("click", "#notification-bell", function(){
             $(".dropdown-alerts").empty();	// 關閉視窗
         }
     }
+});
+
+$(document).on("click", "#clear-alert", function(){
+    $(".dropdown-alerts").empty();
 });
     
 
