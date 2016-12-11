@@ -91,12 +91,14 @@
             console.log(a);
 
         //左方向箭號的事件
-        $('#btn_left').click(function(){
+        $('#btn_left,#btn_right').click(function(e){
+            var idClick = e.target.id;
             var pathname = window.location.pathname; // Returns path only
-            console.log(pathname);
             var pageHeader_date;
             var sign;
-            if (pathname == "/filter/"){
+            console.log(pathname);
+            console.log(idClick); 
+            if(pathname == "/filter/"){
                 pageHeader_date = $('#pageHeader_date').html();
                 sign = "day";
             }else if(pathname == "/getReceiptByWeek/"){
@@ -115,17 +117,16 @@
                dataType: 'json',
                url: "/backwardTime/",
                 type:"POST",
-                data: {pageHeader_date : pageHeader_date, sign: sign},
+                data: {pageHeader_date : pageHeader_date, sign: sign, id: idClick},
                 success: function(result){
                     $('#example tbody tr').remove();
-                    console.log(result.table);
-                    $('#example tbody').append(result.table);
+                    console.log(result.tableContent);
+                    $('#example tbody').append(result.tableContent);
                     $('#pageHeader_date').text(result.title);
                     $('#pageHeader_money').text(result.cost);
                     $('#totalCost').text("總支出"+result.cost);
                     $('#totalIncome').text("總收入"+result.income);
                     $('#balance').text("餘額"+result.balance);
-                    table = $('#example').DataTable();
                 },
                 error: function(result, status){
                     console.log(status);
@@ -135,6 +136,7 @@
         });
 
 	} );
+
 </script>
 
 </head>

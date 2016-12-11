@@ -635,8 +635,11 @@ def backwardtime(request):
         member = Member.objects.filter(user__username=request.user).first()
         if request.POST["sign"] == "day":
             pageHeader_date = datetime.strptime(request.POST["pageHeader_date"], "%Y/%m/%d")
-            target = pageHeader_date - timedelta(days=1)
-            receipts = Receipt.objects.filter(member=member,date=target.today())
+            if request.POST["id"] == "btn_left":
+                target = pageHeader_date - timedelta(days=1)
+            else:
+                target = pageHeader_date + timedelta(days=1)
+            receipts = Receipt.objects.filter(member=member,date=target)
             targetOutput = datetime.strftime(target, '%Y/%m/%d')
             totalCost = Receipt.objects.filter(member=member,date=target, incomeandexpense__income_type="expense").aggregate(Sum('money'))
             totalIncome = Receipt.objects.filter(member=member,date=target, incomeandexpense__income_type="income").aggregate(Sum('money'))   
@@ -645,20 +648,30 @@ def backwardtime(request):
             print temp[0],temp[1]
             temp[0] = datetime.strptime(temp[0], "%Y/%m/%d")
             temp[1] = datetime.strptime(temp[1], "%Y/%m/%d")
-            targetStart = temp[0] - timedelta(days=7)
-            targetEnd = temp[1] - timedelta(days=7)
+            if request.POST["id"] == "btn_left":
+                targetStart = temp[0] - timedelta(days=7)
+                targetEnd = temp[1] - timedelta(days=7)
+            else:
+                targetStart = temp[0] + timedelta(days=7)
+                targetEnd = temp[1] + timedelta(days=7)
             receipts = Receipt.objects.filter(member=member, date__range=[targetStart, targetEnd])
             targetOutput = datetime.strftime(targetStart, '%Y/%m/%d') + "-" + datetime.strftime(targetEnd, '%Y/%m/%d')
             totalCost = Receipt.objects.filter(member=member,date__range=[targetStart, targetEnd], incomeandexpense__income_type="expense").aggregate(Sum('money'))
             totalIncome = Receipt.objects.filter(member=member,date__range=[targetStart, targetEnd], incomeandexpense__income_type="income").aggregate(Sum('money'))
         elif request.POST["sign"] == "month":
-            target = datetime.strptime(request.POST["pageHeader_date"], "%Y/%m") - timedelta(days=365/12)
+            if request.POST["id"] == "btn_left":
+                target = datetime.strptime(request.POST["pageHeader_date"], "%Y/%m") - timedelta(days=365/12)
+            else:
+                target = datetime.strptime(request.POST["pageHeader_date"], "%Y/%m") + timedelta(days=365/12)
             receipts = Receipt.objects.filter(date__month=target.month , member=member)
             targetOutput = datetime.strftime(target, '%Y/%m')
             totalCost = Receipt.objects.filter(member=member,date__month=target.month, incomeandexpense__income_type="expense").aggregate(Sum('money'))
             totalIncome = Receipt.objects.filter(member=member,date__month=target.month, incomeandexpense__income_type="income").aggregate(Sum('money'))
         else:
-            target = datetime.strptime(request.POST["pageHeader_date"], "%Y") - timedelta(days=365)
+            if request.POST["id"] == "btn_left":
+                target = datetime.strptime(request.POST["pageHeader_date"], "%Y") - timedelta(days=365)
+            else:
+                target = datetime.strptime(request.POST["pageHeader_date"], "%Y") + timedelta(days=365)
             receipts = Receipt.objects.filter(date__year=target.year , member=member)
             targetOutput = datetime.strftime(target, '%Y')
             totalCost = Receipt.objects.filter(member=member,date__year=target.year, incomeandexpense__income_type="expense").aggregate(Sum('money'))
@@ -677,11 +690,12 @@ def backwardtime(request):
         print balance,type(balance)
         print targetOutput
         table = ""
+        print len(receipts),type(receipts)
         for receipt in receipts:
             print type(receipt.subclassification.classification.classification_type),receipt.subclassification.classification.classification_type
             table += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td>"\
             "<td>{6}</td><td>{7}</td></tr>".format(receipt.subclassification.classification.classification_type.encode('utf-8'),
-            receipt.subclassification.encode('utf-8'),receipt.remark.encode('utf-8'),receipt.incomeandexpense,
+            receipt.subclassification.name.encode('utf-8'),receipt.remark.encode('utf-8'),receipt.incomeandexpense,
             receipt.payment,receipt.date,receipt.money,receipt.member)
             print table
         jsonResult = {'tableContent': table , 'title': targetOutput, 'balance': balance, 'income': income, 'cost': cost}
