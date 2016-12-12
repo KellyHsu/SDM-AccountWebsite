@@ -139,26 +139,26 @@ def create_receipt(request):
                                                                    new_receipt.subclassification.name.encode('utf-8'),
                                                                    new_receipt.money)
 
-        month_budget_instance = MonthBudget.objects.filter(member=member).first()
-
-        classification = classNameTranslate_zhtwToen( request.POST["category"].split("-")[0].encode('utf-8') )
+        classification = classNameTranslate_zhtwToen(request.POST["category"].split("-")[0].encode('utf-8') )
         category = Classification.objects.filter(classification_type=classification).first()
         category_budget_instance = Budget.objects.filter(classification=category, member=member).first()
-
+        month_budget_instance = MonthBudget.objects.filter(member=member).first()
 
         # 只有支出才要計算預算
         monthly_budget_check_result = ""
         class_budget_check_result = ""
         if incomeandexpense.income_type == 'expense':
-            if month_budget_instance.is_reminded == True:
+            # check month budget setting
+            if month_budget_instance and month_budget_instance.is_reminded:
                 monthly_budget_check_result = budget_calculate(member)
-            if category_budget_instance.is_reminded == True:
-                class_budget_check_result = classification_budget_calculate(member, classification )
+            # check category budget setting
+            if category_budget_instance and category_budget_instance.is_reminded:
+                class_budget_check_result = classification_budget_calculate(member, classification)
 
+        message = {"rowcontent": cost_rowcontent, "budget_check": {"monthly": monthly_budget_check_result,
+                                                                   "class": class_budget_check_result}}
 
-        message = {"rowcontent" : cost_rowcontent , "budget_check" : {"monthly" : monthly_budget_check_result, "class" : class_budget_check_result} }
-
-    return HttpResponse( json.JSONEncoder().encode(message) )
+    return HttpResponse(json.JSONEncoder().encode(message))
 
 
 def delete_receipt(request):
