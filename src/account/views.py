@@ -25,7 +25,6 @@ def dashboard(request):
         entertainment_list = SubClassification.objects.filter(member=member, classification=6)
         others_list = SubClassification.objects.filter(member=member, classification=7)
 
-
         c8 = Classification.objects.filter(classification_type='general_revenue').first()
         c9 = Classification.objects.filter(classification_type='invest_revenue').first()
         c10 = Classification.objects.filter(classification_type='other_revenue').first()
@@ -35,13 +34,13 @@ def dashboard(request):
 
         periodic_notification_list = periodicItemDateCheck(member)
 
-        print(invest_revenue_list)
     return render(request, 'dashboard.html', {"cost_list": cost_list, "revenue_list": revenue_list, "food_list": food_list,
                                               "clothing_list": clothing_list, "housing_list": housing_list,
                                               "transportation_list": transportation_list, "education_list": education_list,
                                               "entertainment_list": entertainment_list, "others_list": others_list,
                                               "general_revenue_list": general_revenue_list, "invest_revenue_list": invest_revenue_list,
-                                              "other_revenue_list": other_revenue_list, "periodic_notification_list": periodic_notification_list})
+                                              "other_revenue_list": other_revenue_list, "periodic_notification_list": periodic_notification_list,
+                                              "periodic_notification_count": len(periodic_notification_list)})
 
 
 def setting(request):
@@ -701,19 +700,20 @@ def backwardtime(request):
         jsonResult = {'tableContent': table , 'title': targetOutput, 'balance': balance, 'income': income, 'cost': cost}
     return HttpResponse(json.JSONEncoder().encode(jsonResult))
 
+
 # 檢查是否有週期性項目的日期到了要提醒使用者
 def periodicItemDateCheck(member):
     periodicItemList = CyclicalExpenditure.objects.all().filter(member = member)
     notification_list = []
 
     for entry in periodicItemList:
-        if( entry.is_reminded == True ):
+        if entry.is_reminded:
             if entry.reminder_type == 'week':
                 if entry.reminder_date == date.today().isoweekday() :
                     payingTimeTitle = ""
                     payingTimeContent = ""
 
-                    if (entry.expenditure_date >= entry.reminder_date) :
+                    if entry.expenditure_date >= entry.reminder_date:
                         payingTimeTitle = "本週"
                     else:
                         payingTimeTitle = "下週"
@@ -728,24 +728,20 @@ def periodicItemDateCheck(member):
                     }
                     payingTimeContent = weekday.get( entry.expenditure_date, "星期天" )
 
-                    message = "繳費提醒：{0}須於{1}{2}進行繳費".format(entry.name.encode('utf-8'),
-                                                                    payingTimeTitle,
-                                                                    payingTimeContent)
+                    message = "繳費提醒：{0}須於{1}{2}進行繳費".format(entry.name.encode('utf-8'), payingTimeTitle, payingTimeContent)
                     notification_list.append(message)
 
             else:
                 if entry.reminder_date == date.today().day :
                     payingTimeTitle = ""
                     payingTimeContent = ""
-                    if (entry.expenditure_date >= entry.reminder_date) :
+                    if entry.expenditure_date >= entry.reminder_date:
                         payingTimeTitle = "本月"
                     else:
                         payingTimeTitle = "下個月"
                     payingTimeContent = str(entry.expenditure_date) + "號"
 
-                    message = "繳費提醒：{0}須於{1}{2}進行繳費".format(entry.name.encode('utf-8'),
-                                                                    payingTimeTitle,
-                                                                    payingTimeContent)
+                    message = "繳費提醒：{0}須於{1}{2}進行繳費".format(entry.name.encode('utf-8'), payingTimeTitle, payingTimeContent)
                     notification_list.append(message)
 
             # end if-else 'week'
