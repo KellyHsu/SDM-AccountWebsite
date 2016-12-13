@@ -186,11 +186,12 @@ $(document).ready(function() {
                             rowcontent = rowcontent.replace("food-", "食-").replace("clothing-", "衣-").replace("housing-", "住-").replace("transportation-", "行-").replace("education-", "育-").replace("entertainment-", "樂-").replace("others-", "其-");
                             $('#cost-list').append(rowcontent);
                             $('#costCategory').attr("value", "食-早餐");
-
+                            $(".total_expense").text("總計："+ result.total_value)
                         }else if(record_type === 'income'){
                             rowcontent = rowcontent.replace("general_revenue-", "收入-").replace("invest_revenue-", "投資-").replace("other_revenue-", "其他-");
                             $('#revenue-list').append(rowcontent);
                             $('#costCategory').attr("value", "一般收入");
+                            $(".total_income").text("總計："+ result.total_value)
                         }
                         $('#amount').val('');
                         $('#memo').val('');
@@ -296,6 +297,9 @@ $(document).ready(function() {
         $(".fa-bell").addClass('notification-icon');
         $(".fa-bell").attr("data-count", notification_len);
     }
+
+    $(".total_expense").text("總計："+ {{ total_expense }})
+    $(".total_income").text("總計："+ {{ total_income }})
 
 }); // end document ready
 
@@ -535,8 +539,11 @@ $(document).on("click", "#clear-alert", function(){
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><span class="glyphicon glyphicon-list-alt">
-                                </span>支出  總計: </a>
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                    <span class="glyphicon glyphicon-list-alt"></span>
+                                    支出
+                                </a>
+                                <span class="total_expense">總計：</span>
                             </h4>
                         </div>
                         <div id="collapseOne" class="panel-collapse collapse in">
@@ -567,7 +574,8 @@ $(document).on("click", "#clear-alert", function(){
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><span class="glyphicon glyphicon-list-alt">
-                                </span>收入  總計: </a>
+                                </span>收入</a>
+                                <span class="total_income">總計：</span>
                             </h4>
                         </div>
                         <div id="collapseTwo" class="panel-collapse collapse in">

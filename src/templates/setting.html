@@ -63,8 +63,10 @@
 			word-spacing:10px;
 			white-space:nowrap;
     	}
-
-    	input[type="text"] {
+        input{
+            padding:0px 10px;
+        }
+    	input[type="text"], input[type="password"] {
     		width: 25em;
     		height: 30px;
     	}
@@ -129,7 +131,7 @@
 							height: 'toggle'
 						});
 						$("#go-passwd-set").show(1000);
-						alert("修改密碼成功");
+{#						alert("修改密碼成功");#}
             	    },
             	    error: function(){
                 		alert("修改密碼失敗")
@@ -283,7 +285,7 @@
                 type:"POST",
                 data: {month_budget : month_budget},
                 success: function(rowcontent){
-					alert("更新月預算成功");
+{#					alert("更新月預算成功");#}
                 },
                 error: function(){
                 	alert("更新月預算失敗")
@@ -300,7 +302,7 @@
                 type:"POST",
                 data: {month_reminder : month_reminder},
                 success: function(rowcontent){
-					alert("更新月預算提醒成功");
+{#					alert("更新月預算提醒成功");#}
                 },
                 error: function(){
                 	alert("更新月預算提醒失敗")
@@ -322,9 +324,9 @@
                 data: {isreminded : isreminded},
                 success: function(rowcontent){
 					if(isreminded=="True"){
-						alert("開啟月提醒");
+{#						alert("開啟月提醒");#}
 					}else{
-						alert("關閉月提醒");
+{#						alert("關閉月提醒");#}
 					}
                 },
                 error: function(){
@@ -343,10 +345,10 @@
                 type:"POST",
                 data: {budget : budget, category : category},
                 success: function(rowcontent){
-					alert("更新預算成功")
+{#					alert("更新預算成功")#}
                 },
                 error: function(){
-                	alert("失敗")
+{#                	alert("失敗")#}
                 }
             });
 	}
@@ -359,7 +361,7 @@
                 type:"POST",
                 data: {reminder : reminder, category : category},
                 success: function(rowcontent){
-					alert("更新提醒預算成功")
+{#					alert("更新提醒預算成功")#}
                 },
                 error: function(){
                 	alert("失敗")
@@ -381,9 +383,9 @@
                 data: {isreminded : isreminded, category : category},
                 success: function(rowcontent){
 					if(isreminded=="True"){
-						alert("開啟提醒");
+{#						alert("開啟提醒");#}
 					}else{
-						alert("關閉提醒");
+{#						alert("關閉提醒");#}
 					}
                 },
                 error: function(){
@@ -879,9 +881,9 @@
 						</p>
 						<div class="passwd-set">
 						    <span class="item-title">密 碼: </span>
-						    <input type="text" name="userName" placeholder="請輸入密碼" class="passwd-set" id="password">
-						    <span class="item-title">確認密碼: </span>
-						    <input type="text" name="userName" placeholder="再次輸入密碼" class="" id="confirmpassword">
+						    <input type="password" name="userName" placeholder="請輸入新密碼" class="passwd-set" id="password">
+						    <span class="item-title" style="padding-left: 20px;">確認密碼: </span>
+						    <input type="password" name="userName" placeholder="再次輸入密碼" class="" id="confirmpassword">
 						        <button type="button" class="btn btn-default passwd-submit" id="new-passwd-submit">
 						        確認</button>
 						        <button type="button" class="btn btn-default passwd-submit" id="not-passwd-submit">取消修改</button>
