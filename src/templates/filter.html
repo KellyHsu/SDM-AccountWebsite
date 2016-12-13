@@ -59,38 +59,48 @@
 	$(document).ready(function() {
         var table = $('#example').DataTable();
         $('#example tbody').on( 'click', 'tr', function () {
-                //點同一個row,取消選擇
-                if ( $(this).hasClass('selected') ) {
-                    $(this).removeClass('selected');
-                //取消已選
-                }
-                else {
-                    table.$('tr.selected').removeClass('selected');
-                    $(this).addClass('selected');
-                }
+            //點同一個row,取消選擇
+            if ( $(this).hasClass('selected') ) {
+                $(this).removeClass('selected');
+            //取消已選
+            }
+            else {
+                table.$('tr.selected').removeClass('selected');
+                $(this).addClass('selected');
+            }
 
-                //console.log($(this).context);
-                //console.log($('#money').html());
-                $(this).find('td').each (function() {
-                  //console.log($(this).html());
-                });                          
-            } );
+            $(this).find('td').each (function() {
+                console.log($(this).html());
+            });
+            //console.log($(this).context);
+            //console.log($('#money').html());
+                                          
+        } );
         
         //點按鈕刪除
-            $('#button').click( function () {
-                table.row('.selected').remove().draw( false );
-            } );
+        $('#btn_del').click( function () {
+            console.log(table.row('.selected').data()[7]);
+            var id = table.row('.selected').data()[7];
+            $.ajax({
+               dataType: 'json',
+               url: "/filterDelRecord/",
+                type:"POST",
+                data: {id: id},
+                success: function(result){
+                    console.log("jaja");
+                    console.log(result.answer);
+                    table.row('.selected').remove().draw( false );
+                    var url = window.location.href;
+                    window.location = url;
+                },
+                error: function(result, status){
+                    console.log(status);
+                    alert("刪除失敗")
+                }
+            });
+        } );
 
-            var tcost = 0;
-            var a=new Array();
-            $('#example tbody').find('tr').each(function(){
-                a[tcost]=$('#money').html();
-                console.log($('#money').html());
-                tcost=tcost+1;
-            })
-            console.log(a);
-
-        //左方向箭號的事件
+        //左右方向箭號的事件
         $('#btn_left,#btn_right').click(function(e){
             var idClick = e.target.id;
             var pathname = window.location.pathname; // Returns path only
@@ -123,20 +133,20 @@
                     console.log(result.tableContent);
                     $('#example tbody').append(result.tableContent);
                     $('#pageHeader_date').text(result.title);
-                    $('#pageHeader_money').text(result.cost);
+                    $('#pageHeader_money').text("總支出"+result.cost);
                     $('#totalCost').text("總支出"+result.cost);
                     $('#totalIncome').text("總收入"+result.income);
                     $('#balance').text("餘額"+result.balance);
                 },
                 error: function(result, status){
                     console.log(status);
+                    console.log(result);
                     alert("抓新日期失敗")
                 }
             });
         });
 
 	} );
-
 </script>
 
 </head>
@@ -270,9 +280,8 @@
                                 </form>
                             </div>
                             <div>
-                                {{title}}
-                                <button>刪除</button>
-                                <button>修改</button>
+                                <button id="btn_del" class="">刪除</button>
+                                <button style="display: none">修改</button>
                                 <label id="totalCost">總支出{{totalCost}}</label>
                                 <label id="totalIncome">總收入{{totalIncome}}</label>
                                 <label id="balance">結餘{{balance}}</label>
@@ -289,7 +298,7 @@
 							                <th>付款方式</th>
 							                <th>日期</th>
 							                <th>金額</th>
-                                            <th>member</th>
+                                            <th style="display: none">id</th>
 							            </tr>
 							        </thead>
 							        <tfoot>
@@ -301,7 +310,7 @@
 							                <th>付款方式</th>
 							                <th>日期</th>
 							                <th>金額</th>
-                                            <th>member</th>
+                                            <th style="display: none">id</th>
 							            </tr>
 							        </tfoot>
 							        <tbody>
@@ -313,8 +322,8 @@
 							                <td>{{choice.incomeandexpense}}</td>
 							                <td>{{choice.payment}}</td>
 							                <td>{{choice.date}}</td>
-							                <td id="money">{{choice.money}}</td>
-                                            <td>{{choice.member}}</td>
+							                <td>{{choice.money}}</td>
+                                            <td style="display: none" id="ID">{{choice.id}}</td>
 							            </tr>
                                         {% endfor %}
 							        </tbody>

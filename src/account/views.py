@@ -113,7 +113,7 @@ def filter(request):
         if str(totalIncome['money__sum']) == "None":
             income = 0
         else:
-            income = int(totalIncome['money_sum'])
+            income = int(totalIncome['money__sum'])
         if str(totalCost['money__sum']) == "None":
             cost = 0
         else:
@@ -606,7 +606,7 @@ def getreceipt_week(request):
         if str(totalIncome['money__sum']) == "None":
             income = 0
         else:
-            income = int(totalIncome['money_sum'])
+            income = int(totalIncome['money__sum'])
         if str(totalCost['money__sum']) == "None":
             cost = 0
         else:
@@ -634,7 +634,7 @@ def getreceipt_mon(request):
         if str(totalIncome['money__sum']) == "None":
             income = 0
         else:
-            income = int(totalIncome['money_sum'])
+            income = int(totalIncome['money__sum'])
         if str(totalCost['money__sum']) == "None":
             cost = 0
         else:
@@ -662,7 +662,7 @@ def getreceipt_yr(request):
         if str(totalIncome['money__sum']) == "None":
             income = 0
         else:
-            income = int(totalIncome['money_sum'])
+            income = int(totalIncome['money__sum'])
         if str(totalCost['money__sum']) == "None":
             cost = 0
         else:
@@ -710,20 +710,22 @@ def backwardtime(request):
                                                  incomeandexpense__income_type="income").aggregate(Sum('money'))
         elif request.POST["sign"] == "month":
             if request.POST["id"] == "btn_left":
-                target = datetime.strptime(request.POST["pageHeader_date"], "%Y/%m") - timedelta(days=365 / 12)
+                target = datetime.strptime(request.POST["pageHeader_date"], "%Y/%m") - timedelta(days=365/12)
             else:
-                target = datetime.strptime(request.POST["pageHeader_date"], "%Y/%m") + timedelta(days=365 / 12)
-            receipts = Receipt.objects.filter(date__month=target.month, member=member)
+                target = datetime.strptime(request.POST["pageHeader_date"], "%Y/%m") + timedelta(days=31)
+            receipts = Receipt.objects.filter(date__year=target.year, date__month=target.month, member=member)
             targetOutput = datetime.strftime(target, '%Y/%m')
-            totalCost = Receipt.objects.filter(member=member, date__month=target.month,
+            totalCost = Receipt.objects.filter(member=member, date__year=target.year, date__month=target.month,
                                                incomeandexpense__income_type="expense").aggregate(Sum('money'))
-            totalIncome = Receipt.objects.filter(member=member, date__month=target.month,
+            totalIncome = Receipt.objects.filter(member=member, date__year=target.year, date__month=target.month,
                                                  incomeandexpense__income_type="income").aggregate(Sum('money'))
         else:
             if request.POST["id"] == "btn_left":
-                target = datetime.strptime(request.POST["pageHeader_date"], "%Y") - timedelta(days=365)
+                target = datetime.strptime(request.POST["pageHeader_date"], "%Y")
+                target = datetime(year=target.year - 1 , month=target.month, day=target.day)
             else:
-                target = datetime.strptime(request.POST["pageHeader_date"], "%Y") + timedelta(days=365)
+                target = datetime.strptime(request.POST["pageHeader_date"], "%Y")
+                target = datetime(year=target.year + 1 , month=target.month, day=target.day)
             receipts = Receipt.objects.filter(date__year=target.year, member=member)
             targetOutput = datetime.strftime(target, '%Y')
             totalCost = Receipt.objects.filter(member=member, date__year=target.year,
@@ -734,7 +736,7 @@ def backwardtime(request):
         if str(totalIncome['money__sum']) == "None":
             income = 0
         else:
-            income = int(totalIncome['money_sum'])
+            income = int(totalIncome['money__sum'])
         if str(totalCost['money__sum']) == "None":
             cost = 0
         else:
@@ -746,15 +748,15 @@ def backwardtime(request):
         table = ""
         print len(receipts), type(receipts)
         for receipt in receipts:
-            print type(
-                receipt.subclassification.classification.classification_type), receipt.subclassification.classification.classification_type
+            # print type(
+            #     receipt.subclassification.classification.classification_type), receipt.subclassification.classification.classification_type
             table += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td>" \
-                     "<td>{6}</td><td>{7}</td></tr>".format(
+                     "<td>{6}</td><td style='display: none'>{7}</td></tr>".format(
                 receipt.subclassification.classification.classification_type.encode('utf-8'),
                 receipt.subclassification.name.encode('utf-8'), receipt.remark.encode('utf-8'),
                 receipt.incomeandexpense,
-                receipt.payment, receipt.date, receipt.money, receipt.member)
-            print table
+                receipt.payment, receipt.date, receipt.money, receipt.id)
+            # print table
         jsonResult = {'tableContent': table, 'title': targetOutput, 'balance': balance, 'income': income, 'cost': cost}
     return HttpResponse(json.JSONEncoder().encode(jsonResult))
 
@@ -809,10 +811,24 @@ def periodicItemDateCheck(member):
 
     return notification_list
 
-
 def get_total(receipt_list):
     total = 0
     for receipt in receipt_list:
         total += receipt.money
 
     return total
+
+def filterdelrecord(request):
+    if request.method == 'POST':
+        print request.POST["id"],type(request.POST["id"])
+        member = Member.objects.filter(user__username=request.user).first()
+        receipt = Receipt.objects.filter(id=request.POST["id"])
+        if receipt is not None:
+            print(receipt)
+            receipt.delete()
+            a = "OK"
+            print a
+        else:
+            pass
+    jsonResult = {'answer': a}
+    return HttpResponse(json.JSONEncoder().encode(jsonResult))

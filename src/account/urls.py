@@ -29,4 +29,5 @@ urlpatterns = [
     url(r'^getReceiptByYr/$', views.getreceipt_yr, name='getreceipt_yr'),
     url(r'^backwardTime/$', views.backwardtime, name='backwardtime'),
     url(r'^countClassBudget/$', views.classification_budget_calculate, name='classification_budget_calculate'),
+    url(r'^filterDelRecord/$', views.filterdelrecord, name='filterdelrecord'),
 ]
