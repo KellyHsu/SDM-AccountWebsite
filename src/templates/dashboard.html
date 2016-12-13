@@ -371,14 +371,20 @@ $(document).on("click", ".deletedRecord", function(){
     }
     var result = confirm("你真的要刪掉：" + recordValue + "嗎？");
     if(result){
+        var record_type = $('#recordType').val();
         $.ajax({
             url: "/deleteReceipt/",
             type:"POST",
             data: {amount : amount, subcategory : subcategory, category : category,
-                memo: memo, date: $('#datepicker1').val()},
-            success: function(rowcontent){
+                memo: memo, date: $('#datepicker1').val(), record_type: record_type},
+            success: function(total_value){
                 record.remove();
-                alert("刪除了" + recordValue);
+                if(record_type === 'expense'){
+                    $(".total_expense").text("總計："+ total_value)
+                }else if(record_type === 'income'){
+                    $(".total_income").text("總計："+ total_value)
+                }
+{#                alert("刪除了" + recordValue);#}
             },
             error: function(){
                 alert("刪除" + recordValue+"失敗");
