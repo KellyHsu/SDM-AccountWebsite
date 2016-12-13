@@ -110,7 +110,7 @@ $(document).ready(function() {
         var lv1 = mainCate.text();
         var lv2 = $( '.btn-link.selected').text();
         if(lv2===''){
-           $('#costCategory').attr("value", lv1);
+           // $('#costCategory').attr("value", lv1);
         }else{
            $('#costCategory').attr("value", lv1+'-'+lv2);
         }
@@ -418,6 +418,17 @@ function checkNotificationBellMessage(message){
         return;
     else{
         if( $(".dropdown-alerts").children().length > 0 ){
+
+            var content = $(".dropdown-alerts strong").text();
+            if(content === "目前沒有通知"){
+                $(".dropdown-alerts").empty();
+
+                $(".fa-bell").removeClass("notification-icon");
+                $(".fa-bell").removeAttr("data-count");
+                $(".dropdown-alerts").append("<li id='clear-alert'><a href='#'><strong>清除所有警告</strong></a></li>");
+
+            }
+
             if( $(".fa-bell").hasClass("notification-icon") ){
                var count = parseInt( $(".fa-bell").attr("data-count") );
                 count = count + 1;
@@ -435,8 +446,7 @@ function checkNotificationBellMessage(message){
 
             $(".dropdown-alerts").append("<li><a href='#'><div><i class='fa fa-comment fa-fw'></i>" 
                                     + message + "</div></a></li>");
-            $(".dropdown-alerts").append("<li class='divider'></li><li id='clear-alert'><a href='#'><strong>清除所有警告</strong>" +
-                                    "</a></li>");
+            $(".dropdown-alerts").append("<li class='divider'></li><li id='clear-alert'><a href='#'><strong>清除所有警告</strong></a></li>");
         }   
     }
 }
@@ -444,10 +454,19 @@ function checkNotificationBellMessage(message){
 
 // 處理按下通知鈴鐺後的改變
 $(document).on("click", "#notification-bell", function(){
+    // alert($(".dropdown-alerts").children().length);
     if( $(".dropdown-alerts").children().length > 1 ){
         $(".fa-bell").removeClass("notification-icon");
         $(".fa-bell").removeAttr("data-count");
 
+    }else if( $(".dropdown-alerts").children().length == 1 ){
+        var content = $(".dropdown-alerts strong").text();
+        if(content !== "目前沒有通知"){
+            $(".fa-bell").removeClass("notification-icon");
+            $(".fa-bell").removeAttr("data-count");
+            $(".dropdown-alerts").append("<li class='divider'></li><li id='clear-alert'><a href='#'><strong>清除所有警告</strong></a></li>");
+
+        }
     }else{
 		// 如果沒通知卻按下鈴鐺要有相對應文字
         var expandedAttr = $("#notification-bell").attr("aria-expanded");
