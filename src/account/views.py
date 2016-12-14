@@ -519,7 +519,7 @@ def budget_calculate(member):
     if (monthlyBudget > 0 and sumOfExpense > monthlyBudget):
         alertMessage = "警告：本月總花費已超過當月預算"
     elif (alertThreshold > 0 and sumOfExpense > alertThreshold):
-        alertMessage = "警告：本月總花費已超過 {0}".format(alertThreshold.encode('utf-8'))
+        alertMessage = "警告：本月總花費已超過 {0}".format(alertThreshold)
     else:
         alertMessage = "正常"
 
