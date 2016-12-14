@@ -188,21 +188,17 @@ def create_receipt(request):
 def delete_receipt(request):
     if request.method == 'POST':
         print(request.POST)
+        receipt_id = int(request.POST["whick_receipt"].strip("receipt"))
 
         # delete receipt
         member = Member.objects.filter(user__username=request.user).first()
-        classification = Classification.objects.filter(classification_type=request.POST["category"]).first()
-        subclass = SubClassification.objects.filter(name=request.POST["subcategory"], member=member,
-                                                    classification=classification).first()
-        receipt = Receipt.objects.filter(money=request.POST["amount"], remark=request.POST["memo"],
-                                         date=datetime.strptime(request.POST["date"], "%Y/%m/%d"),
-                                         subclassification=subclass, member=member).first()
+        receipt = Receipt.objects.filter(member=member, id=receipt_id).first()
         if receipt is not None:
             receipt.delete()
 
         # recount total
-        incomeandexpense = IncomeAndExpense.objects.filter(income_type=request.POST["record_type"]).first()
-        if incomeandexpense.income_type == 'expense':
+        receipt_type = receipt.incomeandexpense.income_type
+        if receipt_type == 'expense':
             receipt_list = Receipt.objects.filter(member=member, date=date.today(),
                                                   incomeandexpense__income_type="expense")
         else:
@@ -210,7 +206,8 @@ def delete_receipt(request):
                                                   incomeandexpense__income_type="income")
         total_value = get_total(receipt_list)
 
-    return HttpResponse(total_value)
+        message = {"total_value": total_value, "receipt_type": receipt_type}
+    return HttpResponse(json.JSONEncoder().encode(message))
 
 
 def create_subClassification(request):
