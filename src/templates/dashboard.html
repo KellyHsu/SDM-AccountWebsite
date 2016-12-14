@@ -192,7 +192,7 @@ $(document).ready(function() {
                         }else if(record_type === 'income'){
                             rowcontent = rowcontent.replace("general_revenue-", "收入-").replace("invest_revenue-", "投資-").replace("other_revenue-", "其他-");
                             $('#revenue-list').append(rowcontent);
-                            $('#costCategory').attr("value", "一般收入");
+                            $('#costCategory').attr("value", "一般收入-薪資");
                             $(".total_income").text("總計："+ result.total_value)
                         }
                         $('#amount').val('');
@@ -206,7 +206,7 @@ $(document).ready(function() {
                         if(record_type === 'expense'){
                             $('#costCategory').attr("value", "食-早餐");
                         }else{
-                            $('#costCategory').attr("value", "一般收入");
+                            $('#costCategory').attr("value", "一般收入-薪資");
                         }
                         $('#amount').val('');
                         $('#memo').val('');
@@ -280,7 +280,7 @@ $(document).ready(function() {
         }else{
             $('.revenue-category').show();
             $('.cost-category').hide();
-            $("#costCategory").attr('value', '一般收入');
+            $("#costCategory").attr('value', '一般收入-薪資');
         }
     });
 
