@@ -141,11 +141,9 @@ def create_receipt(request):
                                              member=member)
 
         if incomeandexpense.income_type == 'expense':
-            receipt_list = Receipt.objects.filter(member=member, date=date.today(),
-                                                  incomeandexpense__income_type="expense")
+            receipt_list = Receipt.objects.filter(member=member, date = datetime.strptime(request.POST["date"], "%Y/%m/%d"),incomeandexpense__income_type="expense")
         else:
-            receipt_list = Receipt.objects.filter(member=member, date=date.today(),
-                                                  incomeandexpense__income_type="income")
+            receipt_list = Receipt.objects.filter(member=member, date = datetime.strptime(request.POST["date"], "%Y/%m/%d"), incomeandexpense__income_type="income")
 
         total_value = get_total(receipt_list)
 
@@ -307,8 +305,11 @@ def get_date(request):
                                       "</span></td></tr>".format(className,
                                                                  receipt.subclassification.name.encode('utf-8'),
                                                                  receipt.money)
+                                                                 
+        total_expense = get_total(cost_receipts)
+        total_income = get_total(revenue_receipts)
 
-        jsonResult = {'cost': cost_rowcontent, 'revenue': revenue_rowcontent}
+        jsonResult = {'cost': cost_rowcontent, 'revenue': revenue_rowcontent, "total_expense": total_expense, "total_income": total_income}
 
     return HttpResponse(json.JSONEncoder().encode(jsonResult))
 
