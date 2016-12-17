@@ -325,72 +325,27 @@ function defaultHiding(){
 // 會先把叉叉標記class="deletedRecord"
 // 這邊是click 事件
 $(document).on("click", ".deletedRecord", function(){
-    var record = $(this).parents("tr");
     var recordValue = $(this).prev().text().trim();
-    
-    var recordArray = recordValue.split(":");
-    var amount = recordArray[1];
-    var recordArray1 = recordArray[0].split("-");
-    var category = recordArray1[0];
-
-    // 把中文的分類轉換回英文傳回server.
-    switch(category){
-        case "食":
-            category="food";
-            break;
-        case "衣":
-            category="clothing";
-            break;
-        case "住":
-            category="housing";
-            break;
-        case "行":
-            category="transportation";
-            break;
-        case "育":
-            category="education";
-            break;
-        case "樂":
-            category="entertainment";
-            break;
-        case "收入":
-            category="general_revenue";
-            break;
-        case "投資":
-            category="invest_revenue";
-            break;
-        case "其他":
-            category="other_revenue";
-            break;
-        default:
-            category="others";
-            break;
-    }
-    var subcategory = recordArray1[1];
-    var memo = "";
-    if(recordArray1.length == 3){
-        memo = recordArray1[2];
-    }
+    var record = $(this).parents("tr");
     var result = confirm("你真的要刪掉：" + recordValue + "嗎？");
     if(result){
-        var record_type = $('#recordType').val();
         $.ajax({
             url: "/deleteReceipt/",
             type:"POST",
-            data: {amount : amount, subcategory : subcategory, category : category,
-                memo: memo, date: $('#datepicker1').val(), record_type: record_type},
-            success: function(total_value){
+            dataType: 'json',
+            data: {whick_receipt: record.attr("class")},
+            success: function(result){
                 record.remove();
-                if(record_type === 'expense'){
-                    $(".total_expense").text("總計："+ total_value)
-                }else if(record_type === 'income'){
-                    $(".total_income").text("總計："+ total_value)
+                // change total
+                if(result.receipt_type === 'expense'){
+                    $(".total_expense").text("總計："+ result.total_value)
+                }else if(result.receipt_type === 'income'){
+                    $(".total_income").text("總計："+ result.total_value)
                 }
-{#                alert("刪除了" + recordValue);#}
             },
             error: function(){
                 alert("刪除" + recordValue+"失敗");
-            }                
+            }
         });
     }
 }); // end document on click class='deletedRecord'
@@ -573,7 +528,7 @@ $(document).on("click", "#clear-alert", function(){
                             <div class="panel-body">
                                 <table class="table" id="cost-list">
                                     {% for cost_receipt in cost_list %}
-                                    <tr>
+                                    <tr class="receipt{{ cost_receipt.id  }}">
                                         <td>
                                             <span class='glyphicon glyphicon-file text-success'></span>
                                             {% if cost_receipt.remark %}
@@ -605,7 +560,7 @@ $(document).on("click", "#clear-alert", function(){
                             <div class="panel-body">
 								<table class="table" id="revenue-list">
                                     {% for revenue_receipt in revenue_list %}
-                                    <tr>
+                                    <tr class="receipt{{ revenue_receipt.id  }}">
                                         <td>
                                             <span class='glyphicon glyphicon-file text-success'></span>
                                             {% if revenue_receipt.remark %}
