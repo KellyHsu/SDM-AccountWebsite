@@ -360,7 +360,6 @@ $(document).on("click", ".receipt_info", function(){
     $("#modify-btn").removeClass("hidden");
     $("#cancel-btn").removeClass("hidden");
 
-    alert(record.attr("class"))
     $.ajax({
         url: "/modifyReceipt/",
         type:"POST",
