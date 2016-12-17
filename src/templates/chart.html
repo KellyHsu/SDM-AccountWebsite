@@ -1,0 +1,201 @@
+<!-- 這個頁面是圖表頁 -->
+
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>MoneyKeeper</title>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="{% static 'css/base.css' %}" rel="stylesheet">
+    	<!-- Bootstrap Core CSS -->
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+
+		<!-- Custom CSS -->
+    <link href="{% static 'dist/css/metisMenu.min.css' %}" rel="stylesheet">
+    <link href="{% static 'dist/css/sb-admin-2.css' %}" rel="stylesheet">
+
+        <!--datepicker CSS-->
+    <link href="{% static 'css/bootstrap-responsive.css' %}" rel="stylesheet">
+
+    	<!-- Custom Fonts -->
+    <link href="{% static 'font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+
+    	<!-- Animate CSS -->
+    <link href="{% static 'css/animate.css' %}" rel="stylesheet">
+
+    	<!-- bootstrap-toggle CSS -->
+	<link href="{% static 'css/bootstrap-toggle.min.css' %}" rel="stylesheet">
+
+		<!-- jQuery -->
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <!-- <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script> -->
+
+    	<!-- Bootstrap Core JavaScript -->
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+		<!-- Custom Theme JavaScript -->
+    <script src="{% static 'dist/js/metisMenu.min.js' %}"></script>
+    <script src="{% static 'dist/js/sb-admin-2.js' %}"></script>
+
+    	<!-- bootstrap-toggle JS -->
+    <script src="{% static 'js/bootstrap-toggle.min.js' %}"></script>
+
+	<!-- bokeh -->
+	<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.3.min.css" type="text/css" />
+    <script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.3.min.js"></script>
+
+	
+
+    <style type="text/css">
+    	span.item-title {
+			font-size: 20px;
+			font-weight: 600;
+			word-spacing:10px;
+			white-space:nowrap;
+    	}
+        input{
+            padding:0px 10px;
+        }
+    	input[type="text"], input[type="password"] {
+    		width: 25em;
+    		height: 30px;
+    	}
+
+    	input[readonly] {
+    		color: #6C6C6C;
+    		background-color: #d0d0d0;
+    	}
+
+    	.edit-img-btn {
+			border: 0; 
+			background-color: transparent; 
+			width: 32px; 
+			height: 32px;    	
+		}
+
+		.sub-category { 
+		    position: relative; 
+		    margin-right: 2px;
+		}
+
+		/* 用來在次分類上增加刪除的叉 */
+		.sub-category span { 
+		    position: absolute; 
+		    top: -18px;  /* position in bottom right & top corner */
+		    right: -8px;
+		    z-index: 100;
+		    width: 16px;
+		    height: 16px;
+		    color: red;
+		    font-size: 23px;
+		}   
+
+    </style>
+
+    <script>
+
+	$(document).ready(function(){
+		
+	});	// end document.ready()
+
+    </script>
+
+	
+
+</head>
+
+<body>
+
+    <!-- whole page wrapper -->
+    <div id="wrapper container">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-light navbar-static-top" role="navigation">
+            <div class="navbar-header">
+                <a class="navbar-brand glyphicon glyphicon-book" href="/dashboard/"></a>
+                <a  href="/dashboard/"><img src="../static/image/logo.png" alt="logo" class="navbar-brand glyphicon glyphicon-book" height="30px" width="200px" border="0" /></a>
+            </div><!-- /.navbar-header -->
+
+            <ul class="nav navbar-top-links navbar-right">
+                
+                <!-- start bell dropdown -->
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="color: white;">
+                        <i class="fa fa-bell fa-fw"></i> <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-alerts">
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <i class="fa fa-comment fa-fw"></i> 以後會放提醒內容
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <i class="fa fa-comment fa-fw"></i> 以後會放提醒內容
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <strong>See All Alerts</strong>
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        </li>
+                    </ul><!-- /.dropdown-alerts -->
+                </li><!-- /.dropdown -->
+
+                <!-- start user dropdown -->
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="color: white;">
+                        <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="/setting/"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                        </li>
+                        <li class="divider"></li>
+						<li><a href="/chart/"><i class="fa fa-gear fa-fw"></i> Chart</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="/logout/"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                    </ul>
+                    
+                </li><!-- /.dropdown-user -->
+                
+            </ul><!-- /.dropdown -->
+            
+        </nav><!-- /.navbar-top-links -->
+                   
+        <!-- main container -->
+        <div class="container-fluid">
+            <div>
+				{{ the_div|safe }}
+                {{ the_script|safe }}
+            </div>
+        </div><!-- /.container -->
+
+    </div><!-- /#wrapper (whole page)-->	
+
+</body>
+
+</html>

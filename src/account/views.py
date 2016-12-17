@@ -8,6 +8,9 @@ from datetime import datetime, date, timedelta
 from django.contrib.auth.models import User
 from django.db.models import Q, Sum
 import json
+from bokeh.plotting import figure
+from bokeh.embed import components
+from bokeh.plotting import output_file, show
 
 
 def dashboard(request):
@@ -125,6 +128,16 @@ def filter(request):
                    "totalIncome": income, "balance": balance})
 
 
+def chart(request):
+    plot = figure()
+    plot.circle([1,2], [3,4])
+    script, div = components(plot)
+    #print(script)
+    #print(div)
+    #show(plot)
+    return render(request, 'chart.html',{"the_script": script, "the_div": div})
+
+
 def create_receipt(request):
     if request.method == 'POST':
         print(request.POST)
@@ -191,13 +204,17 @@ def delete_receipt(request):
 
         # delete receipt
         member = Member.objects.filter(user__username=request.user).first()
+        print("member", member)
         classification = Classification.objects.filter(classification_type=request.POST["category"]).first()
+        print("classification", classification)
         subclass = SubClassification.objects.filter(name=request.POST["subcategory"], member=member,
                                                     classification=classification).first()
+        print("subclass", subclass)
         receipt = Receipt.objects.filter(money=request.POST["amount"], remark=request.POST["memo"],
                                          date=datetime.strptime(request.POST["date"], "%Y/%m/%d"),
                                          subclassification=subclass, member=member).first()
-        if receipt is not None:
+        print(receipt)
+        if receipt:
             receipt.delete()
 
         # recount total
