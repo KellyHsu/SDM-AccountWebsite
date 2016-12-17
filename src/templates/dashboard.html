@@ -106,6 +106,7 @@ $(document).ready(function() {
 
 	// 當modal的確認被按下後，會提交給分類欄位
     $( '.modal-btn.modal-submit' ).click(function(){
+        alert("in")
         var mainCate = $(this).parents(".modal-content").children(".modal-header").children("h1#main-cate");
         var lv1 = mainCate.text();
         var lv2 = $( '.btn-link.selected').text();
@@ -344,12 +345,102 @@ $(document).on("click", ".deletedRecord", function(){
                 }
             },
             error: function(){
-                alert("刪除" + recordValue+"失敗");
+                alert("刪除" + recordValue + "失敗");
             }
         });
     }
 }); // end document on click class='deletedRecord'
 
+$(document).on("click", ".receipt_info", function(){
+    var recordValue = $(this).prev().text().trim();
+    var record = $(this).parents("tr")
+
+    $("#submit-btn").addClass("hidden");
+    $("#last-btn").addClass("hidden");
+    $("#modify-btn").removeClass("hidden");
+    $("#cancel-btn").removeClass("hidden");
+
+    alert(record.attr("class"))
+    $.ajax({
+        url: "/modifyReceipt/",
+        type:"POST",
+        dataType: 'json',
+        data: {whick_receipt: record.attr("class")},
+        success: function(result){
+            $("#recordType").val(result.incomeandexpense);
+            $("#payment").val(result.payment);
+            $("#amount").val(result.money);
+            $("#memo").val(result.remark);
+            $("#costCategory").val(result.classification_detail);
+            $("#modify-btn").addClass(result.receipt_id);
+
+        },
+        error: function(){
+            alert("修改" + recordValue + "失敗");
+        }
+    });
+}); // end document on click class='deletedRecord'
+
+$(document).on("click", "#modify-btn", function(){
+        var amount = $('#amount').val();
+        var category = $('#costCategory').attr("value");
+        var memo = $('#memo').val();
+        var record_type = $('#recordType').val();
+        var record_class = $("#modify-btn").attr("class").split(" ").pop();
+
+        if(amount){
+            $.ajax({
+                dataType: 'json',
+                url: "/createReceipt/",
+                type:"POST",
+                data: {whick_receipt: $("#modify-btn").attr("class"), amount : amount, category : category,
+                    memo: memo, record_type: record_type, payment: $('#payment').val(),
+                    date: $('#datepicker1').val()},
+                success: function(result){
+                    $("#modify-btn").addClass("hidden");
+                    $("#cancel-btn").addClass("hidden");
+                    $("#modify-btn").removeClass(record_class);
+                    $("#submit-btn").removeClass("hidden");
+                    $("#last-btn").removeClass("hidden");
+
+                    $("." +　record_class).remove();
+                    var rowcontent = result.rowcontent;
+                    var notificationMessage = result.budget_check;
+
+                    if(record_type === 'expense'){
+                        rowcontent = rowcontent.replace("food-", "食-").replace("clothing-", "衣-").replace("housing-", "住-").replace("transportation-", "行-").replace("education-", "育-").replace("entertainment-", "樂-").replace("others-", "其-");
+                        $('#cost-list').append(rowcontent);
+                        $('#costCategory').attr("value", "食-早餐");
+                        $(".total_expense").text("總計："+ result.total_value)
+                    }else if(record_type === 'income'){
+                        rowcontent = rowcontent.replace("general_revenue-", "收入-").replace("invest_revenue-", "投資-").replace("other_revenue-", "其他-");
+                        $('#revenue-list').append(rowcontent);
+                        $('#costCategory').attr("value", "一般收入-薪資");
+                        $(".total_income").text("總計："+ result.total_value)
+                    }
+                    $('#amount').val('');
+                    $('#memo').val('');
+
+                    checkNotificationBellMessage(notificationMessage.monthly);
+                    checkNotificationBellMessage(notificationMessage.class);
+
+                },
+                error: function(){
+                    if(record_type === 'expense'){
+                        $('#costCategory').attr("value", "食-早餐");
+                    }else{
+                        $('#costCategory').attr("value", "一般收入-薪資");
+                    }
+                    $('#amount').val('');
+                    $('#memo').val('');
+                    alert("記帳失敗");
+                }
+            });
+        }else{
+            alert("支出金額為必填");
+
+        }
+    });
 
 // 左方支出與收入清單的滑鼠事件 （把滑入進入和離開事件一起寫）
 $(document).on({
@@ -532,10 +623,10 @@ $(document).on("click", "#clear-alert", function(){
                                         <td>
                                             <span class='glyphicon glyphicon-file text-success'></span>
                                             {% if cost_receipt.remark %}
-                                                <a href='#'>{% if cost_receipt.subclassification.classification.classification_type == "food" %}食{% elif cost_receipt.subclassification.classification.classification_type == "clothing" %}衣{% elif cost_receipt.subclassification.classification.classification_type == "housing" %}住{% elif cost_receipt.subclassification.classification.classification_type == "transportation" %}行{% elif cost_receipt.subclassification.classification.classification_type == "education" %}育{% elif cost_receipt.subclassification.classification.classification_type == "entertainment" %}樂{% else %}其{% endif %}-{{cost_receipt.subclassification.name}}-{{cost_receipt.remark}}: {{cost_receipt.money}}
+                                                <a class="receipt_info" href='#'>{% if cost_receipt.subclassification.classification.classification_type == "food" %}食{% elif cost_receipt.subclassification.classification.classification_type == "clothing" %}衣{% elif cost_receipt.subclassification.classification.classification_type == "housing" %}住{% elif cost_receipt.subclassification.classification.classification_type == "transportation" %}行{% elif cost_receipt.subclassification.classification.classification_type == "education" %}育{% elif cost_receipt.subclassification.classification.classification_type == "entertainment" %}樂{% else %}其{% endif %}-{{cost_receipt.subclassification.name}}-{{cost_receipt.remark}}: {{cost_receipt.money}}
 												</a>
                                             {% else %}
-                                                <a href='#'>{% if cost_receipt.subclassification.classification.classification_type == "food" %}食{% elif cost_receipt.subclassification.classification.classification_type == "clothing" %}衣{% elif cost_receipt.subclassification.classification.classification_type == "housing" %}住{% elif cost_receipt.subclassification.classification.classification_type == "transportation" %}行{% elif cost_receipt.subclassification.classification.classification_type == "education" %}育{% elif cost_receipt.subclassification.classification.classification_type == "entertainment" %}樂{% else %}其{% endif %}-{{cost_receipt.subclassification.name}}: {{cost_receipt.money}}
+                                                <a class="receipt_info" href='#'>{% if cost_receipt.subclassification.classification.classification_type == "food" %}食{% elif cost_receipt.subclassification.classification.classification_type == "clothing" %}衣{% elif cost_receipt.subclassification.classification.classification_type == "housing" %}住{% elif cost_receipt.subclassification.classification.classification_type == "transportation" %}行{% elif cost_receipt.subclassification.classification.classification_type == "education" %}育{% elif cost_receipt.subclassification.classification.classification_type == "entertainment" %}樂{% else %}其{% endif %}-{{cost_receipt.subclassification.name}}: {{cost_receipt.money}}
 												</a>
                                             {% endif %}
                                             <span style='float: right; margin-right: 10px; color: #9D9D9D;'></span>
@@ -564,10 +655,10 @@ $(document).on("click", "#clear-alert", function(){
                                         <td>
                                             <span class='glyphicon glyphicon-file text-success'></span>
                                             {% if revenue_receipt.remark %}
-                                                <a href='#'>{% if revenue_receipt.subclassification.classification.classification_type == "general_revenue" %}收入{% elif revenue_receipt.subclassification.classification.classification_type == "invest_revenue" %}投資{% else %}其他{% endif %}-{{revenue_receipt.subclassification.name}}-{{revenue_receipt.remark}}: {{revenue_receipt.money}}
+                                                <a class="receipt_info" href='#'>{% if revenue_receipt.subclassification.classification.classification_type == "general_revenue" %}收入{% elif revenue_receipt.subclassification.classification.classification_type == "invest_revenue" %}投資{% else %}其他{% endif %}-{{revenue_receipt.subclassification.name}}-{{revenue_receipt.remark}}: {{revenue_receipt.money}}
 												</a>
                                             {% else %}
-                                                <a href='#'>{% if revenue_receipt.subclassification.classification.classification_type == "general_revenue" %}收入{% elif revenue_receipt.subclassification.classification.classification_type == "invest_revenue" %}投資{% else %}其他{% endif %}-{{revenue_receipt.subclassification.name}}: {{revenue_receipt.money}}
+                                                <a class="receipt_info" href='#'>{% if revenue_receipt.subclassification.classification.classification_type == "general_revenue" %}收入{% elif revenue_receipt.subclassification.classification.classification_type == "invest_revenue" %}投資{% else %}其他{% endif %}-{{revenue_receipt.subclassification.name}}: {{revenue_receipt.money}}
 												</a>
                                             {% endif %}
                                             <span style='float: right; margin-right: 10px; color: #9D9D9D;'></span>
@@ -632,6 +723,8 @@ $(document).on("click", "#clear-alert", function(){
                                 <div class="row" style="margin-top: 30px;margin-bottom: 30px;">
                                     <input type="submit" class="btn-default btn-lg submit determin" id="submit-btn" value="確定" style="border: 2px solid #03aaa0;">
                                     <input type="button" class="btn-default btn-lg submit clear" id="last-btn" value="清空" style="border: 2px solid #03aaa0;">
+                                    <input type="submit" class="btn-default btn-lg submit modify_btn hidden" id="modify-btn" value="修改" style="border: 2px solid #03aaa0;">
+                                    <input type="button" class="btn-default btn-lg submit clear hidden" id="cancel-btn" value="取消" style="border: 2px solid #03aaa0;">
                                 </div>
                                 </div>
                             </form>

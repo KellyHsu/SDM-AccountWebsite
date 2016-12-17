@@ -128,17 +128,21 @@ def filter(request):
 def create_receipt(request):
     if request.method == 'POST':
         print(request.POST)
+        receipt_id = -1
+        if "receipt" in request.POST["whick_receipt"]:
+            receipt_id = int(request.POST["whick_receipt"].partition("receipt")[-1])
+
         subclass = SubClassification.objects.filter(name=request.POST["category"].split("-", 1)[-1]).first()
         payment = Payment.objects.filter(payment_type=request.POST["payment"]).first()
         incomeandexpense = IncomeAndExpense.objects.filter(income_type=request.POST["record_type"]).first()
         member = Member.objects.filter(user__username=request.user).first()
-
-        new_receipt = Receipt.objects.create(money=request.POST["amount"], remark=request.POST["memo"],
-                                             date=datetime.strptime(request.POST["date"], "%Y/%m/%d"),
-                                             subclassification=subclass,
-                                             payment=payment,
-                                             incomeandexpense=incomeandexpense,
-                                             member=member)
+        new_receipt, created = Receipt.objects.update_or_create(member=member, id=receipt_id,
+                                                                defaults={"money": request.POST["amount"],
+                                                                          "remark": request.POST["memo"],
+                                                                          "date": datetime.strptime(request.POST["date"], "%Y/%m/%d"),
+                                                                          "subclassification": subclass, "payment": payment,
+                                                                          "incomeandexpense":incomeandexpense,
+                                                                          "member": member})
 
         if incomeandexpense.income_type == 'expense':
             receipt_list = Receipt.objects.filter(member=member, date=datetime.strptime(request.POST["date"], "%Y/%m/%d"),incomeandexpense__income_type="expense")
@@ -185,6 +189,7 @@ def create_receipt(request):
                    "budget_check": {"monthly": monthly_budget_check_result, "class": class_budget_check_result}}
 
     return HttpResponse(json.JSONEncoder().encode(message))
+    # return 0
 
 
 def delete_receipt(request):
@@ -210,6 +215,25 @@ def delete_receipt(request):
 
         message = {"total_value": total_value, "receipt_type": receipt_type}
     return HttpResponse(json.JSONEncoder().encode(message))
+
+
+def modify_receipt(request):
+    if request.method == 'POST':
+        print(request.POST)
+        receipt_id = int(request.POST["whick_receipt"].strip("receipt"))
+
+        # delete receipt
+        member = Member.objects.filter(user__username=request.user).first()
+        receipt = Receipt.objects.filter(member=member, id=receipt_id).first()
+
+        class_name = classNameTranslate_enTozhtw(receipt.subclassification.classification.classification_type)
+        classification_detail = class_name.decode("utf8") + "-" + receipt.subclassification.name
+        message = {"money": receipt.money, "remark": receipt.remark, "classification_detail": classification_detail,
+                   "payment": receipt.payment.payment_type, "incomeandexpense": receipt.incomeandexpense.income_type,
+                   "receipt_id": "receipt"+str(receipt.id)}
+        print(message)
+    return HttpResponse(json.JSONEncoder().encode(message))
+    # return 0
 
 
 def create_subClassification(request):
