@@ -8,10 +8,12 @@ from datetime import datetime, date, timedelta
 from django.contrib.auth.models import User
 from django.db.models import Q, Sum
 import json
-from bokeh.plotting import figure
+from bokeh.plotting import figure, output_file, show
+from bokeh.charts import Bar, Donut, output_file, show
+from bokeh.layouts import row
 from bokeh.embed import components
-from bokeh.plotting import output_file, show
-
+import pandas as pd
+from pandas.compat import StringIO
 
 def dashboard(request):
     if not request.user.is_authenticated():
@@ -129,13 +131,66 @@ def filter(request):
 
 
 def chart(request):
-    plot = figure()
-    plot.circle([1,2], [3,4])
-    script, div = components(plot)
+    
+    ####折線圖####
+
+    #AAPL = pd.read_csv(
+    #    "http://ichart.yahoo.com/table.csv?s=AAPL&a=0&b=1&c=2000&d=0&e=1&f=2010",
+    #    parse_dates=['Date']
+    #)
+    #print(AAPL)
+    s = """Date,Close
+    2009-12-31,27.420455
+    2009-11-30,21.538864
+    2009-10-29,27.208357
+    2009-09-28,27.53496"""
+    AAPL = pd.read_csv(StringIO(s),parse_dates=['Date'])
+    print(AAPL)
+    # create a new plot with a datetime axis type
+    p = figure(width=800, height=250, x_axis_type="datetime")
+
+    p.line(AAPL['Date'], AAPL['Close'], color='navy', alpha=0.5)
+
+    # add renderers
+    #p.circle(aapl_dates, aapl, size=4, color='darkgrey', alpha=0.2, legend='close')
+    #p.line(aapl_dates, aapl_avg, color='navy', legend='avg')
+    
+    # NEW: customize by setting attributes
+    p.title.text = "AAPL One-Month Average"
+    p.legend.location = "top_left"
+    p.grid.grid_line_alpha=0
+    p.xaxis.axis_label = 'Date'
+    p.yaxis.axis_label = 'Price'
+    p.ygrid.band_fill_color="olive"
+    p.ygrid.band_fill_alpha = 0.1
+    script, div = components(p)
+    
+    ####長條圖####
+    # best support is with data in a format that is table-like
+    data = {
+        'sample': ['1st', '2nd', '1st', '2nd', '1st', '2nd'],
+        'interpreter': ['python', 'python', 'pypy', 'pypy', 'jython', 'jython'],
+        'timing': [-2, 5, 12, 40, 22, 30]
+    }
+
+    # table-like data results in reconfiguration of the chart with no data manipulation
+    bar2 = Bar(data, values='timing', label=['interpreter', 'sample'],
+               agg='mean', title="Python Interpreters", plot_width=400)
+    script2, div2 = components(bar2)
+
+    ####圓餅圖####
+    data3 = pd.Series([0.15,0.4,0.7,1.0], index = list('abcd'))
+    pie_chart = Donut(data3)
+    script3, div3 = components(pie_chart)
+
+    ####點####
+    #p = figure()
+    #p.circle([1,2], [3,4])
+    #script, div = components(p)
     #print(script)
     #print(div)
-    #show(plot)
-    return render(request, 'chart.html',{"the_script": script, "the_div": div})
+    #show(p)
+    return render(request, 'chart.html',{"the_script": script, "the_div": div, "script_bar": script2, "div_bar": div2, "script_pie": script3, "div_pie": div3})
 
 
 def create_receipt(request):
