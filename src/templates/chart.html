@@ -103,14 +103,35 @@
 		    height: 16px;
 		    color: red;
 		    font-size: 23px;
-		}   
+		}  
+        .divOver{
+	        border:solid 2px #ddd;
+	    }  
 
     </style>
 
     <script>
 
-	$(document).ready(function(){
-		
+	$(document).ready(function(){       
+        $('div.panel-default').hover(function(){
+			$(this).addClass('divOver');		
+		},function(){
+			$(this).removeClass('divOver');	
+			
+		});
+
+        $('#week-page').click(function(event) {
+            $("#chart").remove();
+        });
+        $('#month-page').click(function(event) {
+            
+        });
+        $('#year-page').click(function(event) {
+            
+        });
+        $('#category-page').click(function(event) {
+            
+        });
 	});	// end document.ready()
 
     </script>
@@ -187,23 +208,76 @@
         </nav><!-- /.navbar-top-links -->
                    
         <!-- main container -->
-        <div class="container-fluid">
-            <div>
-				{{ the_div|safe }}
-                {{ the_script|safe }}
-            </div>
-            <div>
-				{{ div_bar|safe }}
-                {{ script_bar|safe }}
-            </div>
-            <div>
-				{{ div_pie|safe }}
-                {{ script_pie|safe }}
-            </div>
-        </div><!-- /.container -->
+        <div class="container-fluid" style="background-color: rgb(229, 228, 219);">
+            <div class="row col-sm-2 col-md-2 left-side">
+                <div class="panel-group collapse in" id="accordion" aria-expanded="true">
 
+                    <!-- start panel 本周收支 -->
+                    <div class="panel panel-default" id="week-page">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <span class="glyphicon glyphicon-menu-right">
+                                </span>本周收支
+                            </h4>
+                        </div>
+                    </div>  <!-- /.panel 本周收支 -->
+
+                    <!-- start panel 本月收支 -->
+                    <div class="panel panel-default" id="month-page">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <span class="glyphicon glyphicon-menu-right">
+                                </span>本月收支
+                            </h4>
+                        </div>
+                    </div>  <!-- /.panel 本月收支 -->
+
+                    <!-- start panel 年度收支 -->
+                    <div class="panel panel-default" id="year-page">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <span class="glyphicon glyphicon-menu-right">
+                                </span>年度收支
+                            </h4>
+                        </div>
+                    </div>  <!-- /.panel 年度收支 -->
+                    
+                    <!-- start panel 類別分析 -->
+                    <div class="panel panel-default" id="category-page">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <span class="glyphicon glyphicon-menu-right">
+                                </span>類別分析
+                            </h4>
+                        </div>
+                    </div>  <!-- /.panel 類別分析 -->
+
+                </div>  <!-- /.panel group -->
+            </div>  <!-- /.left-side row -->
+            <!-- Main container -->
+	        <div id="page-wrapper" class="col-sm-10 col-md-10" style="min-height: 167px; background-color: rgb(229, 228, 219);">
+	        	<div class="container-fluid col-xs-12 col-sm-12">
+			    	<p style="text-align: center; font-size: 100px;">
+			    	</p>
+			    	<div class="row" id="chart">
+                        <div class="col-lg-12" style="background-color: #fff; margin-top: 20px; padding-bottom: 20px;">
+                            <div>
+				                {{ the_div|safe }}
+                                {{ the_script|safe }}
+                        </div>
+                        <div>
+				            {{ div_bar|safe }}
+                            {{ script_bar|safe }}
+                        </div>
+                        <div>
+				            {{ div_pie|safe }}
+                            {{ script_pie|safe }}
+                        </div>
+                    </div><!-- /.row -->
+		    	</div><!-- /.container-fluid -->
+	    	</div><!-- /#page-wrapper (main container) -->
+        </div><!-- /.container-fluid (whole div below navbar) -->
     </div><!-- /#wrapper (whole page)-->	
-
 </body>
 
 </html>
