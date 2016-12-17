@@ -128,8 +128,8 @@ def filter(request):
 def create_receipt(request):
     if request.method == 'POST':
         print(request.POST)
-        receipt_id = -1
-        if "receipt" in request.POST["whick_receipt"]:
+        receipt_id = None
+        if request.POST.get('whick_receipt', False):
             receipt_id = int(request.POST["whick_receipt"].partition("receipt")[-1])
 
         subclass = SubClassification.objects.filter(name=request.POST["category"].split("-", 1)[-1]).first()

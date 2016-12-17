@@ -106,7 +106,6 @@ $(document).ready(function() {
 
 	// 當modal的確認被按下後，會提交給分類欄位
     $( '.modal-btn.modal-submit' ).click(function(){
-        alert("in")
         var mainCate = $(this).parents(".modal-content").children(".modal-header").children("h1#main-cate");
         var lv1 = mainCate.text();
         var lv2 = $( '.btn-link.selected').text();
@@ -155,11 +154,38 @@ $(document).ready(function() {
     });
 
 	// 復原與清空表單
-    $('.clear').click(function(){
+    $('#last-btn').click(function(){
+        var record_type = $('#recordType').val();
         $('#amount').val('');
-        $('#costCategory').attr("value", "食-早餐");
+        if(record_type === 'expense') {
+            $('#costCategory').attr("value", "食-早餐");
+        }
+        else{
+            $('#costCategory').attr("value", "一般收入-薪資");
+        }
         $('#memo').val('');
     })
+
+    // 修改取消
+    $('#cancel-btn').click(function(){
+        var record_type = $('#recordType').val();
+        var record_class = $("#modify-btn").attr("class").split(" ").pop();
+        $("#modify-btn").addClass("hidden");
+        $("#cancel-btn").addClass("hidden");
+        $("#modify-btn").removeClass(record_class);
+        $("#submit-btn").removeClass("hidden");
+        $("#last-btn").removeClass("hidden");
+
+        $('#amount').val('');
+        if(record_type === 'expense') {
+            $('#costCategory').attr("value", "食-早餐");
+        }
+        else{
+            $('#costCategory').attr("value", "一般收入-薪資");
+        }
+        $('#memo').val('');
+    })
+
 
 
     // 新增支出or收入明細
