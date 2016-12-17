@@ -125,6 +125,16 @@ def filter(request):
                    "totalIncome": income, "balance": balance})
 
 
+def chart(request):
+    plot = figure()
+    plot.circle([1,2], [3,4])
+    script, div = components(plot)
+    #print(script)
+    #print(div)
+    #show(plot)
+    return render(request, 'chart.html',{"the_script": script, "the_div": div})
+
+
 def create_receipt(request):
     if request.method == 'POST':
         print(request.POST)

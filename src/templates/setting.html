@@ -674,6 +674,36 @@
 	}
 
 
+		// 送出新增收入子分類的表單
+	function addRevenueSubCategorySubmit(){
+		var mainType = $("#main-type-choose").val();
+		var newSub = $("#new-sub-type").val();
+		//post
+ 		if(newSub){
+            $.ajax({
+                url: "/createSubClassificationInSettingPage/",
+                type:"POST",
+                data: {newSub : newSub, category : mainType},
+                success: function(rowcontent){
+                    $("#table1 tr td:first-child").each(function(){
+						if($(this).attr('id') === mainType ){
+							$(this).next().append(rowcontent);	
+							alert("您新增了: " + subType);
+						}
+					});
+                },
+                error: function(){
+                    alert("新增子分類失敗");
+                }
+            });
+        }
+		
+	}
+
+
+
+	
+	
 	// 週期性項目的日期設定按鈕事件
 	$(document).on("click", ".periodic-date-setting", function(){
 		$(this).parent().siblings().addClass("editting");
@@ -857,6 +887,9 @@
                         <li><a href="/setting/"><i class="fa fa-gear fa-fw"></i> Settings</a>
                         </li>
                         <li class="divider"></li>
+						<li><a href="/chart/"><i class="fa fa-gear fa-fw"></i> Chart</a>
+                        </li>
+                        <li class="divider"></li>
                         <li><a href="/logout/"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
                         </li>
                     </ul>
@@ -968,6 +1001,52 @@
                     </form>
                 </div>
 
+                <div class="col-md-12 well">
+                    <legend id="anch1"><span style="margin-right: 10px;">收入子分類設定</span>
+                    	<button type="button" name="btnAddSub" class="edit-img-btn" id="btn-sub-category-add" style="background-image: url(/static/image/add.png);" data-toggle="modal" data-target="#modal-subCategoryofrevenue"></button>
+                    	<button type="button" name="btnDelSub" class="edit-img-btn" id="btn-sub-category-del" style="background-image: url(/static/image/delete.png);"></button>
+                    	<button type="button" class="btn btn-success btn-md sub-category-del-submit" id="sub-category-del-finish">刪除完畢</button>
+                    </legend>
+                    <form>
+					    <p>
+						   <table class="table table-bordered table-striped table-responsive" id="table1">
+						      <thead> 
+							     <th class="col-md-3">收入主分類 </th>
+								 <th class="col-md-9">收入子分類 </th>
+							  </thead>
+							  <tbody>
+								  <tr> 
+								     <td id="food">一般收入</td>
+									 <td>
+										{% for general_revenue in general_revenue_list %}
+									    	<button type="button" class="btn btn-link btn-md sub-category">{{ general_revenue.name }}</button>
+										{% endfor %}
+									</td>
+								  </tr>
+								  <tr> 
+								     <td id="clothing">投資收入</td>
+								     <td>
+										{% for investment_revenue in investment_revenue_list %}
+								     		<button type="button" class="btn btn-link btn-md sub-category">{{ investment_revenue.name }}</button>
+										{% endfor %}
+									 </td>
+								  </tr>
+								  <tr> 
+								     <td id="housing">其他</td>
+								     <td>
+										{% for other_revenue in other_revenue_list %}
+							     			<button type="button" class="btn btn-link btn-md sub-category">{{ other_revenue.name }}</button>
+								     	{% endfor %}
+									 </td>
+								  </tr>
+							  </tbody>
+						   </table>
+						</p>                        
+                    </form>
+                </div>
+
+				
+				
 				<div class="col-md-12 well">
                     <legend id="anch1"><span style="margin-right: 10px;">單月預算上限設定</span>
                     </legend>
@@ -1178,6 +1257,41 @@
 	</div>
     <!-- /.modal -->	
 
+		<!-- Modal 增加收入子分類 -->
+	<div class="modal fade" id="modal-subCategoryofrevenue" role="dialog">
+	    <div class="modal-dialog">
+	        <!-- Modal content-->
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal">&times;</button>
+	                <h4 class="modal-title">新增子分類</h4>
+	            </div> <!-- /.modal-header -->
+
+	            <div class="modal-body" id="sectest">
+					<div class="form-group">
+						<label for="main-type-choose">主分類選擇</label>
+						<select class="form-control" id="main-type-choose">
+							<option value="general_revenue">一般收入</option>
+							<option value="investment_revenue">投資收入</option>
+							<option value="other_revenue">其他</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="new-sub-type">子分類</label>
+						<input type="text" class="form-control" id="new-sub-type" placeholder="新子分類">
+					</div>
+				</div> <!-- /.modal-body -->
+
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal" id="modal-subCategory-submit" onclick="addRevenueSubCategorySubmit()">確定</button>
+	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal">取消</button>
+	            </div> <!-- /.modal-footer -->
+	        </div>
+	    </div>
+	</div>
+    <!-- /.modal -->	
+
+	
 	<!-- Modal [[新增]]週期性支出項目 -->
 	<div class="modal fade" id="modal-periodic" role="dialog">
 	    <div class="modal-dialog">
