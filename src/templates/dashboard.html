@@ -112,7 +112,8 @@ $(document).ready(function() {
         if(lv2===''){
            // $('#costCategory').attr("value", lv1);
         }else{
-           $('#costCategory').attr("value", lv1+'-'+lv2);
+            $('#costCategory').attr("value", lv1+'-'+lv2);
+            $('#costCategory').val(lv1+'-'+lv2); // display value
         }
 
         mainCate.text("");
