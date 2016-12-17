@@ -8,7 +8,9 @@ from datetime import datetime, date, timedelta
 from django.contrib.auth.models import User
 from django.db.models import Q, Sum
 import json
-
+from bokeh.plotting import figure
+from bokeh.embed import components
+from bokeh.plotting import output_file, show
 
 def dashboard(request):
     if not request.user.is_authenticated():
