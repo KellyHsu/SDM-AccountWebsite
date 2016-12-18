@@ -14,6 +14,7 @@ from bokeh.layouts import row
 from bokeh.embed import components
 import pandas as pd
 from pandas.compat import StringIO
+from bokeh.charts.attributes import ColorAttr, CatAttr
 
 
 def dashboard(request):
@@ -133,65 +134,165 @@ def filter(request):
 
 def chart(request):
     
-    ####折線圖####
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    else:
+        member = Member.objects.filter(user__username=request.user).first()
+        today = date.today()
+        weekday = today.weekday()
+        if weekday == 2:
+            startDay = today - timedelta(days=3)
+            endDay = today + timedelta(days=3)
+        else:
+            forward = today + timedelta(days=1)
+            while forward.weekday() != 2:
+                forward = forward + timedelta(days=1)
+            dateForward = forward
+            backward = today - timedelta(days=1)
+            while backward.weekday() != 2:
+                backward = backward - timedelta(days=1)
+            dateBackward = backward
+            diff1 = today - dateBackward
+            diff2 = dateForward - today
+            if diff1 < diff2:
+                startDay = dateBackward - timedelta(days=3)
+                endDay = dateBackward + timedelta(days=3)
+            else:
+                startDay = dateForward - timedelta(days=3)
+                endDay = dateForward + timedelta(days=3)
+        week = datetime.strftime(startDay, '%Y/%m/%d') + "-" + datetime.strftime(endDay, '%Y/%m/%d')
+        cost_sun = Receipt.objects.filter(member=member, date=startDay, incomeandexpense__income_type="expense").aggregate(Sum('money'))
+        cost_mon = Receipt.objects.filter(member=member, date=startDay+timedelta(days=1), incomeandexpense__income_type="expense").aggregate(Sum('money'))
+        cost_tue = Receipt.objects.filter(member=member, date=startDay+timedelta(days=2), incomeandexpense__income_type="expense").aggregate(Sum('money'))
+        cost_wed = Receipt.objects.filter(member=member, date=startDay+timedelta(days=3), incomeandexpense__income_type="expense").aggregate(Sum('money'))
+        cost_thu = Receipt.objects.filter(member=member, date=startDay+timedelta(days=4), incomeandexpense__income_type="expense").aggregate(Sum('money'))
+        cost_fri = Receipt.objects.filter(member=member, date=startDay+timedelta(days=5), incomeandexpense__income_type="expense").aggregate(Sum('money'))
+        cost_sat = Receipt.objects.filter(member=member, date=endDay, incomeandexpense__income_type="expense").aggregate(Sum('money'))
+        if str(cost_sun['money__sum']) == "None":
+            cost_sun = 0
+        else:
+            cost_sun = int(cost_sun['money__sum'])
+        if str(cost_mon['money__sum']) == "None":
+            cost_mon = 0
+        else:
+            cost_mon = int(cost_mon['money__sum'])
+        if str(cost_tue['money__sum']) == "None":
+            cost_tue = 0
+        else:
+            cost_tue = int(cost_tue['money__sum'])
+        if str(cost_wed['money__sum']) == "None":
+            cost_wed = 0
+        else:
+            cost_wed = int(cost_wed['money__sum'])
+        if str(cost_thu['money__sum']) == "None":
+            cost_thu = 0
+        else:
+            cost_thu = int(cost_thu['money__sum'])
+        if str(cost_fri['money__sum']) == "None":
+            cost_fri = 0
+        else:
+            cost_fri = int(cost_fri['money__sum'])
+        if str(cost_sat['money__sum']) == "None":
+            cost_sat = 0
+        else:
+            cost_sat = int(cost_sat['money__sum'])
 
-    #AAPL = pd.read_csv(
-    #    "http://ichart.yahoo.com/table.csv?s=AAPL&a=0&b=1&c=2000&d=0&e=1&f=2010",
-    #    parse_dates=['Date']
-    #)
-    #print(AAPL)
-    s = """Date,Close
-    2009-12-31,27.420455
-    2009-11-30,21.538864
-    2009-10-29,27.208357
-    2009-09-28,27.53496"""
-    AAPL = pd.read_csv(StringIO(s),parse_dates=['Date'])
-    print(AAPL)
-    # create a new plot with a datetime axis type
-    p = figure(width=800, height=250, x_axis_type="datetime")
+        income_sun = Receipt.objects.filter(member=member, date=startDay, incomeandexpense__income_type="income").aggregate(Sum('money'))
+        income_mon = Receipt.objects.filter(member=member, date=startDay+timedelta(days=1), incomeandexpense__income_type="income").aggregate(Sum('money'))
+        income_tue = Receipt.objects.filter(member=member, date=startDay+timedelta(days=2), incomeandexpense__income_type="income").aggregate(Sum('money'))
+        income_wed = Receipt.objects.filter(member=member, date=startDay+timedelta(days=3), incomeandexpense__income_type="income").aggregate(Sum('money'))
+        income_thu = Receipt.objects.filter(member=member, date=startDay+timedelta(days=4), incomeandexpense__income_type="income").aggregate(Sum('money'))
+        income_fri = Receipt.objects.filter(member=member, date=startDay+timedelta(days=5), incomeandexpense__income_type="income").aggregate(Sum('money'))
+        income_sat = Receipt.objects.filter(member=member, date=endDay, incomeandexpense__income_type="income").aggregate(Sum('money'))
+        if str(income_sun['money__sum']) == "None":
+            income_sun = 0
+        else:
+            income_sun = int(income_sun['money__sum'])
+        if str(income_mon['money__sum']) == "None":
+            income_mon = 0
+        else:
+            income_mon = int(income_mon['money__sum'])
+        if str(income_tue['money__sum']) == "None":
+            income_tue = 0
+        else:
+            income_tue = int(income_tue['money__sum'])
+        if str(income_wed['money__sum']) == "None":
+            income_wed = 0
+        else:
+            income_wed = int(income_wed['money__sum'])
+        if str(income_thu['money__sum']) == "None":
+            income_thu = 0
+        else:
+            income_thu = int(income_thu['money__sum'])
+        if str(income_fri['money__sum']) == "None":
+            income_fri = 0
+        else:
+            income_fri = int(income_fri['money__sum'])
+        if str(income_sat['money__sum']) == "None":
+            income_sat = 0
+        else:
+            income_sat = int(income_sat['money__sum'])
 
-    p.line(AAPL['Date'], AAPL['Close'], color='navy', alpha=0.5)
+        ####長條圖####
+        data = {
+            'week': ['日', '一', '二', '三', '四', '五', '六', '日', '一', '二', '三', '四', '五', '六'],
+            'dollar': [cost_sun, cost_mon, cost_tue, cost_wed, cost_thu, cost_fri, cost_sat, income_sun, income_mon, income_tue, income_wed, income_thu, income_fri, income_sat],
+            'origin':['expense','expense','expense','expense','expense','expense','expense',
+                      'income','income','income','income','income','income','income']
+        }
+        bar2 = Bar(data, label=CatAttr(columns=['week'], sort=False,), values='dollar', plot_width=700, group='origin')
+        script2, div2 = components(bar2)
 
-    # add renderers
-    #p.circle(aapl_dates, aapl, size=4, color='darkgrey', alpha=0.2, legend='close')
-    #p.line(aapl_dates, aapl_avg, color='navy', legend='avg')
+        ####折線圖####
+        #AAPL = pd.read_csv(
+        #    "http://ichart.yahoo.com/table.csv?s=AAPL&a=0&b=1&c=2000&d=0&e=1&f=2010",
+        #    parse_dates=['Date']
+        #)
+        #print(AAPL)
+        s = """Date,Close
+        """+datetime.strftime(startDay, '%Y/%m/%d')+""","""+str(cost_sun)+"""
+        """+datetime.strftime(startDay+timedelta(days=1), '%Y/%m/%d')+""","""+str(cost_mon)+"""
+        """+datetime.strftime(startDay+timedelta(days=2), '%Y/%m/%d')+""","""+str(cost_tue)+"""
+        """+datetime.strftime(startDay+timedelta(days=3), '%Y/%m/%d')+""","""+str(cost_wed)+"""
+        """+datetime.strftime(startDay+timedelta(days=4), '%Y/%m/%d')+""","""+str(cost_thu)+"""
+        """+datetime.strftime(startDay+timedelta(days=5), '%Y/%m/%d')+""","""+str(cost_fri)+"""
+        """+datetime.strftime(endDay, '%Y/%m/%d')+""","""+str(cost_sat)+""" """
+
+        AAPL = pd.read_csv(StringIO(s),parse_dates=['Date'])
+        print(AAPL)
+        # create a new plot with a datetime axis type
+        p = figure(width=800, height=250, x_axis_type="datetime")
+
+        p.line(AAPL['Date'], AAPL['Close'], color='navy', alpha=0.5)
+
+        # add renderers
+        #p.circle(aapl_dates, aapl, size=4, color='darkgrey', alpha=0.2, legend='close')
+        #p.line(aapl_dates, aapl_avg, color='navy', legend='avg')
     
-    # NEW: customize by setting attributes
-    p.title.text = "AAPL One-Month Average"
-    p.legend.location = "top_left"
-    p.grid.grid_line_alpha=0
-    p.xaxis.axis_label = 'Date'
-    p.yaxis.axis_label = 'Price'
-    p.ygrid.band_fill_color="olive"
-    p.ygrid.band_fill_alpha = 0.1
-    script, div = components(p)
+        # NEW: customize by setting attributes
+        ##p.title.text = "AAPL One-Month Average"
+        p.legend.location = "top_left"
+        p.grid.grid_line_alpha=0
+        p.xaxis.axis_label = 'Date'
+        p.yaxis.axis_label = 'Dollar'
+        p.ygrid.band_fill_color="olive"
+        p.ygrid.band_fill_alpha = 0.1
+        script, div = components(p)
+        print(div)
     
-    ####長條圖####
-    # best support is with data in a format that is table-like
-    data = {
-        'sample': ['1st', '2nd', '1st', '2nd', '1st', '2nd'],
-        'interpreter': ['python', 'python', 'pypy', 'pypy', 'jython', 'jython'],
-        'timing': [-2, 5, 12, 40, 22, 30]
-    }
+        ####圓餅圖####
+        data3 = pd.Series([0.15,0.4,0.7,1.0], index = list('abcd'))
+        pie_chart = Donut(data3)
+        script3, div3 = components(pie_chart)
 
-    # table-like data results in reconfiguration of the chart with no data manipulation
-    bar2 = Bar(data, values='timing', label=['interpreter', 'sample'],
-               agg='mean', title="Python Interpreters", plot_width=400)
-    script2, div2 = components(bar2)
-
-    ####圓餅圖####
-    data3 = pd.Series([0.15,0.4,0.7,1.0], index = list('abcd'))
-    pie_chart = Donut(data3)
-    script3, div3 = components(pie_chart)
-
-    ####點####
-    #p = figure()
-    #p.circle([1,2], [3,4])
-    #script, div = components(p)
-    #print(script)
-    #print(div)
-    #show(p)
-    return render(request, 'chart.html',{"the_script": script, "the_div": div, "script_bar": script2, "div_bar": div2, "script_pie": script3, "div_pie": div3})
+        ####點####
+        #p = figure()
+        #p.circle([1,2], [3,4])
+        #script, div = components(p)
+        #print(script)
+        #print(div)
+        #show(p)
+    return render(request, 'chart.html',{"title": week, "the_script": script, "the_div": div, "script_bar": script2, "div_bar": div2, "script_pie": script3, "div_pie": div3})
 
 
 def create_receipt(request):
