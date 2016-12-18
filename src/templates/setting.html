@@ -657,13 +657,19 @@
                 url: "/createSubClassificationInSettingPage/",
                 type:"POST",
                 data: {newSub : newSub, category : mainType},
-                success: function(rowcontent){
-                    $("#table1 tr td:first-child").each(function(){
-						if($(this).attr('id') === mainType ){
-							$(this).next().append(rowcontent);	
-							alert("您新增了: " + subType);
-						}
-					});
+                success: function(result){
+                    if(result.created){
+                         $("#table1 tr td:first-child").each(function(){
+                             if($(this).attr('id') === mainType ){
+							 $(this).next().append(rowcontent);
+{#							 alert("您新增了: " + subType);#}
+						    }
+					    });
+                    }
+                    else{
+                        alert("子分類名稱重複")
+                    }
+
                 },
                 error: function(){
                     alert("新增子分類失敗");
@@ -685,12 +691,16 @@
                 type:"POST",
                 data: {newSub : newSub, category : mainType},
                 success: function(rowcontent){
-                    $("#table1 tr td:first-child").each(function(){
-						if($(this).attr('id') === mainType ){
-							$(this).next().append(rowcontent);	
-							alert("您新增了: " + subType);
-						}
-					});
+                    if(result.created){
+                        $("#table1 tr td:first-child").each(function(){
+                            if($(this).attr('id') === mainType ){
+                                $(this).next().append(rowcontent);
+                                alert("您新增了: " + subType);
+                            }
+                        });
+                    }else{
+                        alert("子分類名稱重複")
+                    }
                 },
                 error: function(){
                     alert("新增子分類失敗");
@@ -701,9 +711,6 @@
 	}
 
 
-
-	
-	
 	// 週期性項目的日期設定按鈕事件
 	$(document).on("click", ".periodic-date-setting", function(){
 		$(this).parent().siblings().addClass("editting");

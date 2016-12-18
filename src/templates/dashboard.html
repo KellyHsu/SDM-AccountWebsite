@@ -285,10 +285,16 @@ $(document).ready(function() {
                 url: "/createSubCategory/",
                 type:"POST",
                 data: {newSub : newSubText, category : classname},
-                success: function(rowcontent){
-                    $(".modal-body").append(rowcontent)
-                    subCategorySelected();
-                    newSub.val('');
+                success: function(result){
+                    if(result.created){
+                        $(".modal-body").append(rowcontent)
+                        subCategorySelected();
+                        newSub.val('');
+                    }
+                    else{
+                        alert("子分類名稱重複")
+                    }
+
                 },
                 error: function(){
                     alert("新增子分類失敗");

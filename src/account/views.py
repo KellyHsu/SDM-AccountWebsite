@@ -419,8 +419,8 @@ def create_subClassification(request):
             rowcontent = '<button type="button" class="btn btn-link {0}" id="sec-category">' \
                          '{1}</button>'.format(new_subclass.classification.classification_type +
                                                "_list", new_subclass.name.encode('utf-8'))
-
-        return HttpResponse(rowcontent)
+        message = {"rowcontent": rowcontent, "created": created}
+        return HttpResponse(json.JSONEncoder().encode(message))
 
 
 # 用來把英文分類換成中文
@@ -669,8 +669,8 @@ def create_subClassification_in_settingPage(request):
         if created:
             rowcontent = '<button type="button" class="btn btn-link btn-md sub-category">{0}</button>'.format(
                 new_subclass.name.encode('utf-8'))
-
-        return HttpResponse(rowcontent)
+        message = {"rowcontent": rowcontent, "created": created}
+        return HttpResponse(json.JSONEncoder().encode(message))
 
 
 def delete_subClassification_in_settingPage(request):
