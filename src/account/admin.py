@@ -11,7 +11,7 @@ class ReceiptAdmin(admin.ModelAdmin):
 
 
 class SubClassificationAdmin(admin.ModelAdmin):
-    list_display = ('member', 'classification', 'name')
+    list_display = ('member', 'classification', 'name', "exist")
 
 
 class ClassificationAdmin(admin.ModelAdmin):

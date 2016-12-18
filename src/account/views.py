@@ -25,20 +25,20 @@ def dashboard(request):
         cost_list = Receipt.objects.filter(member=member, date=date.today(), incomeandexpense__income_type="expense")
         revenue_list = Receipt.objects.filter(member=member, date=date.today(), incomeandexpense__income_type="income")
 
-        food_list = SubClassification.objects.filter(member=member, classification=1)
-        clothing_list = SubClassification.objects.filter(member=member, classification=2)
-        housing_list = SubClassification.objects.filter(member=member, classification=3)
-        transportation_list = SubClassification.objects.filter(member=member, classification=4)
-        education_list = SubClassification.objects.filter(member=member, classification=5)
-        entertainment_list = SubClassification.objects.filter(member=member, classification=6)
-        others_list = SubClassification.objects.filter(member=member, classification=7)
+        food_list = SubClassification.objects.filter(member=member, classification=1, exist=True)
+        clothing_list = SubClassification.objects.filter(member=member, classification=2, exist=True)
+        housing_list = SubClassification.objects.filter(member=member, classification=3, exist=True)
+        transportation_list = SubClassification.objects.filter(member=member, classification=4, exist=True)
+        education_list = SubClassification.objects.filter(member=member, classification=5, exist=True)
+        entertainment_list = SubClassification.objects.filter(member=member, classification=6, exist=True)
+        others_list = SubClassification.objects.filter(member=member, classification=7, exist=True)
 
         c8 = Classification.objects.filter(classification_type='general_revenue').first()
         c9 = Classification.objects.filter(classification_type='invest_revenue').first()
         c10 = Classification.objects.filter(classification_type='other_revenue').first()
-        general_revenue_list = SubClassification.objects.filter(member=member, classification=c8)
-        invest_revenue_list = SubClassification.objects.filter(member=member, classification=c9)
-        other_revenue_list = SubClassification.objects.filter(member=member, classification=c10)
+        general_revenue_list = SubClassification.objects.filter(member=member, classification=c8, exist=True)
+        invest_revenue_list = SubClassification.objects.filter(member=member, classification=c9, exist=True)
+        other_revenue_list = SubClassification.objects.filter(member=member, classification=c10, exist=True)
 
         periodic_notification_list = periodicItemDateCheck(member)
 
@@ -63,20 +63,19 @@ def setting(request):
         member = Member.objects.filter(user__username=request.user).first()
 
         c1 = Classification.objects.filter(classification_type='food').first()
-        food_list = SubClassification.objects.filter(member=member, classification=c1)
-        print(food_list)
+        food_list = SubClassification.objects.filter(member=member, classification=c1, exist=True)
         c2 = Classification.objects.filter(classification_type='clothing').first()
-        clothing_list = SubClassification.objects.filter(member=member, classification=c2)
+        clothing_list = SubClassification.objects.filter(member=member, classification=c2, exist=True)
         c3 = Classification.objects.filter(classification_type='housing').first()
-        housing_list = SubClassification.objects.filter(member=member, classification=c3)
+        housing_list = SubClassification.objects.filter(member=member, classification=c3, exist=True)
         c4 = Classification.objects.filter(classification_type='transportation').first()
-        transportation_list = SubClassification.objects.filter(member=member, classification=c4)
+        transportation_list = SubClassification.objects.filter(member=member, classification=c4, exist=True)
         c5 = Classification.objects.filter(classification_type='education').first()
-        education_list = SubClassification.objects.filter(member=member, classification=c5)
+        education_list = SubClassification.objects.filter(member=member, classification=c5, exist=True)
         c6 = Classification.objects.filter(classification_type='entertainment').first()
-        entertainment_list = SubClassification.objects.filter(member=member, classification=c6)
+        entertainment_list = SubClassification.objects.filter(member=member, classification=c6, exist=True)
         c7 = Classification.objects.filter(classification_type='others').first()
-        others_list = SubClassification.objects.filter(member=member, classification=c7)
+        others_list = SubClassification.objects.filter(member=member, classification=c7, exist=True)
 
         month_budget = MonthBudget.objects.filter(member=member).first()
 
@@ -414,6 +413,10 @@ def create_subClassification(request):
         new_subclass, created = SubClassification.objects.get_or_create(member=member, classification=category,
                                                                         name=request.POST["newSub"],
                                                                         defaults={'name': request.POST["newSub"]})
+        if not new_subclass.exist:
+            SubClassification.objects.filter(member=member, id=new_subclass.id).update(exist=True)
+            created = True
+
         rowcontent = ""
         if created:
             rowcontent = '<button type="button" class="btn btn-link {0}" id="sec-category">' \
@@ -665,6 +668,11 @@ def create_subClassification_in_settingPage(request):
         new_subclass, created = SubClassification.objects.get_or_create(member=member, classification=category,
                                                                         name=request.POST["newSub"],
                                                                         defaults={'name': request.POST["newSub"]})
+
+        if not new_subclass.exist:
+            SubClassification.objects.filter(member=member, id=new_subclass.id).update(exist=True)
+            created = True
+
         rowcontent = ""
         if created:
             rowcontent = '<button type="button" class="btn btn-link btn-md sub-category">{0}</button>'.format(
@@ -677,7 +685,7 @@ def delete_subClassification_in_settingPage(request):
     if request.method == 'POST':
         print(request.POST)
         member = Member.objects.filter(user__username=request.user).first()
-        delsub = SubClassification.objects.filter(name=request.POST["name"], member=member).delete()
+        delsub = SubClassification.objects.filter(name=request.POST["name"], member=member).update(exist=False)
         return HttpResponse(delsub)
 
 

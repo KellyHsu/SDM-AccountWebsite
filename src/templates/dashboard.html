@@ -284,15 +284,17 @@ $(document).ready(function() {
             $.ajax({
                 url: "/createSubCategory/",
                 type:"POST",
+                dataType: 'json',
                 data: {newSub : newSubText, category : classname},
                 success: function(result){
                     if(result.created){
-                        $(".modal-body").append(rowcontent)
+                        $(".modal-body").append(result.rowcontent)
                         subCategorySelected();
                         newSub.val('');
                     }
                     else{
                         alert("子分類名稱重複")
+                        newSub.val('');
                     }
 
                 },

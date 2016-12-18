@@ -656,13 +656,13 @@
             $.ajax({
                 url: "/createSubClassificationInSettingPage/",
                 type:"POST",
+                dataType: 'json',
                 data: {newSub : newSub, category : mainType},
                 success: function(result){
                     if(result.created){
                          $("#table1 tr td:first-child").each(function(){
                              if($(this).attr('id') === mainType ){
-							 $(this).next().append(rowcontent);
-{#							 alert("您新增了: " + subType);#}
+							 $(this).next().append(result.rowcontent);
 						    }
 					    });
                     }
@@ -690,13 +690,13 @@
                 //url: "/createSubClassificationInSettingPage/",
 				url: "/createRevenueSubClassificationInSettingPage/",
                 type:"POST",
+                dataType: 'json',
                 data: {newSub : newSub, category : mainType},
                 success: function(rowcontent){
                     if(result.created){
                         $("#table1 tr td:first-child").each(function(){
                             if($(this).attr('id') === mainType ){
-                                $(this).next().append(rowcontent);
-                                alert("您新增了: " + subType);
+                                $(this).next().append(result.rowcontent);
                             }
                         });
                     }else{

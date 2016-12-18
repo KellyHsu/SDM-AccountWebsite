@@ -35,6 +35,7 @@ class SubClassification(models.Model):
     name = models.CharField(max_length=100)
     classification = models.ForeignKey('Classification', on_delete=models.CASCADE)
     member = models.ForeignKey('member.Member', on_delete=models.CASCADE)
+    exist = models.BooleanField(default=True)
 
     def __unicode__(self):
         return self.name
