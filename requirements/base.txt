@@ -22,3 +22,11 @@ django-libsass==0.6
 # https://github.com/django-crispy-forms/django-crispy-forms
 django-crispy-forms==1.6.0
 
+# Pandas
+# http://pandas.pydata.org/pandas-docs/stable/install.html
+pandas==0.19.1
+
+# Bokeh is a Python interactive visualization library that targets modern web browsers for presentation. 
+# http://bokeh.pydata.org/en/latest/docs/installation.html
+bokeh==0.12.3
+
