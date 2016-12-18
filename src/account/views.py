@@ -8,6 +8,13 @@ from datetime import datetime, date, timedelta
 from django.contrib.auth.models import User
 from django.db.models import Q, Sum
 import json
+from bokeh.plotting import figure, output_file, show
+from bokeh.charts import Bar, Donut, output_file, show
+from bokeh.layouts import row
+from bokeh.embed import components
+import pandas as pd
+from pandas.compat import StringIO
+from bokeh.charts.attributes import ColorAttr, CatAttr
 
 
 def dashboard(request):
@@ -125,40 +132,209 @@ def filter(request):
                    "totalIncome": income, "balance": balance})
 
 
+def chart(request):
+    
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    else:
+        member = Member.objects.filter(user__username=request.user).first()
+        today = date.today()
+        weekday = today.weekday()
+        if weekday == 2:
+            startDay = today - timedelta(days=3)
+            endDay = today + timedelta(days=3)
+        else:
+            forward = today + timedelta(days=1)
+            while forward.weekday() != 2:
+                forward = forward + timedelta(days=1)
+            dateForward = forward
+            backward = today - timedelta(days=1)
+            while backward.weekday() != 2:
+                backward = backward - timedelta(days=1)
+            dateBackward = backward
+            diff1 = today - dateBackward
+            diff2 = dateForward - today
+            if diff1 < diff2:
+                startDay = dateBackward - timedelta(days=3)
+                endDay = dateBackward + timedelta(days=3)
+            else:
+                startDay = dateForward - timedelta(days=3)
+                endDay = dateForward + timedelta(days=3)
+        week = datetime.strftime(startDay, '%Y/%m/%d') + "-" + datetime.strftime(endDay, '%Y/%m/%d')
+        cost_sun = Receipt.objects.filter(member=member, date=startDay, incomeandexpense__income_type="expense").aggregate(Sum('money'))
+        cost_mon = Receipt.objects.filter(member=member, date=startDay+timedelta(days=1), incomeandexpense__income_type="expense").aggregate(Sum('money'))
+        cost_tue = Receipt.objects.filter(member=member, date=startDay+timedelta(days=2), incomeandexpense__income_type="expense").aggregate(Sum('money'))
+        cost_wed = Receipt.objects.filter(member=member, date=startDay+timedelta(days=3), incomeandexpense__income_type="expense").aggregate(Sum('money'))
+        cost_thu = Receipt.objects.filter(member=member, date=startDay+timedelta(days=4), incomeandexpense__income_type="expense").aggregate(Sum('money'))
+        cost_fri = Receipt.objects.filter(member=member, date=startDay+timedelta(days=5), incomeandexpense__income_type="expense").aggregate(Sum('money'))
+        cost_sat = Receipt.objects.filter(member=member, date=endDay, incomeandexpense__income_type="expense").aggregate(Sum('money'))
+        if str(cost_sun['money__sum']) == "None":
+            cost_sun = 0
+        else:
+            cost_sun = int(cost_sun['money__sum'])
+        if str(cost_mon['money__sum']) == "None":
+            cost_mon = 0
+        else:
+            cost_mon = int(cost_mon['money__sum'])
+        if str(cost_tue['money__sum']) == "None":
+            cost_tue = 0
+        else:
+            cost_tue = int(cost_tue['money__sum'])
+        if str(cost_wed['money__sum']) == "None":
+            cost_wed = 0
+        else:
+            cost_wed = int(cost_wed['money__sum'])
+        if str(cost_thu['money__sum']) == "None":
+            cost_thu = 0
+        else:
+            cost_thu = int(cost_thu['money__sum'])
+        if str(cost_fri['money__sum']) == "None":
+            cost_fri = 0
+        else:
+            cost_fri = int(cost_fri['money__sum'])
+        if str(cost_sat['money__sum']) == "None":
+            cost_sat = 0
+        else:
+            cost_sat = int(cost_sat['money__sum'])
+
+        income_sun = Receipt.objects.filter(member=member, date=startDay, incomeandexpense__income_type="income").aggregate(Sum('money'))
+        income_mon = Receipt.objects.filter(member=member, date=startDay+timedelta(days=1), incomeandexpense__income_type="income").aggregate(Sum('money'))
+        income_tue = Receipt.objects.filter(member=member, date=startDay+timedelta(days=2), incomeandexpense__income_type="income").aggregate(Sum('money'))
+        income_wed = Receipt.objects.filter(member=member, date=startDay+timedelta(days=3), incomeandexpense__income_type="income").aggregate(Sum('money'))
+        income_thu = Receipt.objects.filter(member=member, date=startDay+timedelta(days=4), incomeandexpense__income_type="income").aggregate(Sum('money'))
+        income_fri = Receipt.objects.filter(member=member, date=startDay+timedelta(days=5), incomeandexpense__income_type="income").aggregate(Sum('money'))
+        income_sat = Receipt.objects.filter(member=member, date=endDay, incomeandexpense__income_type="income").aggregate(Sum('money'))
+        if str(income_sun['money__sum']) == "None":
+            income_sun = 0
+        else:
+            income_sun = int(income_sun['money__sum'])
+        if str(income_mon['money__sum']) == "None":
+            income_mon = 0
+        else:
+            income_mon = int(income_mon['money__sum'])
+        if str(income_tue['money__sum']) == "None":
+            income_tue = 0
+        else:
+            income_tue = int(income_tue['money__sum'])
+        if str(income_wed['money__sum']) == "None":
+            income_wed = 0
+        else:
+            income_wed = int(income_wed['money__sum'])
+        if str(income_thu['money__sum']) == "None":
+            income_thu = 0
+        else:
+            income_thu = int(income_thu['money__sum'])
+        if str(income_fri['money__sum']) == "None":
+            income_fri = 0
+        else:
+            income_fri = int(income_fri['money__sum'])
+        if str(income_sat['money__sum']) == "None":
+            income_sat = 0
+        else:
+            income_sat = int(income_sat['money__sum'])
+
+        ####長條圖####
+        data = {
+            'week': ['日', '一', '二', '三', '四', '五', '六', '日', '一', '二', '三', '四', '五', '六'],
+            'dollar': [cost_sun, cost_mon, cost_tue, cost_wed, cost_thu, cost_fri, cost_sat, income_sun, income_mon, income_tue, income_wed, income_thu, income_fri, income_sat],
+            'origin':['expense','expense','expense','expense','expense','expense','expense',
+                      'income','income','income','income','income','income','income']
+        }
+        bar2 = Bar(data, label=CatAttr(columns=['week'], sort=False,), values='dollar', plot_width=700, group='origin')
+        script2, div2 = components(bar2)
+
+        ####折線圖####
+        #AAPL = pd.read_csv(
+        #    "http://ichart.yahoo.com/table.csv?s=AAPL&a=0&b=1&c=2000&d=0&e=1&f=2010",
+        #    parse_dates=['Date']
+        #)
+        #print(AAPL)
+        s = """Date,Close
+        """+datetime.strftime(startDay, '%Y/%m/%d')+""","""+str(cost_sun)+"""
+        """+datetime.strftime(startDay+timedelta(days=1), '%Y/%m/%d')+""","""+str(cost_mon)+"""
+        """+datetime.strftime(startDay+timedelta(days=2), '%Y/%m/%d')+""","""+str(cost_tue)+"""
+        """+datetime.strftime(startDay+timedelta(days=3), '%Y/%m/%d')+""","""+str(cost_wed)+"""
+        """+datetime.strftime(startDay+timedelta(days=4), '%Y/%m/%d')+""","""+str(cost_thu)+"""
+        """+datetime.strftime(startDay+timedelta(days=5), '%Y/%m/%d')+""","""+str(cost_fri)+"""
+        """+datetime.strftime(endDay, '%Y/%m/%d')+""","""+str(cost_sat)+""" """
+
+        AAPL = pd.read_csv(StringIO(s),parse_dates=['Date'])
+        print(AAPL)
+        # create a new plot with a datetime axis type
+        p = figure(width=800, height=250, x_axis_type="datetime")
+
+        p.line(AAPL['Date'], AAPL['Close'], color='navy', alpha=0.5)
+
+        # add renderers
+        #p.circle(aapl_dates, aapl, size=4, color='darkgrey', alpha=0.2, legend='close')
+        #p.line(aapl_dates, aapl_avg, color='navy', legend='avg')
+    
+        # NEW: customize by setting attributes
+        ##p.title.text = "AAPL One-Month Average"
+        p.legend.location = "top_left"
+        p.grid.grid_line_alpha=0
+        p.xaxis.axis_label = 'Date'
+        p.yaxis.axis_label = 'Dollar'
+        p.ygrid.band_fill_color="olive"
+        p.ygrid.band_fill_alpha = 0.1
+        script, div = components(p)
+        print(div)
+    
+        ####圓餅圖####
+        data3 = pd.Series([0.15,0.4,0.7,1.0], index = list('abcd'))
+        pie_chart = Donut(data3)
+        script3, div3 = components(pie_chart)
+
+        ####點####
+        #p = figure()
+        #p.circle([1,2], [3,4])
+        #script, div = components(p)
+        #print(script)
+        #print(div)
+        #show(p)
+    return render(request, 'chart.html',{"title": week, "the_script": script, "the_div": div, "script_bar": script2, "div_bar": div2, "script_pie": script3, "div_pie": div3})
+
+
 def create_receipt(request):
     if request.method == 'POST':
         print(request.POST)
+        receipt_id = None
+        if request.POST.get('whick_receipt', False):
+            receipt_id = int(request.POST["whick_receipt"].partition("receipt")[-1])
+
         subclass = SubClassification.objects.filter(name=request.POST["category"].split("-", 1)[-1]).first()
         payment = Payment.objects.filter(payment_type=request.POST["payment"]).first()
         incomeandexpense = IncomeAndExpense.objects.filter(income_type=request.POST["record_type"]).first()
         member = Member.objects.filter(user__username=request.user).first()
-
-        new_receipt = Receipt.objects.create(money=request.POST["amount"], remark=request.POST["memo"],
-                                             date=datetime.strptime(request.POST["date"], "%Y/%m/%d"),
-                                             subclassification=subclass,
-                                             payment=payment,
-                                             incomeandexpense=incomeandexpense,
-                                             member=member)
+        new_receipt, created = Receipt.objects.update_or_create(member=member, id=receipt_id,
+                                                                defaults={"money": request.POST["amount"],
+                                                                          "remark": request.POST["memo"],
+                                                                          "date": datetime.strptime(request.POST["date"], "%Y/%m/%d"),
+                                                                          "subclassification": subclass, "payment": payment,
+                                                                          "incomeandexpense":incomeandexpense,
+                                                                          "member": member})
 
         if incomeandexpense.income_type == 'expense':
-            receipt_list = Receipt.objects.filter(member=member, date = datetime.strptime(request.POST["date"], "%Y/%m/%d"),incomeandexpense__income_type="expense")
+            receipt_list = Receipt.objects.filter(member=member, date=datetime.strptime(request.POST["date"], "%Y/%m/%d"),incomeandexpense__income_type="expense")
         else:
-            receipt_list = Receipt.objects.filter(member=member, date = datetime.strptime(request.POST["date"], "%Y/%m/%d"), incomeandexpense__income_type="income")
+            receipt_list = Receipt.objects.filter(member=member, date=datetime.strptime(request.POST["date"], "%Y/%m/%d"), incomeandexpense__income_type="income")
 
         total_value = get_total(receipt_list)
 
         cost_rowcontent = ""
         if new_receipt.remark:
-            cost_rowcontent += "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'> " \
-                               "{0}-{1}-{2}: {3}</a><span style='float: right; margin-right: 10px; " \
+            cost_rowcontent += "<tr class='receipt{0}'><td><span class='glyphicon glyphicon-file text-success'></span>" \
+                               "<a class='receipt_info' href='#'>{1}-{2}-{3}: {4}</a><span style='float: right; margin-right: 10px; " \
                                "color: #9D9D9D;'></span></td></tr>".format(
+                new_receipt.id,
                 new_receipt.subclassification.classification.classification_type.encode('utf-8'),
                 new_receipt.subclassification.name.encode('utf-8'),
                 new_receipt.remark.encode('utf-8'), new_receipt.money)
         else:
-            cost_rowcontent += "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'> " \
-                               "{0}-{1}: {2}</a><span style='float: right; margin-right: 10px; " \
+            cost_rowcontent += "<tr class='receipt{0}'><td><span class='glyphicon glyphicon-file text-success'></span>" \
+                               "<a class='receipt_info' href='#'>{1}-{2}: {3}</a><span style='float: right; margin-right: 10px; " \
                                "color: #9D9D9D;'></span></td></tr>".format(
+                new_receipt.id,
                 new_receipt.subclassification.classification.classification_type.encode('utf-8'),
                 new_receipt.subclassification.name.encode('utf-8'),
                 new_receipt.money)
@@ -183,26 +359,23 @@ def create_receipt(request):
                    "budget_check": {"monthly": monthly_budget_check_result, "class": class_budget_check_result}}
 
     return HttpResponse(json.JSONEncoder().encode(message))
+    # return 0
 
 
 def delete_receipt(request):
     if request.method == 'POST':
         print(request.POST)
+        receipt_id = int(request.POST["whick_receipt"].strip("receipt"))
 
         # delete receipt
         member = Member.objects.filter(user__username=request.user).first()
-        classification = Classification.objects.filter(classification_type=request.POST["category"]).first()
-        subclass = SubClassification.objects.filter(name=request.POST["subcategory"], member=member,
-                                                    classification=classification).first()
-        receipt = Receipt.objects.filter(money=request.POST["amount"], remark=request.POST["memo"],
-                                         date=datetime.strptime(request.POST["date"], "%Y/%m/%d"),
-                                         subclassification=subclass, member=member).first()
+        receipt = Receipt.objects.filter(member=member, id=receipt_id).first()
         if receipt is not None:
             receipt.delete()
 
         # recount total
-        incomeandexpense = IncomeAndExpense.objects.filter(income_type=request.POST["record_type"]).first()
-        if incomeandexpense.income_type == 'expense':
+        receipt_type = receipt.incomeandexpense.income_type
+        if receipt_type == 'expense':
             receipt_list = Receipt.objects.filter(member=member, date=date.today(),
                                                   incomeandexpense__income_type="expense")
         else:
@@ -210,7 +383,27 @@ def delete_receipt(request):
                                                   incomeandexpense__income_type="income")
         total_value = get_total(receipt_list)
 
-    return HttpResponse(total_value)
+        message = {"total_value": total_value, "receipt_type": receipt_type}
+    return HttpResponse(json.JSONEncoder().encode(message))
+
+
+def modify_receipt(request):
+    if request.method == 'POST':
+        print(request.POST)
+        receipt_id = int(request.POST["whick_receipt"].strip("receipt"))
+
+        # delete receipt
+        member = Member.objects.filter(user__username=request.user).first()
+        receipt = Receipt.objects.filter(member=member, id=receipt_id).first()
+
+        class_name = classNameTranslate_enTozhtw(receipt.subclassification.classification.classification_type)
+        classification_detail = class_name.decode("utf8") + "-" + receipt.subclassification.name
+        message = {"money": receipt.money, "remark": receipt.remark, "classification_detail": classification_detail,
+                   "payment": receipt.payment.payment_type, "incomeandexpense": receipt.incomeandexpense.income_type,
+                   "receipt_id": "receipt"+str(receipt.id)}
+        print(message)
+    return HttpResponse(json.JSONEncoder().encode(message))
+    # return 0
 
 
 def create_subClassification(request):
@@ -274,18 +467,17 @@ def get_date(request):
             className = classNameTranslate_enTozhtw(
                 receipt.subclassification.classification.classification_type.encode('utf-8'))
             if receipt.remark:
-                cost_rowcontent += "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>" \
-                                   "{0}-{1}-{2}: {3}</a><span style='float: right; margin-right: 10px; color: #9D9D9D;'>" \
-                                   "</span></td></tr>".format(className,
-                                                              receipt.subclassification.name.encode('utf-8'),
-                                                              receipt.remark.encode('utf-8'), receipt.money)
+                cost_rowcontent += "<tr class='receipt{0}'><td><span class='glyphicon glyphicon-file text-success'>" \
+                                   "</span><a class='receipt_info' href='#'>{1}-{2}-{3}: {4}</a><span style='float: right; " \
+                                   "margin-right: 10px; color: #9D9D9D;'></span></td></tr>".format(
+                    receipt.id, className, receipt.subclassification.name.encode('utf-8'),
+                    receipt.remark.encode('utf-8'), receipt.money)
             else:
-                cost_rowcontent += "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>" \
-                                   "{0}-{1}: {2}</a><span style='float: right; margin-right: 10px; color: #9D9D9D;'>" \
-                                   "</span></td></tr>".format(className,
-                                                              receipt.subclassification.name.encode('utf-8'),
-                                                              receipt.money)
-
+                cost_rowcontent += "<tr class='receipt{0}'><td><span class='glyphicon glyphicon-file text-success'>" \
+                                   "</span><a class='receipt_info' href='#'>{1}-{2}: {3}</a><span style='float: right; margin-right: 10px; " \
+                                   "color: #9D9D9D;'></span></td></tr>".format(receipt.id, className,
+                                                                               receipt.subclassification.name.encode('utf-8'),
+                                                                               receipt.money)
         revenue_receipts = Receipt.objects.all().filter(date=date, member=member,
                                                         incomeandexpense__income_type="income")
         revenue_rowcontent = ""
@@ -294,15 +486,15 @@ def get_date(request):
                 receipt.subclassification.classification.classification_type.encode('utf-8'))
 
             if receipt.remark:
-                revenue_rowcontent += "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>" \
-                                      "{0}-{1}-{2}: {3}</a><span style='float: right; margin-right: 10px; color: #9D9D9D;'>" \
-                                      "</span></td></tr>".format(className,
+                revenue_rowcontent += "<tr class='receipt{0}'><td><span class='glyphicon glyphicon-file text-success'></span><a class='receipt_info' href='#'>" \
+                                      "{1}-{2}-{3}: {4}</a><span style='float: right; margin-right: 10px; color: #9D9D9D;'>" \
+                                      "</span></td></tr>".format(receipt.id, className,
                                                                  receipt.subclassification.name.encode('utf-8'),
                                                                  receipt.remark.encode('utf-8'), receipt.money)
             else:
-                revenue_rowcontent += "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>" \
-                                      "{0}-{1}: {2}</a><span style='float: right; margin-right: 10px; color: #9D9D9D;'>" \
-                                      "</span></td></tr>".format(className,
+                revenue_rowcontent += "<tr class='receipt{0}'><td><span class='glyphicon glyphicon-file text-success'></span><a class='receipt_info' href='#'>" \
+                                      "{1}-{2}: {3}</a><span style='float: right; margin-right: 10px; color: #9D9D9D;'>" \
+                                      "</span></td></tr>".format(receipt.id, className,
                                                                  receipt.subclassification.name.encode('utf-8'),
                                                                  receipt.money)
                                                                  
