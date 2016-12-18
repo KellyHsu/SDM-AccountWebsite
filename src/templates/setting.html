@@ -676,15 +676,17 @@
 
 		// 送出新增收入子分類的表單
 	function addRevenueSubCategorySubmit(){
-		var mainType = $("#main-type-choose").val();
-		var newSub = $("#new-sub-type").val();
+		var mainType = $("#main-revenue-type-choose").val();
+		var newSub = $("#new-revenue-sub-type").val();
 		//post
  		if(newSub){
             $.ajax({
-                url: "/createSubClassificationInSettingPage/",
+                //url: "/createSubClassificationInSettingPage/",
+				url: "/createRevenueSubClassificationInSettingPage/",
                 type:"POST",
                 data: {newSub : newSub, category : mainType},
                 success: function(rowcontent){
+				    alert("您剛剛新增: " + subType);
                     $("#table1 tr td:first-child").each(function(){
 						if($(this).attr('id') === mainType ){
 							$(this).next().append(rowcontent);	
@@ -693,7 +695,9 @@
 					});
                 },
                 error: function(){
-                    alert("新增子分類失敗");
+				    alert("您剛剛新增失敗，子類別是: " + subType);
+                    //alert("新增子分類失敗");
+                    //alert("新增子分類失敗");
                 }
             });
         }
@@ -1266,21 +1270,21 @@
 
 	            <div class="modal-body" id="sectest">
 					<div class="form-group">
-						<label for="main-type-choose">主分類選擇</label>
-						<select class="form-control" id="main-type-choose">
+						<label for="main-revenue-type-choose">主分類選擇</label>
+						<select class="form-control" id="main-revenue-type-choose">
 							<option value="general_revenue">一般收入</option>
 							<option value="investment_revenue">投資收入</option>
 							<option value="other_revenue">其他</option>
 						</select>
 					</div>
 					<div class="form-group">
-						<label for="new-sub-type">子分類</label>
-						<input type="text" class="form-control" id="new-sub-type" placeholder="新子分類">
+						<label for="new-revenue-sub-type">子分類</label>
+						<input type="text" class="form-control" id="new-revenue-sub-type" placeholder="新子分類">
 					</div>
 				</div> <!-- /.modal-body -->
 
 	            <div class="modal-footer">
-	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal" id="modal-subCategory-submit" onclick="addRevenueSubCategorySubmit()">確定</button>
+	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal" id="modal-revenue-subCategory-submit" onclick="addRevenueSubCategorySubmit()">確定</button>
 	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal">取消</button>
 	            </div> <!-- /.modal-footer -->
 	        </div>
