@@ -687,14 +687,13 @@
 		//post
  		if(newSub){
             $.ajax({
-                //url: "/createSubClassificationInSettingPage/",
-				url: "/createRevenueSubClassificationInSettingPage/",
+                url: "/createSubClassificationInSettingPage/",
                 type:"POST",
                 dataType: 'json',
                 data: {newSub : newSub, category : mainType},
-                success: function(rowcontent){
+                success: function(result){
                     if(result.created){
-                        $("#table1 tr td:first-child").each(function(){
+                        $("#table2 tr td:first-child").each(function(){
                             if($(this).attr('id') === mainType ){
                                 $(this).next().append(result.rowcontent);
                             }
@@ -705,8 +704,6 @@
                 },
                 error: function(){
 				    alert("您剛剛新增失敗，子類別是: " + subType);
-                    //alert("新增子分類失敗");
-                    //alert("新增子分類失敗");
                 }
             });
         }
@@ -1019,14 +1016,14 @@
                     </legend>
                     <form>
 					    <p>
-						   <table class="table table-bordered table-striped table-responsive" id="table1">
+						   <table class="table table-bordered table-striped table-responsive" id="table2">
 						      <thead> 
 							     <th class="col-md-3">收入主分類 </th>
 								 <th class="col-md-9">收入子分類 </th>
 							  </thead>
 							  <tbody>
 								  <tr> 
-								     <td id="food">一般收入</td>
+								     <td id="general_revenue">一般收入</td>
 									 <td>
 										{% for general_revenue in general_revenue_list %}
 									    	<button type="button" class="btn btn-link btn-md sub-category">{{ general_revenue.name }}</button>
@@ -1034,15 +1031,15 @@
 									</td>
 								  </tr>
 								  <tr> 
-								     <td id="clothing">投資收入</td>
+								     <td id="invest_revenue">投資收入</td>
 								     <td>
-										{% for investment_revenue in investment_revenue_list %}
-								     		<button type="button" class="btn btn-link btn-md sub-category">{{ investment_revenue.name }}</button>
+										{% for invest_revenue in invest_revenue_list %}
+								     		<button type="button" class="btn btn-link btn-md sub-category">{{ invest_revenue.name }}</button>
 										{% endfor %}
 									 </td>
 								  </tr>
 								  <tr> 
-								     <td id="housing">其他</td>
+								     <td id="other_revenue">其他</td>
 								     <td>
 										{% for other_revenue in other_revenue_list %}
 							     			<button type="button" class="btn btn-link btn-md sub-category">{{ other_revenue.name }}</button>
@@ -1282,7 +1279,7 @@
 						<label for="main-revenue-type-choose">主分類選擇</label>
 						<select class="form-control" id="main-revenue-type-choose">
 							<option value="general_revenue">一般收入</option>
-							<option value="investment_revenue">投資收入</option>
+							<option value="invest_revenue">投資收入</option>
 							<option value="other_revenue">其他</option>
 						</select>
 					</div>

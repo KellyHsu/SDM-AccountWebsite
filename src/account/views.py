@@ -76,6 +76,12 @@ def setting(request):
         entertainment_list = SubClassification.objects.filter(member=member, classification=c6, exist=True)
         c7 = Classification.objects.filter(classification_type='others').first()
         others_list = SubClassification.objects.filter(member=member, classification=c7, exist=True)
+        c8 = Classification.objects.filter(classification_type='general_revenue').first()
+        general_revenue_list = SubClassification.objects.filter(member=member, classification=c8, exist=True)
+        c9 = Classification.objects.filter(classification_type='invest_revenue').first()
+        invest_revenue_list = SubClassification.objects.filter(member=member, classification=c9, exist=True)
+        c10 = Classification.objects.filter(classification_type='other_revenue').first()
+        other_revenue_list = SubClassification.objects.filter(member=member, classification=c10, exist=True)
 
         month_budget = MonthBudget.objects.filter(member=member).first()
 
@@ -99,7 +105,9 @@ def setting(request):
                                             "clothing_list": clothing_list, "housing_list": housing_list,
                                             "transportation_list": transportation_list,
                                             "education_list": education_list,
-                                            "entertainment_list": entertainment_list, "others_list": others_list})
+                                            "entertainment_list": entertainment_list, "others_list": others_list,
+                                            "general_revenue_list": general_revenue_list, "invest_revenue_list": invest_revenue_list,
+                                            "other_revenue_list": other_revenue_list})
 
 
 def filter(request):
