@@ -57,7 +57,12 @@
 
 <script type="text/javascript">
 	$(document).ready(function() {
-        var table = $('#example').DataTable();
+        var table = $('#example').DataTable({
+            responsive: true,
+            "scrollX": true,
+            
+            
+        });
         // $('#example tbody').on( 'click', 'tr', function () {
         //     //點同一個row,取消選擇
         //     if ( $(this).hasClass('selected') ) {
@@ -193,6 +198,20 @@
 
 </script>
 <style type="text/css">
+    body {
+        background-color: rgb(229, 228, 219);
+    }
+    #page-wrapper {
+        min-height: 167px;
+        background-color: rgb(229, 228, 219);
+    }
+
+    #center-content {
+        background-color: #fff;
+        margin-top: 20px;
+        padding-bottom: 20px;
+    }
+
     .dataTables_wrapper .ui-toolbar{
         background: #DCDCDC ;
     }
@@ -221,6 +240,12 @@
         <!-- Navigation -->
         <nav class="navbar navbar-light navbar-static-top" role="navigation">
             <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".panel-group">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
                 <a class="navbar-brand glyphicon glyphicon-book" href="/dashboard/"></a>
                 <a  href="/dashboard/"><img src="../static/image/logo.png" alt="logo" class="navbar-brand glyphicon glyphicon-book" height="30px" width="200px" border="0" /></a>
             </div><!-- /.navbar-header -->
@@ -281,7 +306,7 @@
         </nav><!-- /.navbar-top-links -->
 
         <!-- main container -->
-        <div class="container-fluid" style="background-color: rgb(229, 228, 219);">
+        <div class="container-fluid">
         	<div class="row col-sm-2 col-md-2 left-side">
                 <div class="panel-group collapse in" id="accordion" aria-expanded="true">
 
@@ -330,10 +355,10 @@
 
 
 	        <!-- Main container -->
-	        <div id="page-wrapper" class="col-sm-10 col-md-10" style="min-height: 167px; background-color: rgb(229, 228, 219);">
+	        <div id="page-wrapper" class="col-sm-10 col-md-10">
 	        	<div class="container-fluid col-xs-12 col-sm-12">
 			    	<div class="row">
-                        <div class="col-lg-12" style="background-color: #fff; margin-top: 20px; padding-bottom: 20px;">
+                        <div class="col-lg-12" id="center-content">
                             <div id="titleMenu" class="page-header" style="text-align: center; padding-bottom: 13px; padding-top: 13px; margin: 10px;">
                                 <div style="padding: 8px 12px; margin: 6px;">
                                     <span class="glyphicon glyphicon-chevron-left" aria-hidden="true" id="btn_left"></span>
