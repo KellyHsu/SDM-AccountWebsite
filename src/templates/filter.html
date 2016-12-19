@@ -58,67 +58,63 @@
 <script type="text/javascript">
 	$(document).ready(function() {
         var table = $('#example').DataTable();
-        $('#example tbody').on( 'click', 'tr', function () {
-            //點同一個row,取消選擇
-            if ( $(this).hasClass('selected') ) {
-                $(this).removeClass('selected');
-            //取消已選
-            }
-            else {
-                table.$('tr.selected').removeClass('selected');
-                $(this).addClass('selected');
-            }
+        // $('#example tbody').on( 'click', 'tr', function () {
+        //     //點同一個row,取消選擇
+        //     if ( $(this).hasClass('selected') ) {
+        //         $(this).removeClass('selected');
+        //     //取消已選
+        //     }
+        //     else {
+        //         table.$('tr.selected').removeClass('selected');
+        //         $(this).addClass('selected');
+        //     }
 
-            $(this).find('td').each (function() {
-                console.log($(this).html());
-            });
-            //console.log($(this).context);
-            //console.log($('#money').html());
+        //     $(this).find('td').each (function() {
+        //         console.log($(this).html());
+        //     });
+        //     //console.log($(this).context);
+        //     //console.log($('#money').html());
                                           
-        } );
+        // } );
         
         //點按鈕刪除
-        $('#btn_del').click( function () {
-            console.log(table.row('.selected').data()[7]);
-            var id = table.row('.selected').data()[7];
-            $.ajax({
-               dataType: 'json',
-               url: "/filterDelRecord/",
-                type:"POST",
-                data: {id: id},
-                success: function(result){
-                    console.log("jaja");
-                    console.log(result.answer);
-                    table.row('.selected').remove().draw( false );
-                    var url = window.location.href;
-                    window.location = url;
-                },
-                error: function(result, status){
-                    console.log(status);
-                    alert("刪除失敗")
-                }
-            });
-        } );
+        // $('#btn_del').click( function () {
+        //     console.log(table.row('.selected').data()[7]);
+        //     var id = table.row('.selected').data()[7];
+        //     $.ajax({
+        //        dataType: 'json',
+        //        url: "/filterDelRecord/",
+        //         type:"POST",
+        //         data: {id: id},
+        //         success: function(result){
+        //             console.log("jaja");
+        //             console.log(result.answer);
+        //             table.row('.selected').remove().draw( false );
+        //             var url = window.location.href;
+        //             window.location = url;
+        //         },
+        //         error: function(result, status){
+        //             console.log(status);
+        //             alert("刪除失敗")
+        //         }
+        //     });
+        // } );
 
         //左右方向箭號的事件
         $('#btn_left,#btn_right').click(function(e){
             var idClick = e.target.id;
             var pathname = window.location.pathname; // Returns path only
-            var pageHeader_date;
+            var pageHeader_date = $('#pageHeader_date').html();
             var sign;
             console.log(pathname);
             console.log(idClick); 
             if(pathname == "/filter/"){
-                pageHeader_date = $('#pageHeader_date').html();
                 sign = "day";
             }else if(pathname == "/getReceiptByWeek/"){
-                pageHeader_date = $('#pageHeader_date').html();
                 sign = "week";
             }else if(pathname == "/getReceiptByMon/"){
-                pageHeader_date = $('#pageHeader_date').html();
                 sign = "month";
             }else{
-                pageHeader_date = $('#pageHeader_date').html();
                 sign = "year";
             }
             console.log(pageHeader_date);
@@ -133,7 +129,6 @@
                     console.log(result.tableContent);
                     $('#example tbody').append(result.tableContent);
                     $('#pageHeader_date').text(result.title);
-                    $('#pageHeader_money').text("總支出"+result.cost);
                     $('#totalCost').text("總支出"+result.cost);
                     $('#totalIncome').text("總收入"+result.income);
                     $('#balance').text("餘額"+result.balance);
@@ -146,9 +141,76 @@
             });
         });
 
-	} );
-</script>
+        //刪除和修改
+        $('button').click(function(e){
+            console.log(e.target.value);
+            console.log(e.target.title);
+            var id = e.target.value;
+            var title = e.target.title;
+            var pathname = window.location.pathname; // Returns path only
+            var pageHeader_date = $('#pageHeader_date').html();
+            var sign;
+            console.log(pathname);
+            if(pathname == "/filter/"){
+                sign = "day";
+            }else if(pathname == "/getReceiptByWeek/"){
+                sign = "week";
+            }else if(pathname == "/getReceiptByMon/"){
+                sign = "month";
+            }else{
+                sign = "year";
+            }
+            console.log(pageHeader_date);
+            console.log(typeof(pageHeader_date));
+            if(title =="刪除"){
+                $.ajax({
+                    dataType: 'json',
+                    url: "/filterDelRecord/",
+                    type:"POST",
+                    data: {id: id, pageHeader_date: pageHeader_date, sign: sign},
+                    success: function(result){
+                        console.log("jaja");
+                        console.log(result.answer);
+                        $('#example tbody tr').remove();
+                        console.log(result.tableContent);
+                        $('#example tbody').append(result.tableContent);
+                        $('#totalCost').text("總支出"+result.cost);
+                        $('#totalIncome').text("總收入"+result.income);
+                        $('#balance').text("餘額"+result.balance);
+                    },
+                    error: function(result, status){
+                        console.log(status);
+                        alert("刪除失敗")
+                    }
+                });
+            }else{
 
+            }
+            
+        });
+
+	} );
+
+</script>
+<style type="text/css">
+    .dataTables_wrapper .ui-toolbar{
+        background: #DCDCDC ;
+    }
+    select{
+        margin: 0px 6px;
+        width: 30%;
+    }
+    .dataTables_length label{
+        margin: 0px;
+        padding: 3px;
+    }
+    .dataTables_filter label{
+        margin: 0px;
+    }
+    div .DataTables_sort_wrapper{
+        
+    }
+</style>
 </head>
 
 <body>
@@ -270,24 +332,23 @@
 	        <!-- Main container -->
 	        <div id="page-wrapper" class="col-sm-10 col-md-10" style="min-height: 167px; background-color: rgb(229, 228, 219);">
 	        	<div class="container-fluid col-xs-12 col-sm-12">
-			    	<p style="text-align: center; font-size: 100px;">
-			    	</p>
 			    	<div class="row">
                         <div class="col-lg-12" style="background-color: #fff; margin-top: 20px; padding-bottom: 20px;">
-                            <div id="titleMenu" class="page-header" style="text-align: center;">
-                                <form>
-                                	<span class="glyphicon glyphicon-chevron-left" aria-hidden="true" id="btn_left"></span>
-                                	<span class="label label-default" id="pageHeader_date">{{title}}</span>
-                               		<span class="label label-default"  id="pageHeader_money">總支出{{totalCost}}</span>
-                                   	<span class="glyphicon glyphicon-chevron-right" aria-hidden="true" id="btn_right"></span>      
-                                </form>
+                            <div id="titleMenu" class="page-header" style="text-align: center; padding-bottom: 13px; padding-top: 13px; margin: 10px;">
+                                <div style="padding: 8px 12px; margin: 6px;">
+                                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true" id="btn_left"></span>
+                                    <span class="label label-default" id="pageHeader_date" style=" margin: 6px; border-radius: 4px; background-color: #FFFF33; color: #000000; font-weight: bold; font-size: medium; padding-top: 7px;">{{title}}</span>
+                                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true" id="btn_right"></span>
+                                </div>
+                                <div style="text-align: center;">
+                                    <label id="totalCost" style="font-weight: bold; font-size: medium">總支出：{{totalCost}}元</label>
+                                    <label id="totalIncome" style="font-weight: bold; font-size: medium">&nbsp;總收入：{{totalIncome}}元</label>
+                                    <label id="balance" style="font-weight: bold; font-size: medium">&nbsp;結餘：{{balance}}元</label>
+                                </div>
                             </div>
-                            <div>
+                            <div style="margin: 5px 0px 10px 0px;">
                                 <button id="btn_del" class="">刪除</button>
                                 <button style="display: none">修改</button>
-                                <label id="totalCost">總支出{{totalCost}}</label>
-                                <label id="totalIncome">總收入{{totalIncome}}</label>
-                                <label id="balance">結餘{{balance}}</label>
                             </div>
                             
                             <div>
@@ -297,11 +358,11 @@
 							                <th>分類</th>
                                             <th>次分類</th>
 							                <th>備註</th>
-							                <th>支出/收入</th>
+							                <th>支/收</th>
 							                <th>付款方式</th>
 							                <th>日期</th>
 							                <th>金額</th>
-                                            <th style="display: none">id</th>
+                                            <th>功能</th>
 							            </tr>
 							        </thead>
 							        <tfoot>
@@ -309,11 +370,11 @@
 							                <th>分類</th>
                                             <th>次分類</th>
 							                <th>備註</th>
-							                <th>支出/收入</th>
+							                <th>支/收</th>
 							                <th>付款方式</th>
 							                <th>日期</th>
 							                <th>金額</th>
-                                            <th style="display: none">id</th>
+                                            <th>功能</th>
 							            </tr>
 							        </tfoot>
 							        <tbody>
@@ -326,7 +387,8 @@
 							                <td>{{choice.payment}}</td>
 							                <td>{{choice.date}}</td>
 							                <td>{{choice.money}}</td>
-                                            <td style="display: none" id="ID">{{choice.id}}</td>
+                                            <td style="width: 12%"><button type="button" class="btn btn-danger btn-sm" value="{{choice.id}}" title="刪除">刪除</button>&nbsp;<button type="button" class="btn btn-danger btn-sm" value="{{choice.id}}" title="修改">修改</button></td>
+                                            <!-- <td style="display: none;">{{choice.id}}</td> -->
 							            </tr>
                                         {% endfor %}
 							        </tbody>
@@ -337,14 +399,31 @@
 		    	</div><!-- /.container-fluid -->
 	    	</div><!-- /#page-wrapper (main container) -->
         </div><!-- /.container-fluid (whole div below navbar) -->
-                   
-
-
     </div><!-- /#wrapper (whole page)-->
 
+    <!-- modal html -->
+    <div class="modal fade">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">修改紀錄</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 	
 
 </body>
 
 </html>
-

@@ -25,7 +25,8 @@ body {
 .navbar-light {
   margin-bottom:0 ;
   background-image: url("../../image/fe-bg.jpg");
-  /*background-color: #e3f2fd*/
+  /*background-color: #8B0000;*/
+  /*#e3f2fd #ff0052 #E6005C #dc143c*/
 }
 
 .navbar-light .navbar-toggle{

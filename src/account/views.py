@@ -951,12 +951,21 @@ def backwardtime(request):
         for receipt in receipts:
             # print type(
             #     receipt.subclassification.classification.classification_type), receipt.subclassification.classification.classification_type
+            # table += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td>" \
+            #          "<td>{6}</td><td style='display: none'>{7}</td></tr>".format(
+            #     receipt.subclassification.classification.classification_type.encode('utf-8'),
+            #     receipt.subclassification.name.encode('utf-8'), receipt.remark.encode('utf-8'),
+            #     receipt.incomeandexpense,
+            #     receipt.payment, receipt.date, receipt.money, receipt.id)
             table += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td>" \
-                     "<td>{6}</td><td style='display: none'>{7}</td></tr>".format(
+                     "<td>{6}</td><td style='width: 12%'>" \
+                     "<button type='button' class='btn btn-danger btn-sm' value='{7}' title='刪除'>" \
+                     "刪除</button>&nbsp;<button type='button' class='btn btn-danger btn-sm'" \
+                     " value='{8}' title='修改'>修改</button></td></tr>".format(
                 receipt.subclassification.classification.classification_type.encode('utf-8'),
                 receipt.subclassification.name.encode('utf-8'), receipt.remark.encode('utf-8'),
                 receipt.incomeandexpense,
-                receipt.payment, receipt.date, receipt.money, receipt.id)
+                receipt.payment, receipt.date, receipt.money, receipt.id, receipt.id)
             # print table
         jsonResult = {'tableContent': table, 'title': targetOutput, 'balance': balance, 'income': income, 'cost': cost}
     return HttpResponse(json.JSONEncoder().encode(jsonResult))
@@ -1023,13 +1032,66 @@ def filterdelrecord(request):
     if request.method == 'POST':
         print request.POST["id"],type(request.POST["id"])
         member = Member.objects.filter(user__username=request.user).first()
-        receipt = Receipt.objects.filter(id=request.POST["id"])
+        receipt = Receipt.objects.filter(id=int(request.POST["id"]))
         if receipt is not None:
             print(receipt)
             receipt.delete()
             a = "OK"
             print a
+        if request.POST["sign"] == "day":
+            target = datetime.strptime(request.POST["pageHeader_date"], "%Y/%m/%d")
+            new_receipts = Receipt.objects.filter(member=member, date=target)
+            totalCost = Receipt.objects.filter(member=member, date=target,
+                                               incomeandexpense__income_type="expense").aggregate(Sum('money'))
+            totalIncome = Receipt.objects.filter(member=member, date=target,
+                                                 incomeandexpense__income_type="income").aggregate(Sum('money'))
+        elif request.POST["sign"] == "week":
+            temp = request.POST["pageHeader_date"].split('-')
+            print temp[0], temp[1]
+            temp[0] = datetime.strptime(temp[0], "%Y/%m/%d")
+            temp[1] = datetime.strptime(temp[1], "%Y/%m/%d")
+            new_receipts = Receipt.objects.filter(member=member, date__range=[temp[0], temp[1]])
+            totalCost = Receipt.objects.filter(member=member, date__range=[temp[0], temp[1]],
+                                               incomeandexpense__income_type="expense").aggregate(Sum('money'))
+            totalIncome = Receipt.objects.filter(member=member, date__range=[temp[0], temp[1]],
+                                                 incomeandexpense__income_type="income").aggregate(Sum('money'))
+        elif request.POST["sign"] == "month":
+            target = datetime.strptime(request.POST["pageHeader_date"], "%Y/%m")
+            new_receipts = Receipt.objects.filter(date__year=target.year, date__month=target.month, member=member)
+            totalCost = Receipt.objects.filter(member=member, date__year=target.year, date__month=target.month,
+                                               incomeandexpense__income_type="expense").aggregate(Sum('money'))
+            totalIncome = Receipt.objects.filter(member=member, date__year=target.year, date__month=target.month,
+                                                 incomeandexpense__income_type="income").aggregate(Sum('money'))
         else:
-            pass
-    jsonResult = {'answer': a}
+            target = datetime.strptime(request.POST["pageHeader_date"], "%Y")
+            new_receipts = Receipt.objects.filter(date__year=target.year, member=member)
+            targetOutput = datetime.strftime(target, '%Y')
+            totalCost = Receipt.objects.filter(member=member, date__year=target.year,
+                                               incomeandexpense__income_type="expense").aggregate(Sum('money'))
+            totalIncome = Receipt.objects.filter(member=member, date__year=target.year,
+                                                 incomeandexpense__income_type="income").aggregate(Sum('money'))
+        if str(totalIncome['money__sum']) == "None":
+            income = 0
+        else:
+            income = int(totalIncome['money__sum'])
+        if str(totalCost['money__sum']) == "None":
+            cost = 0
+        else:
+            cost = int(totalCost['money__sum'])
+        print income, cost
+        balance = income - cost
+        print balance, type(balance)
+        table = ""
+        print len(new_receipts), type(new_receipts)
+        for receipt in new_receipts:
+            table += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td>" \
+                     "<td>{6}</td><td style='width: 12%'>" \
+                     "<button type='button' class='btn btn-danger btn-sm' value='{7}' title='刪除'>" \
+                     "刪除</button>&nbsp;<button type='button' class='btn btn-danger btn-sm'" \
+                     " value='{8}' title='修改'>修改</button></td></tr>".format(
+                receipt.subclassification.classification.classification_type.encode('utf-8'),
+                receipt.subclassification.name.encode('utf-8'), receipt.remark.encode('utf-8'),
+                receipt.incomeandexpense,
+                receipt.payment, receipt.date, receipt.money, receipt.id, receipt.id)
+        jsonResult = {'tableContent': table, 'balance': balance, 'income': income, 'cost': cost, 'answer': a}
     return HttpResponse(json.JSONEncoder().encode(jsonResult))
