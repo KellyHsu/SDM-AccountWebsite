@@ -6,6 +6,8 @@
 <html lang="en">
 
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>MoneyKeeper</title>
     <!-- jQuery -->
     <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
@@ -51,6 +53,9 @@
                             {% endif %}
                         {% endfor %}
                         <button type="submit" name="go" class="btn btn-lg btn-primary btn-block">Register Now</button>
+                        <div class="register-link">
+                            <a href="/login/">Go to Login</a> <!--or <a href="#">reset password</a> -->
+                        </div>
                     </form>
                 </section>
             </div> <!-- /card-container -->
