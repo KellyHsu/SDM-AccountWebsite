@@ -37,7 +37,7 @@ body {
   background-color: rgba(0,0,0,.5);
 }
 
-.navbar-light .navbar-toggle:focus,
+/*.navbar-light .navbar-toggle:focus,*/
 .navbar-light .navbar-toggle:hover {
   background-color: rgb(212, 235, 252);
 }
@@ -494,11 +494,13 @@ table.dataTable thead .sorting:after {
     border-left-width: 0;
   }
   select {
-    width: 100%;
-    margin: 5px 0px 5px 0px;
+    width: 30%;
+    margin: -20px 10px 5px 0px;
     border: none;
     border-radius: 4px;
     background-color: #f1f1f1;
+    font-size: 14px;
+    height: 25px;
   }
 
   .left-side {
@@ -507,7 +509,11 @@ table.dataTable thead .sorting:after {
   }
 
   .row{
-    margin-left: -15px !important;
+    margin-left: -5px !important;
+  }
+
+  #main-type-choose > .btn-lg {
+    font-size: 16px;
   }
 
   .btn-default#category{
@@ -518,5 +524,10 @@ table.dataTable thead .sorting:after {
     margin: 5px 5px;
   }
 
+  #datepicker1 {
+    margin-left: 0px;
+    width: 30%;
+    max-height: 25px;
+  }
 
 }
