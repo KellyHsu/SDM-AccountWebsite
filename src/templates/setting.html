@@ -681,8 +681,8 @@
 		//post
  		if(newSub){
             $.ajax({
-                //url: "/createSubClassificationInSettingPage/",
-				url: "/createRevenueSubClassificationInSettingPage/",
+                url: "/createSubClassificationInSettingPage/",
+				//url: "/createRevenueSubClassificationInSettingPage/",
                 type:"POST",
                 data: {newSub : newSub, category : mainType},
                 success: function(rowcontent){
@@ -697,7 +697,7 @@
                 error: function(){
 				    alert("您剛剛新增失敗，子類別是: " + subType);
                     //alert("新增子分類失敗");
-                    //alert("新增子分類失敗");
+                    //alert("新增子分類失敗"); 
                 }
             });
         }
