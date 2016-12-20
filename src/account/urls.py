@@ -32,4 +32,5 @@ urlpatterns = [
     url(r'^backwardTime/$', views.backwardtime, name='backwardtime'),
     url(r'^countClassBudget/$', views.classification_budget_calculate, name='classification_budget_calculate'),
     url(r'^filterDelRecord/$', views.filterdelrecord, name='filterdelrecord'),
+    url(r'^backwardChart/$', views.backwardchart, name='backwardchart'),
 ]

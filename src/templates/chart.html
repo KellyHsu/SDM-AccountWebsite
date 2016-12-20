@@ -104,9 +104,12 @@
 		    color: red;
 		    font-size: 23px;
 		}  
-        .divOver {
+        .divOver{
 	        border:solid 2px #ddd;
-	    } 
+	    }
+        .now-click{
+            border:solid 4px #ddd;
+        }
         /*圖片置中*/
         .bk-root .bk-layout-fixed, .bk-root .bk-layout-scale_width, .bk-root .bk-layout-scale_height{
             margin: 0 auto;
@@ -115,7 +118,9 @@
 
     <script>
 
-	$(document).ready(function(){       
+	$(document).ready(function(){
+        $('#week-page').addClass("now-click");
+
         $('div.panel-default').hover(function(){
 			$(this).addClass('divOver');		
 		},function(){
@@ -124,17 +129,63 @@
 		});
 
         $('#week-page').click(function(event) {
-            $("#chart").remove();
+            $('#week-page').addClass("now-click");
+            $('#month-page').removeClass("now-click")
+            $('#year-page').removeClass("now-click")
+            $('#category-page').removeClass("now-click")
+ 
         });
         $('#month-page').click(function(event) {
-            
+            $('#month-page').addClass("now-click");
+            $('#week-page').removeClass("now-click")
+            $('#year-page').removeClass("now-click")
+            $('category-page').removeClass("now-click")
         });
         $('#year-page').click(function(event) {
-            
+            $('#year-page').addClass("now-click");
+            $('#week-page').removeClass("now-click")
+            $('#month-page').removeClass("now-click")
+            $('#category-page').removeClass("now-click")
         });
         $('#category-page').click(function(event) {
-            
+            $('#category-page').addClass("now-click");
+            $('#week-page').removeClass("now-click")
+            $('#month-page').removeClass("now-click")
+            $('#year-page').removeClass("now-click")
         });
+
+
+        //左右方向箭號的事件
+        $('#btn_left,#btn_right').click(function(e){
+            var idClick = e.target.id;
+            var pageHeader_date = $('#pageHeader_date').html();
+            var sign;
+            //alert("pageHeader_date"+pageHeader_date);
+            if($('#week-page').hasClass('now-click')){
+                sign = "week";
+            }else if($('#month-page').hasClass('now-click')){
+                sign = "month";
+            }else if($('#year-page').hasClass('now-click')){
+                sign = "year";
+            }
+            $.ajax({
+               dataType: 'json',
+               url: "/backwardChart/",
+                type:"POST",
+                data: {pageHeader_date : pageHeader_date, sign: sign, id: idClick},
+                success: function(result){
+                    $("#chart").replaceWith("<div id=\"chart\"><div>"+result.script_bar+result.div_bar+"</div>"+result.the_script+result.the_div+"</div></div>");
+                    $('#pageHeader_date').text(result.title);
+
+                },
+                error: function(result, status){
+                    console.log(status);
+                    console.log(result);
+                    alert("抓新日期失敗")
+                }
+            });
+        });
+
 	});	// end document.ready()
 
     </script>
@@ -270,17 +321,19 @@
                                 	<span class="label label-default" id="pageHeader_date" style="font-size:120%;">{{title}}</span>
                                    	<span class="glyphicon glyphicon-chevron-right" aria-hidden="true" id="btn_right"></span>      
                                 </form>
-                                <div>
-				                    {{ div_bar|safe }}
-                                    {{ script_bar|safe }}
+                                <div id="chart">
+                                    <div>
+				                        {{ div_bar|safe }}
+                                        {{ script_bar|safe }}
+                                    </div>
+                                    <div>
+				                        {{ the_div|safe }}
+                                        {{ the_script|safe }}
+                                    </div>
+                                    <div>
+				                        {{ div_pie|safe }}
+                                        {{ script_pie|safe }}
                                 </div>
-                                <div>
-				                    {{ the_div|safe }}
-                                    {{ the_script|safe }}
-                                </div>
-                                <div>
-				                    {{ div_pie|safe }}
-                                    {{ script_pie|safe }}
                                 </div>
                             </div>
                     </div><!-- /.row -->
