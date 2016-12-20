@@ -1546,3 +1546,87 @@ def get_mon_chart(request):
         jsonResult = { 'title': title, "the_script": script, "the_div": div, "script_bar": script2, "div_bar": div2}
     return HttpResponse(json.JSONEncoder().encode(jsonResult))
 
+
+def get_yr_chart(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    else:
+        member = Member.objects.filter(user__username=request.user).first()
+        currentDate = datetime.now()
+        print(currentDate)
+        title = datetime.strftime(currentDate, "%Y")
+        list_cost=[]
+        for i in range(12):
+            cost = Receipt.objects.filter(member=member, date__year=currentDate.year, date__month=(i+1), incomeandexpense__income_type="expense").aggregate(Sum('money'))
+            if str(cost['money__sum']) == "None":
+                cost = 0
+            else:
+                cost = cost['money__sum']
+            list_cost.append(cost)
+
+        list_income=[]
+        for i in range(12):
+            income = Receipt.objects.filter(member=member, date__year=currentDate.year, date__month=(i+1), incomeandexpense__income_type="income").aggregate(Sum('money'))
+            if str(income['money__sum']) == "None":
+                income = 0
+            else:
+                income = income['money__sum']
+            list_income.append(income)
+
+        ####長條圖####
+        yr_origin_cost=[]
+        yr_origin_income=[]
+        yr_day=[]
+        yr_day_double=[]
+        yr_dollar=[]
+        for i in range(12):
+            yr_day.append(i+1)
+            yr_origin_cost.append('expense')
+            yr_origin_income.append('income')
+        list_cost_income = list_cost
+        list_cost_income.extend(list_income)
+        yr_day.extend(yr_day)
+        yr_origin = yr_origin_cost
+        yr_origin.extend(yr_origin_income)
+        print(yr_day)
+        print(list_cost_income)
+        print(yr_origin)
+        data = {
+            'year': yr_day,
+            'dollar': list_cost_income,
+            'origin': yr_origin
+        }
+        bar2 = Bar(data, label=CatAttr(columns=['year'], sort=False,), values='dollar', plot_width=700, group='origin')
+        script2, div2 = components(bar2)
+
+        ####折線圖####
+        yr = int(datetime.strftime(currentDate, "%Y"))
+        print(yr)
+        yr_date = date(year=yr, month=1, day=1)
+        s = """Date,Cost
+        """
+        while yr_date != date(year=yr, month=12, day=31):
+            yr_cost = Receipt.objects.filter(member=member, date=yr_date, incomeandexpense__income_type="expense").aggregate(Sum('money'))
+            if str(yr_cost['money__sum']) == "None":
+                yr_cost = 0
+            else:
+                yr_cost = yr_cost['money__sum']
+            s = s + datetime.strftime(yr_date, '%Y/%m/%d')+","+str(yr_cost)+"""
+            """
+            yr_date = yr_date + timedelta(days=1)
+        
+
+        AAPL = pd.read_csv(StringIO(s),parse_dates=['Date'])
+        p = figure(width=800, height=250, x_axis_type="datetime")
+        p.line(AAPL['Date'], AAPL['Cost'], color='navy', alpha=0.5)
+        p.legend.location = "top_left"
+        p.grid.grid_line_alpha=0
+        p.xaxis.axis_label = 'Date'
+        p.yaxis.axis_label = 'Dollar'
+        p.ygrid.band_fill_color="olive"
+        p.ygrid.band_fill_alpha = 0.1
+        script, div = components(p)
+
+        jsonResult = { 'title': title, "the_script": script, "the_div": div, "script_bar": script2, "div_bar": div2}
+    return HttpResponse(json.JSONEncoder().encode(jsonResult))
+

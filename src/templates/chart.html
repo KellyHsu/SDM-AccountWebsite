@@ -175,6 +175,21 @@
             $('#week-page').removeClass("now-click")
             $('#month-page').removeClass("now-click")
             $('#category-page').removeClass("now-click")
+            $.ajax({
+               dataType: 'json',
+               url: "/getYrChart/",
+                type:"POST",
+                data: {},
+                success: function(result){
+                    $("#chart").replaceWith("<div id=\"chart\"><div>"+result.script_bar+result.div_bar+"</div>"+result.the_script+result.the_div+"</div></div>");
+                    $('#pageHeader_date').text(result.title);
+
+                },
+                error: function(status){
+                    console.log(status);
+                    alert("年收支讀取失敗")
+                }
+            }); 
         });
         $('#category-page').click(function(event) {
             $('#category-page').addClass("now-click");
