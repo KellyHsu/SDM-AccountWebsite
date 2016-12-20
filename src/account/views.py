@@ -264,7 +264,7 @@ def chart(request):
         """+datetime.strftime(startDay+timedelta(days=4), '%Y/%m/%d')+""","""+str(cost_thu)+"""
         """+datetime.strftime(startDay+timedelta(days=5), '%Y/%m/%d')+""","""+str(cost_fri)+"""
         """+datetime.strftime(endDay, '%Y/%m/%d')+""","""+str(cost_sat)+""" """
-
+        print(s)
         AAPL = pd.read_csv(StringIO(s),parse_dates=['Date'])
         print(AAPL)
         # create a new plot with a datetime axis type
@@ -1244,3 +1244,92 @@ def backwardchart(request):
 
         jsonResult = { 'title': targetOutput, "the_script": script, "the_div": div, "script_bar": script2, "div_bar": div2}
     return HttpResponse(json.JSONEncoder().encode(jsonResult))
+
+
+def get_mon_chart(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    else:
+        member = Member.objects.filter(user__username=request.user).first()
+        currentDate = datetime.now()
+        print(currentDate)
+        title = datetime.strftime(currentDate, "%Y/%m")
+        day = int(datetime.strftime(currentDate, "%d"))
+        mon = int(datetime.strftime(currentDate, "%m"))
+        yr = int(datetime.strftime(currentDate, "%Y"))
+        if (mon == 1) or (mon == 3) or (mon == 5) or (mon == 7) or (mon == 8) or (mon == 10) or (mon == 12):
+            monsday = 31
+        elif (yr % 4 == 0) and (mon == 2):
+            monsday = 29
+        elif (yr % 4 != 0) and (mon == 2):
+            monsday = 28
+        else:
+            monsday = 30
+        startDay = currentDate - timedelta(days=day-1)
+        list_cost=[]
+        for i in range(monsday):
+            cost = Receipt.objects.filter(member=member, date=startDay+timedelta(days=i), incomeandexpense__income_type="expense").aggregate(Sum('money'))
+            if str(cost['money__sum']) == "None":
+                cost = 0
+            else:
+                cost = cost['money__sum']
+            list_cost.append(cost)
+
+        list_income=[]
+        for i in range(monsday):
+            income = Receipt.objects.filter(member=member, date=startDay+timedelta(days=i), incomeandexpense__income_type="income").aggregate(Sum('money'))
+            if str(income['money__sum']) == "None":
+                income = 0
+            else:
+                income = income['money__sum']
+            list_income.append(income)
+
+        ####長條圖####
+        mon_origin_cost=[]
+        mon_origin_income=[]
+        mon_day=[]
+        mon_day_double=[]
+        mon_dollar=[]
+        for i in range(monsday):
+            mon_day.append(i+1)
+            mon_origin_cost.append('expense')
+            mon_origin_income.append('income')
+        list_cost_income = list_cost
+        list_cost_income.extend(list_income)
+        mon_day.extend(mon_day)
+        mon_origin = mon_origin_cost
+        mon_origin.extend(mon_origin_income)
+        print(mon_day)
+        print(list_cost_income)
+        print(mon_origin)
+        data = {
+            'mon': mon_day,
+            'dollar': list_cost_income,
+            'origin': mon_origin
+        }
+        bar2 = Bar(data, label=CatAttr(columns=['mon'], sort=False,), values='dollar', plot_width=700, group='origin')
+        script2, div2 = components(bar2)
+
+        ####折線圖####
+        s = """Date,Cost
+        """
+        for i in range(monsday):
+            s = s + datetime.strftime(startDay+timedelta(days=i), '%Y/%m/%d')+","+str(list_cost[i])+"""
+            """
+
+        print(s)
+        AAPL = pd.read_csv(StringIO(s),parse_dates=['Date'])
+        print(AAPL)
+        p = figure(width=800, height=250, x_axis_type="datetime")
+        p.line(AAPL['Date'], AAPL['Cost'], color='navy', alpha=0.5)
+        p.legend.location = "top_left"
+        p.grid.grid_line_alpha=0
+        p.xaxis.axis_label = 'Date'
+        p.yaxis.axis_label = 'Dollar'
+        p.ygrid.band_fill_color="olive"
+        p.ygrid.band_fill_alpha = 0.1
+        script, div = components(p)
+
+        jsonResult = { 'title': title, "the_script": script, "the_div": div, "script_bar": script2, "div_bar": div2}
+    return HttpResponse(json.JSONEncoder().encode(jsonResult))
+
