@@ -1197,12 +1197,118 @@ def backwardchart(request):
             else:
                 income_sat = int(income_sat['money__sum'])
 
+
+            ####長條圖####
+            data = {
+                'week': ['日', '一', '二', '三', '四', '五', '六', '日', '一', '二', '三', '四', '五', '六'],
+                'dollar': [cost_sun, cost_mon, cost_tue, cost_wed, cost_thu, cost_fri, cost_sat, income_sun, income_mon, income_tue, income_wed, income_thu, income_fri, income_sat],
+                'origin':['expense','expense','expense','expense','expense','expense','expense',
+                      'income','income','income','income','income','income','income']
+            }
+            bar2 = Bar(data, label=CatAttr(columns=['week'], sort=False,), values='dollar', plot_width=700, group='origin')
+            script2, div2 = components(bar2)
+
+            ####折線圖####
+            s = """Date,Close
+            """+datetime.strftime(targetStart, '%Y/%m/%d')+""","""+str(cost_sun)+"""
+            """+datetime.strftime(targetStart+timedelta(days=1), '%Y/%m/%d')+""","""+str(cost_mon)+"""
+            """+datetime.strftime(targetStart+timedelta(days=2), '%Y/%m/%d')+""","""+str(cost_tue)+"""
+            """+datetime.strftime(targetStart+timedelta(days=3), '%Y/%m/%d')+""","""+str(cost_wed)+"""
+            """+datetime.strftime(targetStart+timedelta(days=4), '%Y/%m/%d')+""","""+str(cost_thu)+"""
+            """+datetime.strftime(targetStart+timedelta(days=5), '%Y/%m/%d')+""","""+str(cost_fri)+"""
+            """+datetime.strftime(targetEnd, '%Y/%m/%d')+""","""+str(cost_sat)+""" """
+            AAPL = pd.read_csv(StringIO(s),parse_dates=['Date'])
+            p = figure(width=800, height=250, x_axis_type="datetime")
+            p.line(AAPL['Date'], AAPL['Close'], color='navy', alpha=0.5)
+            p.legend.location = "top_left"
+            p.grid.grid_line_alpha=0
+            p.xaxis.axis_label = 'Date'
+            p.yaxis.axis_label = 'Dollar'
+            p.ygrid.band_fill_color="olive"
+            p.ygrid.band_fill_alpha = 0.1
+            script, div = components(p)
         elif request.POST["sign"] == "month":
+            time = request.POST["pageHeader_date"]
             if request.POST["id"] == "btn_left":
-                target = datetime.strptime(request.POST["pageHeader_date"], "%Y/%m") - timedelta(days=365/12)
+                targetTime = datetime.strptime(time, "%Y/%m") - timedelta(days=365/12)
             else:
-                target = datetime.strptime(request.POST["pageHeader_date"], "%Y/%m") + timedelta(days=31)
-            targetOutput = datetime.strftime(target, '%Y/%m')
+                targetTime = datetime.strptime(time, "%Y/%m") + timedelta(days=31)
+            targetOutput = datetime.strftime(targetTime, '%Y/%m')
+            day = int(datetime.strftime(targetTime, "%d"))
+            mon = int(datetime.strftime(targetTime, "%m"))
+            yr = int(datetime.strftime(targetTime, "%Y"))
+            if (mon == 1) or (mon == 3) or (mon == 5) or (mon == 7) or (mon == 8) or (mon == 10) or (mon == 12):
+                monsday = 31
+            elif (yr % 4 == 0) and (mon == 2):
+                monsday = 29
+            elif (yr % 4 != 0) and (mon == 2):
+                monsday = 28
+            else:
+                monsday = 30
+            startDay = targetTime - timedelta(days=day-1)
+            list_cost=[]
+            for i in range(monsday):
+                cost = Receipt.objects.filter(member=member, date=startDay+timedelta(days=i), incomeandexpense__income_type="expense").aggregate(Sum('money'))
+                if str(cost['money__sum']) == "None":
+                    cost = 0
+                else:
+                    cost = cost['money__sum']
+                list_cost.append(cost)
+
+            list_income=[]
+            for i in range(monsday):
+                income = Receipt.objects.filter(member=member, date=startDay+timedelta(days=i), incomeandexpense__income_type="income").aggregate(Sum('money'))
+                if str(income['money__sum']) == "None":
+                    income = 0
+                else:
+                    income = income['money__sum']
+                list_income.append(income)
+
+            ####長條圖####
+            mon_origin_cost=[]
+            mon_origin_income=[]
+            mon_day=[]
+            mon_day_double=[]
+            mon_dollar=[]
+            for i in range(monsday):
+                mon_day.append(i+1)
+                mon_origin_cost.append('expense')
+                mon_origin_income.append('income')
+            list_cost_income = list_cost
+            list_cost_income.extend(list_income)
+            mon_day.extend(mon_day)
+            mon_origin = mon_origin_cost
+            mon_origin.extend(mon_origin_income)
+            print(mon_day)
+            print(list_cost_income)
+            print(mon_origin)
+            data = {
+                'mon': mon_day,
+                'dollar': list_cost_income,
+                'origin': mon_origin
+            }
+            bar2 = Bar(data, label=CatAttr(columns=['mon'], sort=False,), values='dollar', plot_width=700, group='origin')
+            script2, div2 = components(bar2)
+
+            ####折線圖####
+            s = """Date,Cost
+            """
+            for i in range(monsday):
+                s = s + datetime.strftime(startDay+timedelta(days=i), '%Y/%m/%d')+","+str(list_cost[i])+"""
+                """
+
+            print(s)
+            AAPL = pd.read_csv(StringIO(s),parse_dates=['Date'])
+            print(AAPL)
+            p = figure(width=800, height=250, x_axis_type="datetime")
+            p.line(AAPL['Date'], AAPL['Cost'], color='navy', alpha=0.5)
+            p.legend.location = "top_left"
+            p.grid.grid_line_alpha=0
+            p.xaxis.axis_label = 'Date'
+            p.yaxis.axis_label = 'Dollar'
+            p.ygrid.band_fill_color="olive"
+            p.ygrid.band_fill_alpha = 0.1
+            script, div = components(p)
         elif request.POST["sign"] == "year":
             if request.POST["id"] == "btn_left":
                 target = datetime.strptime(request.POST["pageHeader_date"], "%Y")
@@ -1211,36 +1317,6 @@ def backwardchart(request):
                 target = datetime.strptime(request.POST["pageHeader_date"], "%Y")
                 target = datetime(year=target.year + 1 , month=target.month, day=target.day)
             targetOutput = datetime.strftime(target, '%Y')
-
-        ####長條圖####
-        data = {
-            'week': ['日', '一', '二', '三', '四', '五', '六', '日', '一', '二', '三', '四', '五', '六'],
-            'dollar': [cost_sun, cost_mon, cost_tue, cost_wed, cost_thu, cost_fri, cost_sat, income_sun, income_mon, income_tue, income_wed, income_thu, income_fri, income_sat],
-            'origin':['expense','expense','expense','expense','expense','expense','expense',
-                      'income','income','income','income','income','income','income']
-        }
-        bar2 = Bar(data, label=CatAttr(columns=['week'], sort=False,), values='dollar', plot_width=700, group='origin')
-        script2, div2 = components(bar2)
-
-        ####折線圖####
-        s = """Date,Close
-        """+datetime.strftime(targetStart, '%Y/%m/%d')+""","""+str(cost_sun)+"""
-        """+datetime.strftime(targetStart+timedelta(days=1), '%Y/%m/%d')+""","""+str(cost_mon)+"""
-        """+datetime.strftime(targetStart+timedelta(days=2), '%Y/%m/%d')+""","""+str(cost_tue)+"""
-        """+datetime.strftime(targetStart+timedelta(days=3), '%Y/%m/%d')+""","""+str(cost_wed)+"""
-        """+datetime.strftime(targetStart+timedelta(days=4), '%Y/%m/%d')+""","""+str(cost_thu)+"""
-        """+datetime.strftime(targetStart+timedelta(days=5), '%Y/%m/%d')+""","""+str(cost_fri)+"""
-        """+datetime.strftime(targetEnd, '%Y/%m/%d')+""","""+str(cost_sat)+""" """
-        AAPL = pd.read_csv(StringIO(s),parse_dates=['Date'])
-        p = figure(width=800, height=250, x_axis_type="datetime")
-        p.line(AAPL['Date'], AAPL['Close'], color='navy', alpha=0.5)
-        p.legend.location = "top_left"
-        p.grid.grid_line_alpha=0
-        p.xaxis.axis_label = 'Date'
-        p.yaxis.axis_label = 'Dollar'
-        p.ygrid.band_fill_color="olive"
-        p.ygrid.band_fill_alpha = 0.1
-        script, div = components(p)
 
         jsonResult = { 'title': targetOutput, "the_script": script, "the_div": div, "script_bar": script2, "div_bar": div2}
     return HttpResponse(json.JSONEncoder().encode(jsonResult))
