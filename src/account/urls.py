@@ -36,4 +36,5 @@ urlpatterns = [
     url(r'^getWeekChart/$', views.get_week_chart, name='get_week_chart'),
     url(r'^getMonChart/$', views.get_mon_chart, name='get_mon_chart'),
     url(r'^getYrChart/$', views.get_yr_chart, name='get_yr_chart'),
+    url(r'^getCategoryChart/$', views.get_category_chart, name='get_category_chart'),
 ]

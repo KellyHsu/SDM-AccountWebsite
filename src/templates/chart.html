@@ -196,6 +196,21 @@
             $('#week-page').removeClass("now-click")
             $('#month-page').removeClass("now-click")
             $('#year-page').removeClass("now-click")
+            $.ajax({
+               dataType: 'json',
+               url: "/getCategoryChart/",
+                type:"POST",
+                data: {},
+                success: function(result){
+                    $("#chart").replaceWith("<div id=\"chart\"><div>"+result.script_pie+result.div_pie+"</div>"+result.script_pie_sub+result.div_pie_sub+"</div></div>");
+                    $('#pageHeader_date').text(result.title);
+
+                },
+                error: function(status){
+                    console.log(status);
+                    alert("類別分析讀取失敗")
+                }
+            }); 
         });
 
 
