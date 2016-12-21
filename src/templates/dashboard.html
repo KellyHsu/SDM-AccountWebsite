@@ -284,11 +284,19 @@ $(document).ready(function() {
             $.ajax({
                 url: "/createSubCategory/",
                 type:"POST",
+                dataType: 'json',
                 data: {newSub : newSubText, category : classname},
-                success: function(rowcontent){
-                    $(".modal-body").append(rowcontent)
-                    subCategorySelected();
-                    newSub.val('');
+                success: function(result){
+                    if(result.created){
+                        $(".modal-body").append(result.rowcontent)
+                        subCategorySelected();
+                        newSub.val('');
+                    }
+                    else{
+                        alert("子分類名稱重複")
+                        newSub.val('');
+                    }
+
                 },
                 error: function(){
                     alert("新增子分類失敗");
@@ -557,6 +565,21 @@ $(document).on("click", "#clear-alert", function(){
 
 </script>
 
+<style type="text/css">
+    body {
+        background-color: rgb(229, 228, 219);
+    }
+    
+    #page-wrapper {
+        min-height: 167px;
+        background-color: rgb(229, 228, 219);
+    }
+
+    #center-content {
+        background-color: #fff;
+        margin-top: 20px;
+    }
+</style>
 
 
 </head>
@@ -569,6 +592,12 @@ $(document).on("click", "#clear-alert", function(){
         <!-- Navigation -->
         <nav class="navbar navbar-light navbar-static-top" role="navigation">
             <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".panel-group">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
                 <a class="navbar-brand glyphicon glyphicon-book" href="/dashboard/"></a>
                 <a href="/dashboard/"><img src="../static/image/logo.png" alt="logo" class="navbar-brand glyphicon glyphicon-book" height="30px" width="200px" border="0" /></a>
             </div><!-- /.navbar-header -->
@@ -619,7 +648,7 @@ $(document).on("click", "#clear-alert", function(){
 
 
         <!-- Below the navbar starting -->
-        <div class="container-fluid" style="background-color: rgb(229, 228, 219);">
+        <div class="container-fluid">
 
             <div class="row col-sm-3 col-md-3 left-side">
                 <div class="panel-group collapse in" id="accordion" aria-expanded="true">
@@ -703,12 +732,12 @@ $(document).on("click", "#clear-alert", function(){
             </div>  <!-- /.left-side row -->
 
             <!-- Main container -->
-            <div id="page-wrapper" class="col-sm-9 col-md-9" style="min-height: 167px; background-color: rgb(229, 228, 219);">
+            <div id="page-wrapper" class="col-sm-9 col-md-9">
 
                 <div class="container-fluid col-xs-12 col-sm-12">
 
                     <div class="row">
-                        <div class="col-lg-12" style="background-color: #fff; margin-top: 20px;">
+                        <div class="col-lg-12" id="center-content">
                             <div id="titleMenu" class="page-header" style="text-align: center;">
                                 <form method="post" id="formadd">
                                     <select id="recordType" name="recordType">
@@ -724,10 +753,10 @@ $(document).on("click", "#clear-alert", function(){
                                 </form>
                             </div>
                             <div style="text-align: center;">
-
-                                <label class="test" style="font-size: 100px;padding-right: 20px;">$</label>
-                                <input type="number" id="amount">
-                                <br />
+                                <div style="display: inline-block;">
+                                    <label id="dollarSign" style="font-size: 100px;padding-right: 20px;">$</label>
+                                    <input type="number" id="amount">
+                                </div>
                                 <div class="row" id="main-type-choose" style="text-align: center; margin-bottom: 20px;">
                                     <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="food" style="background: #8D8F76 no-repeat;">食</button>
                                     <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="clothing" style="background: #BAB6AF no-repeat;">衣</button>

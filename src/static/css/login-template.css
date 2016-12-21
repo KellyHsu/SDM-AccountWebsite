@@ -136,6 +136,12 @@ form[role=login] > div {
     color: #39A0EE;
 }
 
+@media (max-width: 767px) {
+    .card-container.card {
+        max-width: 100%;
+    }
+
+}
 
 
 
