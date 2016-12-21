@@ -1728,7 +1728,7 @@ def get_category_chart(request):
             list_income.append(income)
         
         ####圓餅圖####
-        #類別
+        #類別-支出
         data3 = pd.Series(list_cost, index=list_cost_classification)
         pie_chart = Donut(data3)
         pie_chart.title.text = "分類支出"
@@ -1736,7 +1736,15 @@ def get_category_chart(request):
         pie_chart.width=430
         script3, div3 = components(pie_chart)
 
-        #子類別
+        #類別-收入
+        data4 = pd.Series(list_income, index=list_income_classification)
+        pie_chart_in = Donut(data4)
+        pie_chart_in.title.text = "分類收入"
+        pie_chart_in.height=430
+        pie_chart_in.width=430
+        script4, div4 = components(pie_chart_in)
+
+        #子類別-支出
         name = SubClassification.objects.filter(member=member)
         #print(name)
         sub_list_name=[]
@@ -1752,14 +1760,35 @@ def get_category_chart(request):
             sub_list.append(sub)
         print(sub_list)
         print(sub_list_name)
-        data4 = pd.Series(sub_list, index=sub_list_name)
-        pie_chart_sub = Donut(data4)
+        data5 = pd.Series(sub_list, index=sub_list_name)
+        pie_chart_sub = Donut(data5)
         pie_chart_sub.title.text = "子分類支出"
         pie_chart_sub.height=430
         pie_chart_sub.width=430
-        script4, div4 = components(pie_chart_sub)
+        script5, div5 = components(pie_chart_sub)
+
+        #子類別-收入
+        name_in = SubClassification.objects.filter(member=member)
+        #print(name)
+        sub_list_name_in=[]
+        sub_list_in=[]
+        for i in range(len(name_in)):
+            #print(name[i].name)
+            sub_list_name_in.append(name_in[i].name.encode('utf-8'))
+            sub_in = Receipt.objects.filter(member=member, subclassification=name_in[i], incomeandexpense__income_type="income").aggregate(Sum('money'))
+            if str(sub_in['money__sum']) == "None":
+                sub_in = 0
+            else:
+                sub_in = sub_in['money__sum']
+            sub_list_in.append(sub_in)
+        data6 = pd.Series(sub_list_in, index=sub_list_name_in)
+        pie_chart_sub_in = Donut(data6)
+        pie_chart_sub_in.title.text = "子分類收入"
+        pie_chart_sub_in.height=430
+        pie_chart_sub_in.width=430
+        script6, div6 = components(pie_chart_sub_in)
 
 
-        jsonResult = { 'title': title, "script_pie": script3, "div_pie": div3, "script_pie_sub": script4, "div_pie_sub": div4}
+        jsonResult = { 'title': title, "script_pie": script3, "div_pie": div3, "script_pie_in": script4, "div_pie_in": div4, "script_pie_sub": script5, "div_pie_sub": div5, "script_pie_sub_in": script6, "div_pie_sub_in": div6}
     return HttpResponse(json.JSONEncoder().encode(jsonResult))
 

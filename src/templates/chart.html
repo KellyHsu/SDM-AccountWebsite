@@ -143,6 +143,8 @@
                 type:"POST",
                 data: {},
                 success: function(result){
+                    $('#title-menu').css("display","");
+                    $('#title-text').css("display","none");
                     $("#chart").replaceWith("<div id=\"chart\"><div>"+result.script_bar+result.div_bar+"</div>"+result.the_script+result.the_div+"</div></div>");
                     $('#pageHeader_date').text(result.title);
 
@@ -164,6 +166,8 @@
                 type:"POST",
                 data: {},
                 success: function(result){
+                    $('#title-menu').css("display","");
+                    $('#title-text').css("display","none");
                     $("#chart").replaceWith("<div id=\"chart\"><div>"+result.script_bar+result.div_bar+"</div>"+result.the_script+result.the_div+"</div></div>");
                     $('#pageHeader_date').text(result.title);
 
@@ -185,6 +189,8 @@
                 type:"POST",
                 data: {},
                 success: function(result){
+                    $('#title-menu').css("display","");
+                    $('#title-text').css("display","none");
                     $("#chart").replaceWith("<div id=\"chart\"><div>"+result.script_bar+result.div_bar+"</div>"+result.the_script+result.the_div+"</div></div>");
                     $('#pageHeader_date').text(result.title);
 
@@ -206,8 +212,10 @@
                 type:"POST",
                 data: {},
                 success: function(result){
+                    $('#title-menu').css("display","none");
+                    $('#title-text').css("display","");
                     //$("#chart").replaceWith("<div id=\"chart\"><div>"+result.script_pie+result.div_pie+"</div>"+result.script_pie_sub+result.div_pie_sub+"</div></div>");
-                    $("#chart").replaceWith("<div id=\"chart\"><div class=\"pie\">"+result.script_pie+result.div_pie+"</div><div class=\"pie\">"+result.script_pie_sub+result.div_pie_sub+"</div></div>");
+                    $("#chart").replaceWith("<div id=\"chart\"><div class=\"pie\">"+result.script_pie+result.div_pie+"</div><div class=\"pie\">"+result.script_pie_in+result.div_pie_in+"</div><div class=\"pie\">"+result.script_pie_sub+result.div_pie_sub+"</div><div class=\"pie\">"+result.script_pie_sub_in+result.div_pie_sub_in+"</div></div>");
                     $('#pageHeader_date').text(result.title);
 
                 },
@@ -380,13 +388,15 @@
 			    	<div class="row">
                         <div class="col-lg-12" style="background-color: #fff; margin-top: 20px; padding-bottom: 20px;">
                             <div style="text-align: center;">
-                                <div style="margin: 20px 0px 50px 0px;">
+                                <div style="margin: 20px 0px 50px 0px;" id="title-menu">
                                     <form>
                                 	    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true" id="btn_left"></span>
                                 	    <span class="label label-default" id="pageHeader_date" style="font-size:120%;">{{title}}</span>
                                    	    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true" id="btn_right"></span>      
                                     </form>
+                                    <HR>
                                 </div>
+                                <div style="margin: 20px 0px 50px 0px; display:none;" id="title-text"><h3><b>總類別分析</b></h3><HR></div>
                                 <div id="chart">
                                     <div>
 				                        {{ div_bar|safe }}
