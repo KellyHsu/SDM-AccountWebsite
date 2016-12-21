@@ -17,14 +17,19 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from member.views import register
 from django.contrib.auth.views import login, logout
+from django.conf.urls.i18n import i18n_patterns
 
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    # url(r'^account/', include('account.urls')),
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^i18n/', include('django.conf.urls.i18n')),
+]
+
+
+urlpatterns += i18n_patterns(
     url(r'^$', logout),
     url(r'', include('account.urls')),
     url(r'^login/$', login, {'template_name': 'login.html'}),
     url(r'^logout/$', logout),
     url(r'^register/$', register),
-]
+)
