@@ -258,6 +258,13 @@
             });
         });
 
+        //pie-下拉式選單
+        $('div.dropdown ul.dropdown-menu li a').click(function (e) {
+            var choosen = $(this).text();
+            e.preventDefault();
+            $('#menu1').html(choosen+'<span class=\"caret\"></span>');
+        });
+
 	});	// end document.ready()
 
     </script>
@@ -342,7 +349,7 @@
                     <div class="panel panel-default" id="week-page">
                         <div class="panel-heading">
                             <h4 class="panel-title">
-                                <span class="glyphicon glyphicon-stats">
+                                <span class="fa fa-bar-chart" style="padding-right: 10px;">
                                 </span>本周收支
                             </h4>
                         </div>
@@ -352,7 +359,7 @@
                     <div class="panel panel-default" id="month-page">
                         <div class="panel-heading">
                             <h4 class="panel-title">
-                                <span class="glyphicon glyphicon-stats">
+                                <span class="fa fa-bar-chart" style="padding-right: 10px;">
                                 </span>本月收支
                             </h4>
                         </div>
@@ -362,7 +369,7 @@
                     <div class="panel panel-default" id="year-page">
                         <div class="panel-heading">
                             <h4 class="panel-title">
-                                <span class="glyphicon glyphicon-stats">
+                                <span class="fa fa-bar-chart" style="padding-right: 10px;">
                                 </span>年度收支
                             </h4>
                         </div>
@@ -372,8 +379,7 @@
                     <div class="panel panel-default" id="category-page">
                         <div class="panel-heading">
                             <h4 class="panel-title">
-                                <span class="glyphicon glyphicon-stats">
-                                </span>類別分析
+                                <span class="fa fa-pie-chart" style="padding-right: 10px;"></span>類別分析
                             </h4>
                         </div>
                     </div>  <!-- /.panel 類別分析 -->
@@ -396,7 +402,21 @@
                                     </form>
                                     <HR>
                                 </div>
-                                <div style="margin: 20px 0px 50px 0px; display:none;" id="title-text"><h3><b>總類別分析</b></h3><HR></div>
+                                <div style="margin: 20px 0px 50px 0px; display:none;" id="title-text">
+                                    <h3><b>總類別分析</b></h3>
+                                    <div class="dropdown" style="text-align: right;">
+                                        <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">月份
+                                        <span class="caret"></span></button>
+                                        <ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="menu1">
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">-------</a></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">test1</a></li>
+                                            {% for month in month_list %}
+                                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">{{ month }}</a></li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <HR>
+                                </div>
                                 <div id="chart">
                                     <div>
 				                        {{ div_bar|safe }}
@@ -412,6 +432,7 @@
                                 </div>
                                 </div>
                             </div>
+                        </div>
                     </div><!-- /.row -->
 		    	</div><!-- /.container-fluid -->
 	    	</div><!-- /#page-wrapper (main container) -->
