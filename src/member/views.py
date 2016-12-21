@@ -1,4 +1,3 @@
-# coding=utf8
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.contrib.auth.forms import UserCreationForm
@@ -40,8 +39,8 @@ def register(request):
             i1, createdi1 = IncomeAndExpense.objects.get_or_create(income_type='income')
             i2, createdi2 = IncomeAndExpense.objects.get_or_create(income_type='expense')
 
-            SubClassification.objects.create(name="早餐", classification=c1, member=member)
-            SubClassification.objects.create(name="薪資", classification=c8, member=member)
+            SubClassification.objects.create(name="breakfast", classification=c1, member=member)
+            SubClassification.objects.create(name="salary", classification=c8, member=member)
 
             return HttpResponseRedirect('/login/')
     else:

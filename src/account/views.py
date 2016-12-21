@@ -1,4 +1,3 @@
-# coding=utf8
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from account.models import Receipt, SubClassification, Payment, IncomeAndExpense, Classification, CyclicalExpenditure, \
@@ -240,9 +239,8 @@ def chart(request):
         else:
             income_sat = int(income_sat['money__sum'])
 
-        ####長條圖####
         data = {
-            'week': ['日', '一', '二', '三', '四', '五', '六', '日', '一', '二', '三', '四', '五', '六'],
+            'week': ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
             'dollar': [cost_sun, cost_mon, cost_tue, cost_wed, cost_thu, cost_fri, cost_sat, income_sun, income_mon, income_tue, income_wed, income_thu, income_fri, income_sat],
             'origin':['expense','expense','expense','expense','expense','expense','expense',
                       'income','income','income','income','income','income','income']
@@ -250,7 +248,6 @@ def chart(request):
         bar2 = Bar(data, label=CatAttr(columns=['week'], sort=False,), values='dollar', plot_width=700, group='origin')
         script2, div2 = components(bar2)
 
-        ####折線圖####
         #AAPL = pd.read_csv(
         #    "http://ichart.yahoo.com/table.csv?s=AAPL&a=0&b=1&c=2000&d=0&e=1&f=2010",
         #    parse_dates=['Date']
@@ -287,12 +284,10 @@ def chart(request):
         script, div = components(p)
         print(div)
     
-        ####圓餅圖####
         data3 = pd.Series([0.15,0.4,0.7,1.0], index = list('abcd'))
         pie_chart = Donut(data3)
         script3, div3 = components(pie_chart)
 
-        ####點####
         #p = figure()
         #p.circle([1,2], [3,4])
         #script, div = components(p)
@@ -351,7 +346,6 @@ def create_receipt(request):
         category_budget_instance = Budget.objects.filter(classification=category, member=member).first()
         month_budget_instance = MonthBudget.objects.filter(member=member).first()
 
-        # 只有支出才要計算預算
         monthly_budget_check_result = ""
         class_budget_check_result = ""
         if incomeandexpense.income_type == 'expense':
@@ -434,36 +428,34 @@ def create_subClassification(request):
         return HttpResponse(json.JSONEncoder().encode(message))
 
 
-# 用來把英文分類換成中文
 def classNameTranslate_enTozhtw(name):
     return {
-        'food': "食",
-        'clothing': "衣",
-        'housing': "住",
-        'transportation': "行",
-        'education': "育",
-        'entertainment': "樂",
-        'general_revenue': "收入",
-        'invest_revenue': "投資",
-        'other_revenue': "其他",
-        'others': "其"
-    }.get(name, "預設")
+        'food': "food",
+        'clothing': "clothing",
+        'housing': "housing",
+        'transportation': "transportation",
+        'education': "education",
+        'entertainment': "entertainment",
+        'general_revenue': "general_revenue",
+        'invest_revenue': "invest_revenue",
+        'other_revenue': "other_revenue",
+        'others': "others"
+    }.get(name, "default")
 
 
-# 用來把中文分類換成英文
 def classNameTranslate_zhtwToen(name):
     return {
-        '食': "food",
-        '衣': "clothing",
-        '住': "housing",
-        '行': "transportation",
-        '育': "education",
-        '樂': "entertainment",
-        '收入': "general_revenue",
-        '投資': "invest_revenue",
-        '其他': "other_revenue",
-        '其': "others"
-    }.get(name, "other")
+        'food': "food",
+        'clothing': "clothing",
+        'housing': "housing",
+        'transportation': "transportation",
+        'education': "education",
+        'entertainment': "entertainment",
+        'general_revenue': "general_revenue",
+        'invest_revenue': "invest_revenue",
+        'other_revenue': "other_revenue",
+        'others': "others"
+    }.get(name, "default")
 
 
 def get_date(request):
@@ -697,10 +689,8 @@ def delete_subClassification_in_settingPage(request):
         return HttpResponse(delsub)
 
 
-# 計算當月的各項預算和總預算是否有超過上限
 def budget_calculate(member):
     monthly_budget = MonthBudget.objects.filter(member=member).first()
-    # 以月為範圍做查詢
     currentDate = datetime.now()
     if (currentDate.month == 2):
         dayOfMonth = 28
@@ -723,23 +713,20 @@ def budget_calculate(member):
     monthlyBudget = monthly_budget.budget
     alertThreshold = monthly_budget.reminder
 
-    # 如果有設定預算且超過
     if (monthlyBudget > 0 and sumOfExpense > monthlyBudget):
-        alertMessage = "警告：本月總花費已超過當月預算"
+        alertMessage = "Warning"
     elif (alertThreshold > 0 and sumOfExpense > alertThreshold):
-        alertMessage = "警告：本月總花費已超過 {0}".format(alertThreshold)
+        alertMessage = "Warning {0}".format(alertThreshold)
     else:
-        alertMessage = "正常"
+        alertMessage = "Normal"
 
     return alertMessage
 
 
-# 計算分類支出是否有超過預算上限
 def classification_budget_calculate(member, classification):
     c1 = Classification.objects.filter(classification_type=classification).first()
     budget_Object = Budget.objects.filter(member=member, classification=c1).first()
 
-    # 以月為範圍做查詢
     currentDate = datetime.now()
     if (currentDate.month == 2):
         dayOfMonth = 28
@@ -751,10 +738,8 @@ def classification_budget_calculate(member, classification):
     startDay = date(currentDate.year, currentDate.month, 1)
     lastDay = date(currentDate.year, currentDate.month, dayOfMonth)
 
-    # 把所有子分類撈出來，才能查Recepit
     subClass_list = SubClassification.objects.filter(member=member, classification=c1)
 
-    # 把該月所有的該主分類的支出receipt加總
     sumOfExpense = 0
     for subclass in subClass_list:
         receipt = Receipt.objects.all().filter(date__range=[startDay, lastDay], member=member,
@@ -768,11 +753,11 @@ def classification_budget_calculate(member, classification):
     classification = classNameTranslate_enTozhtw(classification)
     print(classification)
     if (classBudget > 0 and sumOfExpense > classBudget):
-        alertMessage = "警告：本月{0}分類花費已超過當月預算".format(classification)
+        alertMessage = "Warning {0}".format(classification)
     elif (classBudgetThreshold > 0 and sumOfExpense > classBudgetThreshold):
-        alertMessage = "警告：本月{0}分類花費已超過 {1}".format(classification, classBudgetThreshold)
+        alertMessage = "Warning {0}  {1}".format(classification, classBudgetThreshold)
     else:
-        alertMessage = "正常"
+        alertMessage = "Normal"
 
     return alertMessage
 
@@ -967,9 +952,9 @@ def backwardtime(request):
             #     receipt.payment, receipt.date, receipt.money, receipt.id)
             table += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td>" \
                      "<td>{6}</td><td style='width: 12%'>" \
-                     "<button type='button' class='btn btn-danger btn-sm' value='{7}' title='刪除'>" \
-                     "刪除</button>&nbsp;<button type='button' class='btn btn-danger btn-sm'" \
-                     " value='{8}' title='修改'>修改</button></td></tr>".format(
+                     "<button type='button' class='btn btn-danger btn-sm' value='{7}' title='delete'>" \
+                     "delete</button>&nbsp;<button type='button' class='btn btn-danger btn-sm'" \
+                     " value='{8}' title='modify'>modify</button></td></tr>".format(
                 receipt.subclassification.classification.classification_type.encode('utf-8'),
                 receipt.subclassification.name.encode('utf-8'), receipt.remark.encode('utf-8'),
                 receipt.incomeandexpense,
@@ -979,7 +964,6 @@ def backwardtime(request):
     return HttpResponse(json.JSONEncoder().encode(jsonResult))
 
 
-# 檢查是否有週期性項目的日期到了要提醒使用者
 def periodicItemDateCheck(member):
     periodicItemList = CyclicalExpenditure.objects.all().filter(member=member)
     notification_list = []
@@ -992,21 +976,21 @@ def periodicItemDateCheck(member):
                     payingTimeContent = ""
 
                     if entry.expenditure_date >= entry.reminder_date:
-                        payingTimeTitle = "本週"
+                        payingTimeTitle = "This week"
                     else:
-                        payingTimeTitle = "下週"
+                        payingTimeTitle = "Next week"
                     weekday = {
-                        1: "星期一",
-                        2: "星期二",
-                        3: "星期三",
-                        4: "星期四",
-                        5: "星期五",
-                        6: "星期六",
-                        7: "星期日"
+                        1: "Monday",
+                        2: "Tuesday",
+                        3: "Wednesday",
+                        4: "Thursday",
+                        5: "Friday",
+                        6: "Saturday",
+                        7: "Sunday"
                     }
-                    payingTimeContent = weekday.get(entry.expenditure_date, "星期天")
+                    payingTimeContent = weekday.get(entry.expenditure_date, "Sunday")
 
-                    message = "繳費提醒：{0}須於{1}{2}進行繳費".format(entry.name.encode('utf-8'), payingTimeTitle,
+                    message = "Notifications: {0} {1}{2}".format(entry.name.encode('utf-8'), payingTimeTitle,
                                                             payingTimeContent)
                     notification_list.append(message)
 
@@ -1015,12 +999,12 @@ def periodicItemDateCheck(member):
                     payingTimeTitle = ""
                     payingTimeContent = ""
                     if entry.expenditure_date >= entry.reminder_date:
-                        payingTimeTitle = "本月"
+                        payingTimeTitle = "This month"
                     else:
-                        payingTimeTitle = "下個月"
-                    payingTimeContent = str(entry.expenditure_date) + "號"
+                        payingTimeTitle = "Next month"
+                    payingTimeContent = str(entry.expenditure_date)
 
-                    message = "繳費提醒：{0}須於{1}{2}進行繳費".format(entry.name.encode('utf-8'), payingTimeTitle,
+                    message = "Notifications: {0} {1}{2}".format(entry.name.encode('utf-8'), payingTimeTitle,
                                                             payingTimeContent)
                     notification_list.append(message)
 
@@ -1094,9 +1078,9 @@ def filterdelrecord(request):
         for receipt in new_receipts:
             table += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td>" \
                      "<td>{6}</td><td style='width: 12%'>" \
-                     "<button type='button' class='btn btn-danger btn-sm' value='{7}' title='刪除'>" \
-                     "刪除</button>&nbsp;<button type='button' class='btn btn-danger btn-sm'" \
-                     " value='{8}' title='修改'>修改</button></td></tr>".format(
+                     "<button type='button' class='btn btn-danger btn-sm' value='{7}' title='delete'>" \
+                     "delete</button>&nbsp;<button type='button' class='btn btn-danger btn-sm'" \
+                     " value='{8}' title='modify'>modify</button></td></tr>".format(
                 receipt.subclassification.classification.classification_type.encode('utf-8'),
                 receipt.subclassification.name.encode('utf-8'), receipt.remark.encode('utf-8'),
                 receipt.incomeandexpense,
@@ -1198,9 +1182,8 @@ def backwardchart(request):
                 income_sat = int(income_sat['money__sum'])
 
 
-            ####長條圖####
             data = {
-                'week': ['日', '一', '二', '三', '四', '五', '六', '日', '一', '二', '三', '四', '五', '六'],
+                'week': ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', ],
                 'dollar': [cost_sun, cost_mon, cost_tue, cost_wed, cost_thu, cost_fri, cost_sat, income_sun, income_mon, income_tue, income_wed, income_thu, income_fri, income_sat],
                 'origin':['expense','expense','expense','expense','expense','expense','expense',
                       'income','income','income','income','income','income','income']
@@ -1208,7 +1191,6 @@ def backwardchart(request):
             bar2 = Bar(data, label=CatAttr(columns=['week'], sort=False,), values='dollar', plot_width=700, group='origin')
             script2, div2 = components(bar2)
 
-            ####折線圖####
             s = """Date,Close
             """+datetime.strftime(targetStart, '%Y/%m/%d')+""","""+str(cost_sun)+"""
             """+datetime.strftime(targetStart+timedelta(days=1), '%Y/%m/%d')+""","""+str(cost_mon)+"""
@@ -1264,7 +1246,6 @@ def backwardchart(request):
                     income = income['money__sum']
                 list_income.append(income)
 
-            ####長條圖####
             mon_origin_cost=[]
             mon_origin_income=[]
             mon_day=[]
@@ -1290,7 +1271,6 @@ def backwardchart(request):
             bar2 = Bar(data, label=CatAttr(columns=['mon'], sort=False,), values='dollar', plot_width=700, group='origin')
             script2, div2 = components(bar2)
 
-            ####折線圖####
             s = """Date,Cost
             """
             for i in range(monsday):
@@ -1336,7 +1316,6 @@ def backwardchart(request):
                     income = income['money__sum']
                 list_income.append(income)
 
-            ####長條圖####
             yr_origin_cost=[]
             yr_origin_income=[]
             yr_day=[]
@@ -1362,7 +1341,6 @@ def backwardchart(request):
             bar2 = Bar(data, label=CatAttr(columns=['year'], sort=False,), values='dollar', plot_width=700, group='origin')
             script2, div2 = components(bar2)
 
-            ####折線圖####
             yr = int(datetime.strftime(currentDate, "%Y"))
             print(yr)
             yr_date = date(year=yr, month=1, day=1)
@@ -1495,9 +1473,8 @@ def get_week_chart(request):
         else:
             income_sat = int(income_sat['money__sum'])
 
-        ####長條圖####
         data = {
-            'week': ['日', '一', '二', '三', '四', '五', '六', '日', '一', '二', '三', '四', '五', '六'],
+            'week': ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun', 'sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', ],
             'dollar': [cost_sun, cost_mon, cost_tue, cost_wed, cost_thu, cost_fri, cost_sat, income_sun, income_mon, income_tue, income_wed, income_thu, income_fri, income_sat],
             'origin':['expense','expense','expense','expense','expense','expense','expense',
                       'income','income','income','income','income','income','income']
@@ -1505,7 +1482,6 @@ def get_week_chart(request):
         bar2 = Bar(data, label=CatAttr(columns=['week'], sort=False,), values='dollar', plot_width=700, group='origin')
         script2, div2 = components(bar2)
 
-        ####折線圖####
         s = """Date,Close
         """+datetime.strftime(startDay, '%Y/%m/%d')+""","""+str(cost_sun)+"""
         """+datetime.strftime(startDay+timedelta(days=1), '%Y/%m/%d')+""","""+str(cost_mon)+"""
@@ -1569,7 +1545,6 @@ def get_mon_chart(request):
                 income = income['money__sum']
             list_income.append(income)
 
-        ####長條圖####
         mon_origin_cost=[]
         mon_origin_income=[]
         mon_day=[]
@@ -1595,7 +1570,6 @@ def get_mon_chart(request):
         bar2 = Bar(data, label=CatAttr(columns=['mon'], sort=False,), values='dollar', plot_width=700, group='origin')
         script2, div2 = components(bar2)
 
-        ####折線圖####
         s = """Date,Cost
         """
         for i in range(monsday):
@@ -1645,7 +1619,6 @@ def get_yr_chart(request):
                 income = income['money__sum']
             list_income.append(income)
 
-        ####長條圖####
         yr_origin_cost=[]
         yr_origin_income=[]
         yr_day=[]
@@ -1671,7 +1644,6 @@ def get_yr_chart(request):
         bar2 = Bar(data, label=CatAttr(columns=['year'], sort=False,), values='dollar', plot_width=700, group='origin')
         script2, div2 = components(bar2)
 
-        ####折線圖####
         yr = int(datetime.strftime(currentDate, "%Y"))
         print(yr)
         yr_date = date(year=yr, month=1, day=1)

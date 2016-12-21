@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-21 13:42+0800\n"
+"POT-Creation-Date: 2016-12-21 13:52+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: templates/login.html:30
+#: templates/login.html:30 templates/register.html:29
 msgid "Welcome to"
 msgstr "歡迎來到"
 
@@ -25,13 +25,15 @@ msgstr "歡迎來到"
 msgid "Login"
 msgstr "登入"
 
+#: templates/register.html:42
 #: templates/login.html:37
 msgid "'Email Address'"
-msgstr ""
+msgstr "信箱"
 
+#: templates/register.html:46
 #: templates/login.html:40
 msgid " 'Password'"
-msgstr ""
+msgstr "密碼"
 
 #: templates/login.html:45
 msgid "Sign in"
@@ -40,3 +42,15 @@ msgstr "登入"
 #: templates/login.html:47
 msgid "Create account"
 msgstr "建立帳戶"
+
+#: templates/register.html:49
+msgid "'Confirm Password'"
+msgstr "確認密碼"
+
+#: templates/register.html:53
+msgid "Register Now"
+msgstr "註冊"
+
+#: templates/register.html:55
+msgid "Go to Login"
+msgstr "回到登入頁"

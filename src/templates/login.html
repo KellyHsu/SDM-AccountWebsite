@@ -37,7 +37,7 @@
                                 <input id="{{ field.id_for_label }}" type="email" class="form-control input-lg login_box" name="{{ field.html_name }}" placeholder={% blocktrans %}'Email Address'{% endblocktrans %} required autofocus>
                                 {{ form.username.errors }}
                             {% else %}
-                                <input id="{{ field.id_for_label }}" type="password" class="form-control input-lg login_box" name="{{ field.html_name }}" placeholder={% blocktrans %} 'Password'{% endblocktrans %} required>
+                                <input id="{{ field.id_for_label }}" type="password" class="form-control input-lg login_box" name="{{ field.html_name }}" placeholder={% blocktrans %}'Password'{% endblocktrans %} required>
                                 {{ form.password.errors }}
                                 {{ form.non_field_errors }}
                             {% endif %}

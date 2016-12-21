@@ -1,6 +1,4 @@
-<!-- 註冊帳號做在這頁 -->
-
-{% load staticfiles %}
+{% load staticfiles i18n %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -28,7 +26,7 @@
             <div class="col-md-4"></div>
             <div class="col-md-4 card card-container">
                 <section class="login-form">
-                    <h1 class="welcome text-center">Welcome to <br> Money Keeper</h1>
+                    <h1 class="welcome text-center">{% trans "Welcome to" %} <br> Money Keeper</h1>
                     <!--<form method="post" action="/register/" role="login">-->
 						<!--<h2 class='login_title text-center'>Register</h2><hr>-->
                         <!--<input type="email" name="email" class="form-control input-lg login_box" placeholder="Email Address" required autofocus />-->
@@ -39,22 +37,22 @@
                     <form method="post" action="/register/" role="login">
                         {% csrf_token %}
                         {% for field in form %}
-                            {% if field.label|lower == 'username' %}
+                            {% if field.id_for_label|lower == 'id_username' %}
                                 <input id="{{ field.id_for_label }}" type="email" class="form-control input-lg login_box"
-                                       name="{{ field.html_name }}" placeholder="Email Address" required autofocus
+                                       name="{{ field.html_name }}" placeholder={% blocktrans %}'Email Address'{% endblocktrans %} required autofocus
                                        pattern="[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)">
                                 {{ form.username.errors }}
-                            {% elif field.label|lower == 'password' %}
-                                <input id="{{ field.id_for_label }}" class="form-control input-lg login_box" type="password" name="{{ field.html_name }}" placeholder="Password" required>
+                            {% elif field.id_for_label|lower == 'id_password1' %}
+                                <input id="{{ field.id_for_label }}" class="form-control input-lg login_box" type="password" name="{{ field.html_name }}" placeholder={% blocktrans %}'Password'{% endblocktrans %} required>
                                 {{ form.password1.errors }}
                             {% else %}
-                                <input id="{{ field.id_for_label }}" class="form-control input-lg login_box" type="password" name="{{ field.html_name }}" placeholder="Confirm Password" required>
+                                <input id="{{ field.id_for_label }}" class="form-control input-lg login_box" type="password" name="{{ field.html_name }}" placeholder={% blocktrans %}'Confirm Password'{% endblocktrans %} required>
                                 {{ form.password2.errors }}
                             {% endif %}
                         {% endfor %}
-                        <button type="submit" name="go" class="btn btn-lg btn-primary btn-block">Register Now</button>
+                        <button type="submit" name="go" class="btn btn-lg btn-primary btn-block">{% trans "Register Now" %}</button>
                         <div class="register-link">
-                            <a href="/login/">Go to Login</a> <!--or <a href="#">reset password</a> -->
+                            <a href="/login/">{% trans "Go to Login" %}</a> <!--or <a href="#">reset password</a> -->
                         </div>
                     </form>
                 </section>
