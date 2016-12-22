@@ -220,6 +220,7 @@
             $('#week-page').removeClass("now-click")
             $('#month-page').removeClass("now-click")
             $('#year-page').removeClass("now-click")
+            $('#title-text').find( "h3" ).html("總類別分析");
             $.ajax({
                dataType: 'json',
                url: "/getCategoryChart/",
