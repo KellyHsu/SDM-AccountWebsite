@@ -294,7 +294,34 @@ def chart(request):
         #print(script)
         #print(div)
         #show(p)
-    return render(request, 'chart.html',{"title": week, "the_script": script, "the_div": div, "script_bar": script2, "div_bar": div2})
+
+        ###類別的下拉式選單###
+        oldest_receipt = Receipt.objects.filter(member=member).order_by('date').first()
+        #print(oldest_receipt.date)
+        oldest_y = int(datetime.strftime(oldest_receipt.date, '%Y'))
+        oldest_m = int(datetime.strftime(oldest_receipt.date, '%m'))
+        today_y = int(datetime.strftime(today, '%Y'))
+        today_m = int(datetime.strftime(today, '%m'))
+        month_list=[]
+        first=1
+
+        while oldest_y != today_y+1:
+            m=1
+            if oldest_y == today_y:
+                while m != today_m+1:
+                    month_list.append(str(oldest_y)+" - "+str(m).zfill(2))
+                    m = m + 1
+            else:
+                if first == 1:
+                    m=oldest_m
+                while m != 13:
+                    month_list.append(str(oldest_y)+" - "+str(+m).zfill(2))
+                    m = m + 1
+            oldest_y = oldest_y + 1
+            first = first + 1
+        print(month_list)
+
+    return render(request, 'chart.html',{"title": week, "the_script": script, "the_div": div, "script_bar": script2, "div_bar": div2, "month_list": month_list})
 
 
 def create_receipt(request):
@@ -1708,24 +1735,140 @@ def get_category_chart(request):
         print(currentDate)
         title = datetime.strftime(currentDate, "%Y")
         list_cost=[]
-        list_cost_classification=['food','clothing','housing','transportation','education','entertainment', 'others']
-        list_income_classification=['general_revenue','invest_revenue','other_revenue']
+        list_cost_classification=[]
+        list_income_classification=[]
+        list_cost_classification_default=['food','clothing','housing','transportation','education','entertainment', 'others']
+        list_income_classification_default=['general_revenue','invest_revenue','other_revenue']
         for i in range(7):
-            cost = Receipt.objects.filter(member=member, date__year=currentDate.year, subclassification__classification__classification_type=list_cost_classification[i], incomeandexpense__income_type="expense").aggregate(Sum('money'))
+            cost = Receipt.objects.filter(member=member, subclassification__classification__classification_type=list_cost_classification_default[i], incomeandexpense__income_type="expense").aggregate(Sum('money'))
             if str(cost['money__sum']) == "None":
                 cost = 0
             else:
                 cost = cost['money__sum']
-            list_cost.append(cost)
-
+                list_cost.append(cost)
+                list_cost_classification.append(list_cost_classification_default[i])
+        if len(list_cost_classification) == 0:
+            list_cost_classification.append("none")
+            list_cost.append(0)
         list_income=[]
         for i in range(3):
-            income = Receipt.objects.filter(member=member, date__year=currentDate.year, subclassification__classification__classification_type=list_income_classification[i], incomeandexpense__income_type="income").aggregate(Sum('money'))
+            income = Receipt.objects.filter(member=member, subclassification__classification__classification_type=list_income_classification_default[i], incomeandexpense__income_type="income").aggregate(Sum('money'))
             if str(income['money__sum']) == "None":
                 income = 0
             else:
                 income = income['money__sum']
-            list_income.append(income)
+                list_income.append(income)
+                list_income_classification.append(list_income_classification_default[i])
+        if len(list_income_classification) == 0:
+            list_income_classification.append("none")
+            list_income.append(0)
+        ####圓餅圖####
+        #類別-支出
+        data3 = pd.Series(list_cost, index=list_cost_classification)
+        pie_chart = Donut(data3)
+        pie_chart.title.text = "分類支出"
+        pie_chart.height=430
+        pie_chart.width=430
+        script3, div3 = components(pie_chart)
+
+        #類別-收入
+        data4 = pd.Series(list_income, index=list_income_classification)
+        pie_chart_in = Donut(data4)
+        pie_chart_in.title.text = "分類收入"
+        pie_chart_in.height=430
+        pie_chart_in.width=430
+        script4, div4 = components(pie_chart_in)
+
+        #子類別-支出
+        name = SubClassification.objects.filter(member=member)
+        #print(name)
+        sub_list_name=[]
+        sub_list=[]
+        for i in range(len(name)):
+            #print(name[i].name)
+            sub = Receipt.objects.filter(member=member, subclassification=name[i], incomeandexpense__income_type="expense").aggregate(Sum('money'))
+            if str(sub['money__sum']) == "None":
+                sub = 0
+            else:
+                sub = sub['money__sum']
+                sub_list_name.append(name[i].name.encode('utf-8'))
+                sub_list.append(sub)
+        if len(sub_list_name) == 0:
+            sub_list_name.append("none")
+            sub_list.append(0)
+        print(sub_list)
+        print(sub_list_name)
+        data5 = pd.Series(sub_list, index=sub_list_name)
+        pie_chart_sub = Donut(data5)
+        pie_chart_sub.title.text = "子分類支出"
+        pie_chart_sub.height=430
+        pie_chart_sub.width=430
+        script5, div5 = components(pie_chart_sub)
+
+        #子類別-收入
+        name_in = SubClassification.objects.filter(member=member)
+        #print(name)
+        sub_list_name_in=[]
+        sub_list_in=[]
+        for i in range(len(name_in)):
+            #print(name[i].name)
+            sub_in = Receipt.objects.filter(member=member, subclassification=name_in[i], incomeandexpense__income_type="income").aggregate(Sum('money'))
+            if str(sub_in['money__sum']) == "None":
+                sub_in = 0
+            else:
+                sub_in = sub_in['money__sum']
+                sub_list_name_in.append(name_in[i].name.encode('utf-8'))
+                sub_list_in.append(sub_in)
+        if len(sub_list_name_in) == 0:
+            sub_list_name_in.append("none")
+            sub_list_in.append(0)
+        data6 = pd.Series(sub_list_in, index=sub_list_name_in)
+        pie_chart_sub_in = Donut(data6)
+        pie_chart_sub_in.title.text = "子分類收入"
+        pie_chart_sub_in.height=430
+        pie_chart_sub_in.width=430
+        script6, div6 = components(pie_chart_sub_in)
+
+
+        jsonResult = { 'title': title, "script_pie": script3, "div_pie": div3, "script_pie_in": script4, "div_pie_in": div4, "script_pie_sub": script5, "div_pie_sub": div5, "script_pie_sub_in": script6, "div_pie_sub_in": div6}
+    return HttpResponse(json.JSONEncoder().encode(jsonResult))
+
+
+def get_specific_category_chart(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    else:
+        member = Member.objects.filter(user__username=request.user).first()
+        currentDate = datetime.strptime(request.POST["pageHeader_date"],'%Y/%m')
+        #print(currentDate)
+        list_cost=[]
+        list_cost_classification=[]
+        list_income_classification=[]
+        list_cost_classification_default=['food','clothing','housing','transportation','education','entertainment', 'others']
+        list_income_classification_default=['general_revenue','invest_revenue','other_revenue']
+        for i in range(7):
+            cost = Receipt.objects.filter(member=member, date__year=currentDate.year, date__month=currentDate.month, subclassification__classification__classification_type=list_cost_classification_default[i], incomeandexpense__income_type="expense").aggregate(Sum('money'))
+            if str(cost['money__sum']) == "None":
+                cost = 0
+            else:
+                cost = cost['money__sum']
+                list_cost.append(cost)
+                list_cost_classification.append(list_cost_classification_default[i])
+        if len(list_cost_classification) == 0:
+            list_cost_classification.append("none")
+            list_cost.append(0)
+        list_income=[]
+        for i in range(3):
+            income = Receipt.objects.filter(member=member, date__year=currentDate.year, date__month=currentDate.month, subclassification__classification__classification_type=list_income_classification_default[i], incomeandexpense__income_type="income").aggregate(Sum('money'))
+            if str(income['money__sum']) == "None":
+                income = 0
+            else:
+                income = income['money__sum']
+                list_income.append(income)
+                list_income_classification.append(list_income_classification_default[i])
+        if len(list_income_classification) == 0:
+            list_income_classification.append("none")
+            list_income.append(0)
         
         ####圓餅圖####
         #類別-支出
@@ -1751,13 +1894,16 @@ def get_category_chart(request):
         sub_list=[]
         for i in range(len(name)):
             #print(name[i].name)
-            sub_list_name.append(name[i].name.encode('utf-8'))
-            sub = Receipt.objects.filter(member=member, subclassification=name[i], incomeandexpense__income_type="expense").aggregate(Sum('money'))
+            sub = Receipt.objects.filter(member=member, date__year=currentDate.year, date__month=currentDate.month, subclassification=name[i], incomeandexpense__income_type="expense").aggregate(Sum('money'))
             if str(sub['money__sum']) == "None":
                 sub = 0
             else:
                 sub = sub['money__sum']
-            sub_list.append(sub)
+                sub_list_name.append(name[i].name.encode('utf-8'))
+                sub_list.append(sub)
+        if len(sub_list_name) == 0:
+            sub_list_name.append("none")
+            sub_list.append(0)
         print(sub_list)
         print(sub_list_name)
         data5 = pd.Series(sub_list, index=sub_list_name)
@@ -1774,13 +1920,16 @@ def get_category_chart(request):
         sub_list_in=[]
         for i in range(len(name_in)):
             #print(name[i].name)
-            sub_list_name_in.append(name_in[i].name.encode('utf-8'))
-            sub_in = Receipt.objects.filter(member=member, subclassification=name_in[i], incomeandexpense__income_type="income").aggregate(Sum('money'))
+            sub_in = Receipt.objects.filter(member=member, date__year=currentDate.year, date__month=currentDate.month, subclassification=name_in[i], incomeandexpense__income_type="income").aggregate(Sum('money'))
             if str(sub_in['money__sum']) == "None":
                 sub_in = 0
             else:
                 sub_in = sub_in['money__sum']
-            sub_list_in.append(sub_in)
+                sub_list_name_in.append(name_in[i].name.encode('utf-8'))
+                sub_list_in.append(sub_in)
+        if len(sub_list_name_in) == 0:
+            sub_list_name_in.append("none")
+            sub_list_in.append(0)
         data6 = pd.Series(sub_list_in, index=sub_list_name_in)
         pie_chart_sub_in = Donut(data6)
         pie_chart_sub_in.title.text = "子分類收入"
@@ -1789,6 +1938,6 @@ def get_category_chart(request):
         script6, div6 = components(pie_chart_sub_in)
 
 
-        jsonResult = { 'title': title, "script_pie": script3, "div_pie": div3, "script_pie_in": script4, "div_pie_in": div4, "script_pie_sub": script5, "div_pie_sub": div5, "script_pie_sub_in": script6, "div_pie_sub_in": div6}
+        jsonResult = { "script_pie": script3, "div_pie": div3, "script_pie_in": script4, "div_pie_in": div4, "script_pie_sub": script5, "div_pie_sub": div5, "script_pie_sub_in": script6, "div_pie_sub_in": div6}
     return HttpResponse(json.JSONEncoder().encode(jsonResult))
 

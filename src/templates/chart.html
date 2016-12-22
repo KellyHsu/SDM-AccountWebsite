@@ -118,6 +118,20 @@
             width:465px;
             float:left;
         }
+        .dropdown-menu-right{
+            height: auto;
+            max-height: 200px;
+            overflow-x: hidden;
+        }
+        .dropdown-menu-right::-webkit-scrollbar {
+            -webkit-appearance: none;
+            width: 4px;        
+        }    
+        .dropdown-menu-right::-webkit-scrollbar-thumb {
+            border-radius: 3px;
+            background-color: lightgray;
+            -webkit-box-shadow: 0 0 1px rgba(255,255,255,.75);        
+        }
     </style>
 
     <script>
@@ -216,7 +230,6 @@
                     $('#title-text').css("display","");
                     //$("#chart").replaceWith("<div id=\"chart\"><div>"+result.script_pie+result.div_pie+"</div>"+result.script_pie_sub+result.div_pie_sub+"</div></div>");
                     $("#chart").replaceWith("<div id=\"chart\"><div class=\"pie\">"+result.script_pie+result.div_pie+"</div><div class=\"pie\">"+result.script_pie_in+result.div_pie_in+"</div><div class=\"pie\">"+result.script_pie_sub+result.div_pie_sub+"</div><div class=\"pie\">"+result.script_pie_sub_in+result.div_pie_sub_in+"</div></div>");
-                    $('#pageHeader_date').text(result.title);
 
                 },
                 error: function(status){
@@ -232,7 +245,7 @@
             var idClick = e.target.id;
             var pageHeader_date = $('#pageHeader_date').html();
             var sign;
-            //alert("pageHeader_date"+pageHeader_date);
+            alert("pageHeader_date"+pageHeader_date);
             if($('#week-page').hasClass('now-click')){
                 sign = "week";
             }else if($('#month-page').hasClass('now-click')){
@@ -262,7 +275,49 @@
         $('div.dropdown ul.dropdown-menu li a').click(function (e) {
             var choosen = $(this).text();
             e.preventDefault();
-            $('#menu1').html(choosen+'<span class=\"caret\"></span>');
+            if(choosen == "------------"){
+                choosen="月份";
+                $('#menu1').html(choosen+' <span class=\"caret\"></span>');
+                $('#title-text').find( "h3" ).html("總類別分析");
+                $.ajax({
+                    dataType: 'json',
+                    url: "/getCategoryChart/",
+                    type:"POST",
+                    data: {},
+                    success: function(result){
+                        $('#title-menu').css("display","none");
+                        $('#title-text').css("display","");
+                        //$("#chart").replaceWith("<div id=\"chart\"><div>"+result.script_pie+result.div_pie+"</div>"+result.script_pie_sub+result.div_pie_sub+"</div></div>");
+                        $("#chart").replaceWith("<div id=\"chart\"><div class=\"pie\">"+result.script_pie+result.div_pie+"</div><div class=\"pie\">"+result.script_pie_in+result.div_pie_in+"</div><div class=\"pie\">"+result.script_pie_sub+result.div_pie_sub+"</div><div class=\"pie\">"    +result.script_pie_sub_in+result.div_pie_sub_in+"</div></div>");
+
+                    },
+                    error: function(status){
+                        console.log(status);
+                        alert("類別分析讀取失敗")
+                    }
+                }); 
+            }else{
+                $('#menu1').html(choosen+' <span class=\"caret\"></span>');
+                $('#title-text').find( "h3" ).html(choosen);
+                var timearray = choosen.split(" - ");
+                var time = timearray[0]+"/"+timearray[1];
+                $.ajax({
+                    dataType: 'json',
+                    url: "/getSpecificCategoryChart/",
+                    type:"POST",
+                    data: {pageHeader_date : time},
+                    success: function(result){
+                        $('#title-menu').css("display","none");
+                        $('#title-text').css("display","");
+                        //$("#chart").replaceWith("<div id=\"chart\"><div>"+result.script_pie+result.div_pie+"</div>"+result.script_pie_sub+result.div_pie_sub+"</div></div>");
+                        $("#chart").replaceWith("<div id=\"chart\"><div class=\"pie\">"+result.script_pie+result.div_pie+"</div><div class=\"pie\">"+result.script_pie_in+result.div_pie_in+"</div><div class=\"pie\">"+result.script_pie_sub+result.div_pie_sub+"</div><div class=\"pie\">"+result.script_pie_sub_in+result.div_pie_sub_in+"</div></div>");
+                    },
+                    error: function(status){
+                        console.log(status);
+                        alert("類別分析抓新日期失敗")
+                    }
+                });
+            }
         });
 
 	});	// end document.ready()
@@ -408,8 +463,7 @@
                                         <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">月份
                                         <span class="caret"></span></button>
                                         <ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="menu1">
-                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">-------</a></li>
-                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">test1</a></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">------------</a></li>
                                             {% for month in month_list %}
                                                 <li role="presentation"><a role="menuitem" tabindex="-1" href="#">{{ month }}</a></li>
                                             {% endfor %}
