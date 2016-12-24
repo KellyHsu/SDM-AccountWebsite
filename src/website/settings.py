@@ -45,6 +45,7 @@ THIRD_PARTY_APPS = (
     'django_extensions',
     'compressor',
     'crispy_forms',
+    'rest_framework',
 )
 
 LOCAL_APPS = (
@@ -151,3 +152,12 @@ STATICFILES_DIRS = [join(BASE_DIR, 'static')]
 LOGIN_URL = reverse_lazy('login')
 LOGIN_REDIRECT_URL = "/dashboard/"
 LOGOUT_REDIRECT_URL = "/login/"
+
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}

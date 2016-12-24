@@ -1,5 +1,6 @@
 from django.conf.urls import url
 from . import views
+from rest_framework.urlpatterns import format_suffix_patterns
 
 
 urlpatterns = [
@@ -38,4 +39,8 @@ urlpatterns = [
     url(r'^getYrChart/$', views.get_yr_chart, name='get_yr_chart'),
     url(r'^getCategoryChart/$', views.get_category_chart, name='get_category_chart'),
     url(r'^getSpecificCategoryChart/$', views.get_specific_category_chart, name='get_specific_category_chart'),
+    url(r'^api/$', views.MemberList.as_view()),
+    url(r'^api/(?P<pk>[0-9]+)/$', views.MemberDetail.as_view()),
 ]
+
+urlpatterns = format_suffix_patterns(urlpatterns)
