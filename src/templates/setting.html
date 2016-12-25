@@ -87,9 +87,25 @@
 		    position: relative; 
 		    margin-right: 2px;
 		}
+		
+		.revenue-sub-category { 
+		    position: relative; 
+		    margin-right: 2px;
+		}
 
 		/* 用來在次分類上增加刪除的叉 */
 		.sub-category span { 
+		    position: absolute; 
+		    top: -18px;  /* position in bottom right & top corner */
+		    right: -8px;
+		    z-index: 100;
+		    width: 16px;
+		    height: 16px;
+		    color: red;
+		    font-size: 23px;
+		}   
+
+		.revenue-sub-category span { 
 		    position: absolute; 
 		    top: -18px;  /* position in bottom right & top corner */
 		    right: -8px;
@@ -173,6 +189,25 @@
 			sub_category_deletionHandler();
 
 		});
+		
+				// 刪除收入子分類的按鈕事件
+		$("#btn-sub-category-del-revenue").click(function(){
+			$(this).hide();
+			$(".sub-category-del-submit-revenue").animate({
+				width:'toggle'
+				}
+			);
+
+			var list_sub_category = $(".revenue-sub-category");
+			list_sub_category.removeClass("btn-link");
+			list_sub_category.addClass("btn-default");
+			list_sub_category.addClass("confirm");
+			list_sub_category.addClass("animated");	// 套用animate css
+			list_sub_category.addClass("swing");	// 使用swing 動畫
+			list_sub_category.append("<span>&times;</span>");
+			sub_revenue_category_deletionHandler();
+
+		});
 
 		// 確定刪除or取消刪除子分類的按鈕
 		$(".sub-category-del-submit").click(function(){
@@ -189,6 +224,24 @@
 			list_sub_category.removeClass("swing");
 			list_sub_category.addClass("btn-link");
 			$(".sub-category > span").remove();
+		});
+
+		
+				// 確定刪除or取消刪除收入子分類的按鈕
+		$(".sub-category-del-submit-revenue").click(function(){
+			$(".sub-category-del-submit-revenue").hide();
+			$("#btn-sub-category-del-revenue").animate({
+				width:'toggle'
+				},
+				600
+			);
+
+			var list_sub_category = $(".revenue-sub-category");
+			list_sub_category.removeClass("btn-default");
+			list_sub_category.removeClass("animated");
+			list_sub_category.removeClass("swing");
+			list_sub_category.addClass("btn-link");
+			$(".revenue-sub-category > span").remove();
 		});
 
 		// 刪除週期性支出項目
@@ -398,12 +451,13 @@
     function defaultHiding(){
 		$(".passwd-set").hide();
 		$(".sub-category-del-submit").hide();
+		$(".sub-category-del-submit-revenue").hide();
 		$(".table4-del-submit").hide();
 		$(".amount-setting-submit").hide();
 
     }	// end function defaultHiding()
 
-
+	
 	// 處理表格4的刪除項目按鈕按下的事件
 	function table4deletionBtnHandler(){
 		$("#table4 tr").each(function(index){
@@ -469,6 +523,39 @@
 	}	// end function sub_category_deletionHandler()
 
 
+	
+		// 處理刪除收入子項目(右上角打叉)的處理
+	function sub_revenue_category_deletionHandler(){
+		$(".revenue-sub-category").click(function(){
+			if( $(this).hasClass('confirm') ){
+				var delSub = $(this);
+				delSub.children().empty();
+				var btnText = delSub.text().trim();
+
+				var result = confirm("你真的要刪掉收入次分類：" + btnText + "嗎？");
+				if(result){
+					delSub.remove();	
+					//post
+					$.ajax({
+                		url: "/deleteSubClassificationInSettingPage/",
+                		type:"POST",
+                		data: {name:btnText},
+                		success: function(rowcontent){
+							alert("刪除了" + btnText);
+                		},
+                		error: function(){
+                    		alert("刪除收入子分類失敗");
+               		 	}
+            		});
+				}else{
+					delSub.children().text("×");
+				}
+			}
+		});
+	}	// end function sub_revenue_category_deletionHandler()
+
+
+	
 	// 處理新增週期性項目的繳費日期格式切換
 	function periodicTimeFormatToggle(selector) {
 		var dayOfMonth = [];
@@ -1011,8 +1098,8 @@
                 <div class="col-md-12 well">
                     <legend id="anch1"><span style="margin-right: 10px;">收入子分類設定</span>
                     	<button type="button" name="btnAddSub" class="edit-img-btn" id="btn-sub-category-add" style="background-image: url(/static/image/add.png);" data-toggle="modal" data-target="#modal-subCategoryofrevenue"></button>
-                    	<button type="button" name="btnDelSub" class="edit-img-btn" id="btn-sub-category-del" style="background-image: url(/static/image/delete.png);"></button>
-                    	<button type="button" class="btn btn-success btn-md sub-category-del-submit" id="sub-category-del-finish">刪除完畢</button>
+                    	<button type="button" name="btnDelSub" class="edit-img-btn" id="btn-sub-category-del-revenue" style="background-image: url(/static/image/delete.png);"></button>
+                    	<button type="button" class="btn btn-success btn-md sub-category-del-submit-revenue" id="sub-category-del-finish">刪除完畢</button>
                     </legend>
                     <form>
 					    <p>
@@ -1026,7 +1113,7 @@
 								     <td id="general_revenue">一般收入</td>
 									 <td>
 										{% for general_revenue in general_revenue_list %}
-									    	<button type="button" class="btn btn-link btn-md sub-category">{{ general_revenue.name }}</button>
+									    	<button type="button" class="btn btn-link btn-md revenue-sub-category">{{ general_revenue.name }}</button>
 										{% endfor %}
 									</td>
 								  </tr>
@@ -1034,7 +1121,7 @@
 								     <td id="invest_revenue">投資收入</td>
 								     <td>
 										{% for invest_revenue in invest_revenue_list %}
-								     		<button type="button" class="btn btn-link btn-md sub-category">{{ invest_revenue.name }}</button>
+								     		<button type="button" class="btn btn-link btn-md revenue-sub-category">{{ invest_revenue.name }}</button>
 										{% endfor %}
 									 </td>
 								  </tr>
@@ -1042,7 +1129,7 @@
 								     <td id="other_revenue">其他</td>
 								     <td>
 										{% for other_revenue in other_revenue_list %}
-							     			<button type="button" class="btn btn-link btn-md sub-category">{{ other_revenue.name }}</button>
+							     			<button type="button" class="btn btn-link btn-md revenue-sub-category">{{ other_revenue.name }}</button>
 								     	{% endfor %}
 									 </td>
 								  </tr>
