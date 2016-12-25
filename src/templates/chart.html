@@ -29,17 +29,9 @@
     <link href="{% static 'dist/css/metisMenu.min.css' %}" rel="stylesheet">
     <link href="{% static 'dist/css/sb-admin-2.css' %}" rel="stylesheet">
 
-        <!--datepicker CSS-->
-    <link href="{% static 'css/bootstrap-responsive.css' %}" rel="stylesheet">
-
     	<!-- Custom Fonts -->
     <link href="{% static 'font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
 
-    	<!-- Animate CSS -->
-    <link href="{% static 'css/animate.css' %}" rel="stylesheet">
-
-    	<!-- bootstrap-toggle CSS -->
-	<link href="{% static 'css/bootstrap-toggle.min.css' %}" rel="stylesheet">
 
 		<!-- jQuery -->
     <script src="{% static 'js/jquery.js' %}"></script>
@@ -52,58 +44,27 @@
     <script src="{% static 'dist/js/metisMenu.min.js' %}"></script>
     <script src="{% static 'dist/js/sb-admin-2.js' %}"></script>
 
-    	<!-- bootstrap-toggle JS -->
-    <script src="{% static 'js/bootstrap-toggle.min.js' %}"></script>
 
 	<!-- bokeh -->
 	<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.3.min.css" type="text/css" />
     <script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.3.min.js"></script>
 
-	
 
     <style type="text/css">
-    	span.item-title {
-			font-size: 20px;
-			font-weight: 600;
-			word-spacing:10px;
-			white-space:nowrap;
-    	}
-        input{
-            padding:0px 10px;
+        body {
+            background-color: rgb(229, 228, 219);
         }
-    	input[type="text"], input[type="password"] {
-    		width: 25em;
-    		height: 30px;
-    	}
+        
+        #page-wrapper {
+            min-height: 167px;
+            background-color: rgb(229, 228, 219);
+        }
 
-    	input[readonly] {
-    		color: #6C6C6C;
-    		background-color: #d0d0d0;
-    	}
+        #center-content {
+            background-color: #fff;
+            margin-top: 20px;
+        }
 
-    	.edit-img-btn {
-			border: 0; 
-			background-color: transparent; 
-			width: 32px; 
-			height: 32px;    	
-		}
-
-		.sub-category { 
-		    position: relative; 
-		    margin-right: 2px;
-		}
-
-		/* 用來在次分類上增加刪除的叉 */
-		.sub-category span { 
-		    position: absolute; 
-		    top: -18px;  /* position in bottom right & top corner */
-		    right: -8px;
-		    z-index: 100;
-		    width: 16px;
-		    height: 16px;
-		    color: red;
-		    font-size: 23px;
-		}  
         .divOver{
 	        border:solid 2px #ddd;
 	    }
@@ -397,7 +358,7 @@
         </nav><!-- /.navbar-top-links -->
                    
         <!-- main container -->
-        <div class="container-fluid" style="background-color: rgb(229, 228, 219);">
+        <div class="container-fluid">
             <div class="row col-sm-2 col-md-2 left-side">
                 <div class="panel-group collapse in" id="accordion" aria-expanded="true">
 
@@ -443,12 +404,12 @@
                 </div>  <!-- /.panel group -->
             </div>  <!-- /.left-side row -->
             <!-- Main container -->
-	        <div id="page-wrapper" class="col-sm-10 col-md-10" style="min-height: 167px; background-color: rgb(229, 228, 219);">
+	        <div id="page-wrapper" class="col-sm-10 col-md-10">
 	        	<div class="container-fluid col-xs-12 col-sm-12">
 			    	<p style="text-align: center; font-size: 100px;">
 			    	</p>
 			    	<div class="row">
-                        <div class="col-lg-12" style="background-color: #fff; margin-top: 20px; padding-bottom: 20px;">
+                        <div class="col-lg-12" id="center-content">
                             <div style="text-align: center;">
                                 <div style="margin: 20px 0px 50px 0px;" id="title-menu">
                                     <form>

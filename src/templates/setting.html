@@ -116,6 +116,22 @@
 		    font-size: 23px;
 		}   
 
+		@media (max-width: 767px) {
+			input[type="text"], input[type="password"] {
+    			width: 100%;
+    			height: 30px;
+    		}
+
+			input[type="number"] {
+				width: 100%;
+			}
+
+			.kind-b, #m-b {
+				width: 100%;
+			}
+		}
+
+
     </style>
 
     <script>
@@ -934,63 +950,63 @@
 
         <!-- Navigation -->
         <nav class="navbar navbar-light navbar-static-top" role="navigation">
-            <div class="navbar-header">
+            <div>
                 <a class="navbar-brand glyphicon glyphicon-book" href="/dashboard/"></a>
                 <a  href="/dashboard/"><img src="../static/image/logo.png" alt="logo" class="navbar-brand glyphicon glyphicon-book" height="30px" width="200px" border="0" /></a>
+
+	            <ul class="nav navbar-top-links navbar-right">
+	                
+	                <!-- start bell dropdown -->
+	                <li class="dropdown">
+	                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="color: white;">
+	                        <i class="fa fa-bell fa-fw"></i> <i class="fa fa-caret-down"></i>
+	                    </a>
+	                    <ul class="dropdown-menu dropdown-alerts">
+	                        <li>
+	                            <a href="#">
+	                                <div>
+	                                    <i class="fa fa-comment fa-fw"></i> 以後會放提醒內容
+	                                </div>
+	                            </a>
+	                        </li>
+	                        <li class="divider"></li>
+	                        <li>
+	                            <a href="#">
+	                                <div>
+	                                    <i class="fa fa-comment fa-fw"></i> 以後會放提醒內容
+	                                </div>
+	                            </a>
+	                        </li>
+	                        <li class="divider"></li>
+	                        <li>
+	                            <a href="#">
+	                                <strong>See All Alerts</strong>
+	                                <i class="fa fa-angle-right"></i>
+	                            </a>
+	                        </li>
+	                    </ul><!-- /.dropdown-alerts -->
+	                </li><!-- /.dropdown -->
+
+	                <!-- start user dropdown -->
+	                <li class="dropdown">
+	                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="color: white;">
+	                        <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+	                    </a>
+	                    <ul class="dropdown-menu dropdown-user">
+	                        <li><a href="/setting/"><i class="fa fa-gear fa-fw"></i> Settings</a>
+	                        </li>
+	                        <li class="divider"></li>
+							<li><a href="/chart/"><i class="fa fa-gear fa-fw"></i> Chart</a>
+	                        </li>
+	                        <li class="divider"></li>
+	                        <li><a href="/logout/"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+	                        </li>
+	                    </ul>
+	                    
+	                </li><!-- /.dropdown-user -->
+	                
+	            </ul><!-- /.dropdown -->
             </div><!-- /.navbar-header -->
-
-            <ul class="nav navbar-top-links navbar-right">
-                
-                <!-- start bell dropdown -->
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="color: white;">
-                        <i class="fa fa-bell fa-fw"></i> <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-alerts">
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-comment fa-fw"></i> 以後會放提醒內容
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-comment fa-fw"></i> 以後會放提醒內容
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <strong>See All Alerts</strong>
-                                <i class="fa fa-angle-right"></i>
-                            </a>
-                        </li>
-                    </ul><!-- /.dropdown-alerts -->
-                </li><!-- /.dropdown -->
-
-                <!-- start user dropdown -->
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="color: white;">
-                        <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-user">
-                        <li><a href="/setting/"><i class="fa fa-gear fa-fw"></i> Settings</a>
-                        </li>
-                        <li class="divider"></li>
-						<li><a href="/chart/"><i class="fa fa-gear fa-fw"></i> Chart</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li><a href="/logout/"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
-                        </li>
-                    </ul>
-                    
-                </li><!-- /.dropdown-user -->
-                
-            </ul><!-- /.dropdown -->
             
         </nav><!-- /.navbar-top-links -->
                    
@@ -1147,8 +1163,8 @@
                     <form>
 						   <table class="table table-bordered table-striped table-responsive">
 						      <tr> 
-							     <th class="col-md-3">時間 </th>
-								 <th class="col-md-4">預算上限金額 </th>
+							     <th class="col-md-2">時間 </th>
+								 <th class="col-md-5">預算上限金額 </th>
 								 <th class="col-md-5">逼近上限金額通知設定 </th>
 							  </tr>
 							  <tr> 
@@ -1175,18 +1191,18 @@
                     <form>
 						   <table class="table table-bordered table-striped table-responsive">
 						      <tr> 
-							     <th class="col-md-3">支出類別 </th>
-								 <th class="col-md-4">預算上限金額 </th>
+							     <th class="col-md-2">支出類別 </th>
+								 <th class="col-md-5">預算上限金額 </th>
 								 <th class="col-md-5">逼近上限金額通知設定 </th>
 							  </tr>
 							  <tr> 
 							     <td>食
                                  </td>
-                                 <td><input type="number" value="{{ budget_food.budget }}" readonly/>								 
+                                 <td><input type="number" value="{{ budget_food.budget }}" class="kind-b" readonly/>								 
 								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
 								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'food')">確定</button>
 						         </td>
-								 <td><input type="number" value="{{ budget_food.reminder }}" readonly/>
+								 <td><input type="number" value="{{ budget_food.reminder }}" class="kind-b-r" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
 						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'food')">確定</button>
 								    <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'food')" {% if budget_food.is_reminded %} checked {% endif %}/>
@@ -1195,11 +1211,11 @@
 							  <tr> 
 							     <td>衣 
                                  </td>
-                                 <td><input type="number" value="{{ budget_clothing.budget }}" readonly/>								 
+                                 <td><input type="number" value="{{ budget_clothing.budget }}" class="kind-b" readonly/>								 
 								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
 								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'clothing')">確定</button>
 						         </td>
-								 <td><input type="number" value="{{ budget_clothing.reminder }}" readonly/>
+								 <td><input type="number" value="{{ budget_clothing.reminder }}" class="kind-b-r" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
 						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'clothing')">確定</button>
 						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'clothing')" {% if budget_clothing.is_reminded %} checked {% endif %}/>
@@ -1208,11 +1224,11 @@
 							  <tr> 
 							     <td>住 
                                  </td>
-                                 <td><input type="number" value="{{ budget_housing.budget }}" readonly/>								 
+                                 <td><input type="number" value="{{ budget_housing.budget }}" class="kind-b" readonly/>								 
 								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
 								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'housing')">確定</button>
 						         </td>
-								 <td><input type="number" value="{{ budget_housing.reminder }}" readonly/>
+								 <td><input type="number" value="{{ budget_housing.reminder }}" class="kind-b-r" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
 						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'housing')">確定</button>
 						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'housing')" {% if budget_housing.is_reminded %} checked {% endif %}/>
@@ -1221,11 +1237,11 @@
 							  <tr> 
 							     <td>行 
                                  </td>
-                                 <td><input type="number" value="{{ budget_transportation.budget }}" readonly/>								 
+                                 <td><input type="number" value="{{ budget_transportation.budget }}" class="kind-b" readonly/>								 
 								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
 								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'transportation')">確定</button>
 						         </td>
-								 <td><input type="number" value="{{ budget_transportation.reminder }}" readonly/>
+								 <td><input type="number" value="{{ budget_transportation.reminder }}" class="kind-b-r" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
 						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'transportation')">確定</button>
 						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'transportation')" {% if budget_transportation.is_reminded %} checked {% endif %}/>
@@ -1234,11 +1250,11 @@
 							  <tr> 
 							     <td>育 
                                  </td>
-                                 <td><input type="number" value="{{ budget_education.budget }}" readonly/>								 
+                                 <td><input type="number" value="{{ budget_education.budget }}" class="kind-b" readonly/>								 
 								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
 								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'education')">確定</button>
 						         </td>
-								 <td><input type="number" value="{{ budget_education.reminder }}" readonly/>
+								 <td><input type="number" value="{{ budget_education.reminder }}" class="kind-b-r" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
 						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'education')">確定</button>
 						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'education')" {% if budget_education.is_reminded %} checked {% endif %}/>
@@ -1247,11 +1263,11 @@
 							  <tr> 
 							     <td>樂 
                                  </td>
-                                 <td><input type="number" value="{{ budget_entertainment.budget }}" readonly/>								 
+                                 <td><input type="number" value="{{ budget_entertainment.budget }}" class="kind-b" readonly/>								 
 								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
 								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'entertainment')">確定</button>
 						         </td>
-								 <td><input type="number" value="{{ budget_entertainment.reminder }}" readonly/>
+								 <td><input type="number" value="{{ budget_entertainment.reminder }}" class="kind-b-r" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
 						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'entertainment')">確定</button>
 						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'entertainment')" {% if budget_entertainment.is_reminded %} checked {% endif %}/>
@@ -1260,11 +1276,11 @@
 							  <tr> 
 							     <td>其他 
                                  </td>
-                                 <td><input type="number" value="{{ budget_other.budget }}" readonly/>								 
+                                 <td><input type="number" value="{{ budget_other.budget }}" class="kind-b" readonly/>								 
 								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
 								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'others')">確定</button>
 						         </td>
-								 <td><input type="number" value="{{ budget_other.reminder }}" readonly/>
+								 <td><input type="number" value="{{ budget_other.reminder }}" class="kind-b-r" readonly/>
 						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
 						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'others')">確定</button>
 						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'others')" {% if budget_other.is_reminded %} checked {% endif %}/>
