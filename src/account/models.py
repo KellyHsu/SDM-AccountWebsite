@@ -11,6 +11,21 @@ class Receipt(models.Model):
     incomeandexpense = models.ForeignKey('IncomeAndExpense', on_delete=models.CASCADE)
     member = models.ForeignKey('member.Member', on_delete=models.CASCADE)
 
+    @property
+    def sub_category_name(self):
+        return self.subclassification.name
+
+    @property
+    def category_name(self):
+        return self.subclassification.classification.classification_type
+    
+    @property
+    def payment_type(self):
+        return self.payment.payment_type
+    
+    @property
+    def income_or_expense(self):
+        return self.incomeandexpense.income_type
 
 class Classification(models.Model):
     CLASSIFICATION_TYPE = (

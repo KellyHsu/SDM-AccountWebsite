@@ -17,6 +17,7 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from member.views import register
 from django.contrib.auth.views import login, logout
+from rest_framework.authtoken import views
 
 
 urlpatterns = [
@@ -27,4 +28,6 @@ urlpatterns = [
     url(r'^login/$', login, {'template_name': 'login.html'}),
     url(r'^logout/$', logout),
     url(r'^register/$', register),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^api-token-auth/', views.obtain_auth_token),
 ]
