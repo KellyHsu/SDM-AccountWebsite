@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-21 13:52+0800\n"
+"POT-Creation-Date: 2016-12-26 22:57+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,13 +25,11 @@ msgstr "歡迎來到"
 msgid "Login"
 msgstr "登入"
 
-#: templates/register.html:42
-#: templates/login.html:37
+#: templates/login.html:37 templates/register.html:42
 msgid "'Email Address'"
 msgstr "信箱"
 
-#: templates/register.html:46
-#: templates/login.html:40
+#: templates/login.html:40 templates/register.html:46
 msgid "'Password'"
 msgstr "密碼"
 

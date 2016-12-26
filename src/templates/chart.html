@@ -29,17 +29,9 @@
     <link href="{% static 'dist/css/metisMenu.min.css' %}" rel="stylesheet">
     <link href="{% static 'dist/css/sb-admin-2.css' %}" rel="stylesheet">
 
-        <!--datepicker CSS-->
-    <link href="{% static 'css/bootstrap-responsive.css' %}" rel="stylesheet">
-
     	<!-- Custom Fonts -->
     <link href="{% static 'font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
 
-    	<!-- Animate CSS -->
-    <link href="{% static 'css/animate.css' %}" rel="stylesheet">
-
-    	<!-- bootstrap-toggle CSS -->
-	<link href="{% static 'css/bootstrap-toggle.min.css' %}" rel="stylesheet">
 
 		<!-- jQuery -->
     <script src="{% static 'js/jquery.js' %}"></script>
@@ -52,58 +44,27 @@
     <script src="{% static 'dist/js/metisMenu.min.js' %}"></script>
     <script src="{% static 'dist/js/sb-admin-2.js' %}"></script>
 
-    	<!-- bootstrap-toggle JS -->
-    <script src="{% static 'js/bootstrap-toggle.min.js' %}"></script>
 
 	<!-- bokeh -->
 	<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.3.min.css" type="text/css" />
     <script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.3.min.js"></script>
 
-	
 
     <style type="text/css">
-    	span.item-title {
-			font-size: 20px;
-			font-weight: 600;
-			word-spacing:10px;
-			white-space:nowrap;
-    	}
-        input{
-            padding:0px 10px;
+        body {
+            background-color: rgb(229, 228, 219);
         }
-    	input[type="text"], input[type="password"] {
-    		width: 25em;
-    		height: 30px;
-    	}
+        
+        #page-wrapper {
+            min-height: 167px;
+            background-color: rgb(229, 228, 219);
+        }
 
-    	input[readonly] {
-    		color: #6C6C6C;
-    		background-color: #d0d0d0;
-    	}
+        #center-content {
+            background-color: #fff;
+            margin-top: 20px;
+        }
 
-    	.edit-img-btn {
-			border: 0; 
-			background-color: transparent; 
-			width: 32px; 
-			height: 32px;    	
-		}
-
-		.sub-category { 
-		    position: relative; 
-		    margin-right: 2px;
-		}
-
-		/* 用來在次分類上增加刪除的叉 */
-		.sub-category span { 
-		    position: absolute; 
-		    top: -18px;  /* position in bottom right & top corner */
-		    right: -8px;
-		    z-index: 100;
-		    width: 16px;
-		    height: 16px;
-		    color: red;
-		    font-size: 23px;
-		}  
         .divOver{
 	        border:solid 2px #ddd;
 	    }
@@ -113,6 +74,24 @@
         /*圖片置中*/
         .bk-root .bk-layout-fixed, .bk-root .bk-layout-scale_width, .bk-root .bk-layout-scale_height{
             margin: 0 auto;
+        }
+        .pie{
+            width:465px;
+            float:left;
+        }
+        .dropdown-menu-right{
+            height: auto;
+            max-height: 200px;
+            overflow-x: hidden;
+        }
+        .dropdown-menu-right::-webkit-scrollbar {
+            -webkit-appearance: none;
+            width: 4px;        
+        }    
+        .dropdown-menu-right::-webkit-scrollbar-thumb {
+            border-radius: 3px;
+            background-color: lightgray;
+            -webkit-box-shadow: 0 0 1px rgba(255,255,255,.75);        
         }
     </style>
 
@@ -139,6 +118,8 @@
                 type:"POST",
                 data: {},
                 success: function(result){
+                    $('#title-menu').css("display","");
+                    $('#title-text').css("display","none");
                     $("#chart").replaceWith("<div id=\"chart\"><div>"+result.script_bar+result.div_bar+"</div>"+result.the_script+result.the_div+"</div></div>");
                     $('#pageHeader_date').text(result.title);
 
@@ -160,6 +141,8 @@
                 type:"POST",
                 data: {},
                 success: function(result){
+                    $('#title-menu').css("display","");
+                    $('#title-text').css("display","none");
                     $("#chart").replaceWith("<div id=\"chart\"><div>"+result.script_bar+result.div_bar+"</div>"+result.the_script+result.the_div+"</div></div>");
                     $('#pageHeader_date').text(result.title);
 
@@ -181,6 +164,8 @@
                 type:"POST",
                 data: {},
                 success: function(result){
+                    $('#title-menu').css("display","");
+                    $('#title-text').css("display","none");
                     $("#chart").replaceWith("<div id=\"chart\"><div>"+result.script_bar+result.div_bar+"</div>"+result.the_script+result.the_div+"</div></div>");
                     $('#pageHeader_date').text(result.title);
 
@@ -196,6 +181,24 @@
             $('#week-page').removeClass("now-click")
             $('#month-page').removeClass("now-click")
             $('#year-page').removeClass("now-click")
+            $('#title-text').find( "h3" ).html("總類別分析");
+            $.ajax({
+               dataType: 'json',
+               url: "/getCategoryChart/",
+                type:"POST",
+                data: {},
+                success: function(result){
+                    $('#title-menu').css("display","none");
+                    $('#title-text').css("display","");
+                    //$("#chart").replaceWith("<div id=\"chart\"><div>"+result.script_pie+result.div_pie+"</div>"+result.script_pie_sub+result.div_pie_sub+"</div></div>");
+                    $("#chart").replaceWith("<div id=\"chart\"><div class=\"pie\">"+result.script_pie+result.div_pie+"</div><div class=\"pie\">"+result.script_pie_in+result.div_pie_in+"</div><div class=\"pie\">"+result.script_pie_sub+result.div_pie_sub+"</div><div class=\"pie\">"+result.script_pie_sub_in+result.div_pie_sub_in+"</div></div>");
+
+                },
+                error: function(status){
+                    console.log(status);
+                    alert("類別分析讀取失敗")
+                }
+            }); 
         });
 
 
@@ -228,6 +231,55 @@
                     alert("抓新日期失敗")
                 }
             });
+        });
+
+        //pie-下拉式選單
+        $('div.dropdown ul.dropdown-menu li a').click(function (e) {
+            var choosen = $(this).text();
+            e.preventDefault();
+            if(choosen == "------------"){
+                choosen="月份";
+                $('#menu1').html(choosen+' <span class=\"caret\"></span>');
+                $('#title-text').find( "h3" ).html("總類別分析");
+                $.ajax({
+                    dataType: 'json',
+                    url: "/getCategoryChart/",
+                    type:"POST",
+                    data: {},
+                    success: function(result){
+                        $('#title-menu').css("display","none");
+                        $('#title-text').css("display","");
+                        //$("#chart").replaceWith("<div id=\"chart\"><div>"+result.script_pie+result.div_pie+"</div>"+result.script_pie_sub+result.div_pie_sub+"</div></div>");
+                        $("#chart").replaceWith("<div id=\"chart\"><div class=\"pie\">"+result.script_pie+result.div_pie+"</div><div class=\"pie\">"+result.script_pie_in+result.div_pie_in+"</div><div class=\"pie\">"+result.script_pie_sub+result.div_pie_sub+"</div><div class=\"pie\">"    +result.script_pie_sub_in+result.div_pie_sub_in+"</div></div>");
+
+                    },
+                    error: function(status){
+                        console.log(status);
+                        alert("類別分析讀取失敗")
+                    }
+                }); 
+            }else{
+                $('#menu1').html(choosen+' <span class=\"caret\"></span>');
+                $('#title-text').find( "h3" ).html(choosen);
+                var timearray = choosen.split(" - ");
+                var time = timearray[0]+"/"+timearray[1];
+                $.ajax({
+                    dataType: 'json',
+                    url: "/getSpecificCategoryChart/",
+                    type:"POST",
+                    data: {pageHeader_date : time},
+                    success: function(result){
+                        $('#title-menu').css("display","none");
+                        $('#title-text').css("display","");
+                        //$("#chart").replaceWith("<div id=\"chart\"><div>"+result.script_pie+result.div_pie+"</div>"+result.script_pie_sub+result.div_pie_sub+"</div></div>");
+                        $("#chart").replaceWith("<div id=\"chart\"><div class=\"pie\">"+result.script_pie+result.div_pie+"</div><div class=\"pie\">"+result.script_pie_in+result.div_pie_in+"</div><div class=\"pie\">"+result.script_pie_sub+result.div_pie_sub+"</div><div class=\"pie\">"+result.script_pie_sub_in+result.div_pie_sub_in+"</div></div>");
+                    },
+                    error: function(status){
+                        console.log(status);
+                        alert("類別分析抓新日期失敗")
+                    }
+                });
+            }
         });
 
 	});	// end document.ready()
@@ -306,7 +358,7 @@
         </nav><!-- /.navbar-top-links -->
                    
         <!-- main container -->
-        <div class="container-fluid" style="background-color: rgb(229, 228, 219);">
+        <div class="container-fluid">
             <div class="row col-sm-2 col-md-2 left-side">
                 <div class="panel-group collapse in" id="accordion" aria-expanded="true">
 
@@ -314,7 +366,7 @@
                     <div class="panel panel-default" id="week-page">
                         <div class="panel-heading">
                             <h4 class="panel-title">
-                                <span class="glyphicon glyphicon-stats">
+                                <span class="fa fa-bar-chart" style="padding-right: 10px;">
                                 </span>本周收支
                             </h4>
                         </div>
@@ -324,7 +376,7 @@
                     <div class="panel panel-default" id="month-page">
                         <div class="panel-heading">
                             <h4 class="panel-title">
-                                <span class="glyphicon glyphicon-stats">
+                                <span class="fa fa-bar-chart" style="padding-right: 10px;">
                                 </span>本月收支
                             </h4>
                         </div>
@@ -334,7 +386,7 @@
                     <div class="panel panel-default" id="year-page">
                         <div class="panel-heading">
                             <h4 class="panel-title">
-                                <span class="glyphicon glyphicon-stats">
+                                <span class="fa fa-bar-chart" style="padding-right: 10px;">
                                 </span>年度收支
                             </h4>
                         </div>
@@ -344,8 +396,7 @@
                     <div class="panel panel-default" id="category-page">
                         <div class="panel-heading">
                             <h4 class="panel-title">
-                                <span class="glyphicon glyphicon-stats">
-                                </span>類別分析
+                                <span class="fa fa-pie-chart" style="padding-right: 10px;"></span>類別分析
                             </h4>
                         </div>
                     </div>  <!-- /.panel 類別分析 -->
@@ -353,18 +404,35 @@
                 </div>  <!-- /.panel group -->
             </div>  <!-- /.left-side row -->
             <!-- Main container -->
-	        <div id="page-wrapper" class="col-sm-10 col-md-10" style="min-height: 167px; background-color: rgb(229, 228, 219);">
+	        <div id="page-wrapper" class="col-sm-10 col-md-10">
 	        	<div class="container-fluid col-xs-12 col-sm-12">
 			    	<p style="text-align: center; font-size: 100px;">
 			    	</p>
 			    	<div class="row">
-                        <div class="col-lg-12" style="background-color: #fff; margin-top: 20px; padding-bottom: 20px;">
-                            <div id="titleMenu" class="page-header" style="text-align: center;">
-                                <form>
-                                	<span class="glyphicon glyphicon-chevron-left" aria-hidden="true" id="btn_left"></span>
-                                	<span class="label label-default" id="pageHeader_date" style="font-size:120%;">{{title}}</span>
-                                   	<span class="glyphicon glyphicon-chevron-right" aria-hidden="true" id="btn_right"></span>      
-                                </form>
+                        <div class="col-lg-12" id="center-content">
+                            <div style="text-align: center;">
+                                <div style="margin: 20px 0px 50px 0px;" id="title-menu">
+                                    <form>
+                                	    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true" id="btn_left"></span>
+                                	    <span class="label label-default" id="pageHeader_date" style="font-size:120%;">{{title}}</span>
+                                   	    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true" id="btn_right"></span>      
+                                    </form>
+                                    <HR>
+                                </div>
+                                <div style="margin: 20px 0px 50px 0px; display:none;" id="title-text">
+                                    <h3><b>總類別分析</b></h3>
+                                    <div class="dropdown" style="text-align: right;">
+                                        <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">月份
+                                        <span class="caret"></span></button>
+                                        <ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="menu1">
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">------------</a></li>
+                                            {% for month in month_list %}
+                                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">{{ month }}</a></li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <HR>
+                                </div>
                                 <div id="chart">
                                     <div>
 				                        {{ div_bar|safe }}
@@ -380,6 +448,7 @@
                                 </div>
                                 </div>
                             </div>
+                        </div>
                     </div><!-- /.row -->
 		    	</div><!-- /.container-fluid -->
 	    	</div><!-- /#page-wrapper (main container) -->
