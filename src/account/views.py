@@ -247,7 +247,7 @@ def chart(request):
             'origin':['expense','expense','expense','expense','expense','expense','expense',
                       'income','income','income','income','income','income','income']
         }
-        bar2 = Bar(data, label=CatAttr(columns=['week'], sort=False,), values='dollar', responsive=True, group='origin')
+        bar2 = Bar(data, label=CatAttr(columns=['week'], sort=False,), values='dollar', plot_height=400, responsive=True, group='origin')
         script2, div2 = components(bar2)
 
         ####折線圖####
@@ -268,7 +268,7 @@ def chart(request):
         AAPL = pd.read_csv(StringIO(s),parse_dates=['Date'])
         print(AAPL)
         # create a new plot with a datetime axis type
-        p = figure(responsive=True, x_axis_type="datetime")
+        p = figure(plot_height=400, responsive=True, x_axis_type="datetime")
 
         p.line(AAPL['Date'], AAPL['Close'], color='navy', alpha=0.5)
 
@@ -1230,7 +1230,7 @@ def backwardchart(request):
                 'origin':['expense','expense','expense','expense','expense','expense','expense',
                       'income','income','income','income','income','income','income']
             }
-            bar2 = Bar(data, label=CatAttr(columns=['week'], sort=False,), values='dollar', responsive=True, group='origin')
+            bar2 = Bar(data, label=CatAttr(columns=['week'], sort=False,), values='dollar', plot_height=400, responsive=True, group='origin')
             script2, div2 = components(bar2)
 
             ####折線圖####
@@ -1243,7 +1243,7 @@ def backwardchart(request):
             """+datetime.strftime(targetStart+timedelta(days=5), '%Y/%m/%d')+""","""+str(cost_fri)+"""
             """+datetime.strftime(targetEnd, '%Y/%m/%d')+""","""+str(cost_sat)+""" """
             AAPL = pd.read_csv(StringIO(s),parse_dates=['Date'])
-            p = figure(responsive=True, x_axis_type="datetime")
+            p = figure(plot_height=400, responsive=True, x_axis_type="datetime")
             p.line(AAPL['Date'], AAPL['Close'], color='navy', alpha=0.5)
             p.legend.location = "top_left"
             p.grid.grid_line_alpha=0
@@ -1312,7 +1312,7 @@ def backwardchart(request):
                 'dollar': list_cost_income,
                 'origin': mon_origin
             }
-            bar2 = Bar(data, label=CatAttr(columns=['mon'], sort=False,), values='dollar', responsive=True, group='origin')
+            bar2 = Bar(data, label=CatAttr(columns=['mon'], sort=False,), values='dollar', plot_height=400, responsive=True, group='origin')
             script2, div2 = components(bar2)
 
             ####折線圖####
@@ -1325,7 +1325,7 @@ def backwardchart(request):
             print(s)
             AAPL = pd.read_csv(StringIO(s),parse_dates=['Date'])
             print(AAPL)
-            p = figure(responsive=True, x_axis_type="datetime")
+            p = figure(plot_height=400, responsive=True, x_axis_type="datetime")
             p.line(AAPL['Date'], AAPL['Cost'], color='navy', alpha=0.5)
             p.legend.location = "top_left"
             p.grid.grid_line_alpha=0
@@ -1384,7 +1384,7 @@ def backwardchart(request):
                 'dollar': list_cost_income,
                 'origin': yr_origin
             }
-            bar2 = Bar(data, label=CatAttr(columns=['year'], sort=False,), values='dollar', responsive=True, group='origin')
+            bar2 = Bar(data, label=CatAttr(columns=['year'], sort=False,), values='dollar', plot_height=400, responsive=True, group='origin')
             script2, div2 = components(bar2)
 
             ####折線圖####
@@ -1405,7 +1405,7 @@ def backwardchart(request):
         
 
             AAPL = pd.read_csv(StringIO(s),parse_dates=['Date'])
-            p = figure(responsive=True, x_axis_type="datetime")
+            p = figure(plot_height=400, responsive=True, x_axis_type="datetime")
             p.line(AAPL['Date'], AAPL['Cost'], color='navy', alpha=0.5)
             p.legend.location = "top_left"
             p.grid.grid_line_alpha=0
@@ -1527,7 +1527,7 @@ def get_week_chart(request):
             'origin':['expense','expense','expense','expense','expense','expense','expense',
                       'income','income','income','income','income','income','income']
         }
-        bar2 = Bar(data, label=CatAttr(columns=['week'], sort=False,), values='dollar', responsive=True, group='origin')
+        bar2 = Bar(data, label=CatAttr(columns=['week'], sort=False,), values='dollar', plot_height=400, responsive=True, group='origin')
         script2, div2 = components(bar2)
 
         ####折線圖####
@@ -1543,7 +1543,7 @@ def get_week_chart(request):
         AAPL = pd.read_csv(StringIO(s),parse_dates=['Date'])
         print(AAPL)
         # create a new plot with a datetime axis type
-        p = figure(responsive=True, x_axis_type="datetime")
+        p = figure(plot_height=400, responsive=True, x_axis_type="datetime")
         p.line(AAPL['Date'], AAPL['Close'], color='navy', alpha=0.5)
         p.legend.location = "top_left"
         p.grid.grid_line_alpha=0
@@ -1617,7 +1617,7 @@ def get_mon_chart(request):
             'dollar': list_cost_income,
             'origin': mon_origin
         }
-        bar2 = Bar(data, label=CatAttr(columns=['mon'], sort=False,), values='dollar', responsive=True, group='origin')
+        bar2 = Bar(data, label=CatAttr(columns=['mon'], sort=False,), values='dollar', plot_height=400, responsive=True, group='origin')
         script2, div2 = components(bar2)
 
         ####折線圖####
@@ -1630,7 +1630,7 @@ def get_mon_chart(request):
         print(s)
         AAPL = pd.read_csv(StringIO(s),parse_dates=['Date'])
         print(AAPL)
-        p = figure(responsive=True, x_axis_type="datetime")
+        p = figure(plot_height=400, responsive=True, x_axis_type="datetime")
         p.line(AAPL['Date'], AAPL['Cost'], color='navy', alpha=0.5)
         p.legend.location = "top_left"
         p.grid.grid_line_alpha=0
@@ -1693,7 +1693,7 @@ def get_yr_chart(request):
             'dollar': list_cost_income,
             'origin': yr_origin
         }
-        bar2 = Bar(data, label=CatAttr(columns=['year'], sort=False,), values='dollar', responsive=True, group='origin')
+        bar2 = Bar(data, label=CatAttr(columns=['year'], sort=False,), values='dollar', plot_height=400, responsive=True, group='origin')
         script2, div2 = components(bar2)
 
         ####折線圖####
@@ -1714,7 +1714,7 @@ def get_yr_chart(request):
         
 
         AAPL = pd.read_csv(StringIO(s),parse_dates=['Date'])
-        p = figure(responsive=True, x_axis_type="datetime")
+        p = figure(plot_height=400, responsive=True, x_axis_type="datetime")
         p.line(AAPL['Date'], AAPL['Cost'], color='navy', alpha=0.5)
         p.legend.location = "top_left"
         p.grid.grid_line_alpha=0
