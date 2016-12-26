@@ -298,28 +298,31 @@ def chart(request):
         ###類別的下拉式選單###
         oldest_receipt = Receipt.objects.filter(member=member).order_by('date').first()
         #print(oldest_receipt.date)
-        oldest_y = int(datetime.strftime(oldest_receipt.date, '%Y'))
-        oldest_m = int(datetime.strftime(oldest_receipt.date, '%m'))
-        today_y = int(datetime.strftime(today, '%Y'))
-        today_m = int(datetime.strftime(today, '%m'))
-        month_list=[]
-        first=1
+        if oldest_receipt is not None:
+            oldest_y = int(datetime.strftime(oldest_receipt.date, '%Y'))
+            oldest_m = int(datetime.strftime(oldest_receipt.date, '%m'))
+            today_y = int(datetime.strftime(today, '%Y'))
+            today_m = int(datetime.strftime(today, '%m'))
+            month_list=[]
+            first=1
 
-        while oldest_y != today_y+1:
-            m=1
-            if oldest_y == today_y:
-                while m != today_m+1:
-                    month_list.append(str(oldest_y)+" - "+str(m).zfill(2))
-                    m = m + 1
-            else:
-                if first == 1:
-                    m=oldest_m
-                while m != 13:
-                    month_list.append(str(oldest_y)+" - "+str(+m).zfill(2))
-                    m = m + 1
-            oldest_y = oldest_y + 1
-            first = first + 1
-        print(month_list)
+            while oldest_y != today_y+1:
+                m=1
+                if oldest_y == today_y:
+                    while m != today_m+1:
+                        month_list.append(str(oldest_y)+" - "+str(m).zfill(2))
+                        m = m + 1
+                else:
+                    if first == 1:
+                        m=oldest_m
+                    while m != 13:
+                        month_list.append(str(oldest_y)+" - "+str(+m).zfill(2))
+                        m = m + 1
+                oldest_y = oldest_y + 1
+                first = first + 1
+            print(month_list)
+        else:
+            month_list=[]
 
     return render(request, 'chart.html',{"title": week, "the_script": script, "the_div": div, "script_bar": script2, "div_bar": div2, "month_list": month_list})
 
