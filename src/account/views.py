@@ -16,7 +16,8 @@ import pandas as pd
 from pandas.compat import StringIO
 from bokeh.charts.attributes import ColorAttr, CatAttr
 from rest_framework import generics
-from serializers import MemberSerializer
+from serializers import *
+from rest_framework.permissions import IsAdminUser
 
 
 def dashboard(request):
@@ -1945,10 +1946,23 @@ def get_specific_category_chart(request):
 
 
 class MemberList(generics.ListCreateAPIView):
+    permission_classes = (IsAdminUser,)
     queryset = Member.objects.all()
     serializer_class = MemberSerializer
 
 
 class MemberDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (IsAdminUser,)
     queryset = Member.objects.all()
     serializer_class = MemberSerializer
+
+
+class getReceipt(generics.ListCreateAPIView):
+    #queryset = Member.objects.all()
+    serializer_class = ReceiptSerializer
+
+    def get_queryset(self):
+        print(self.request.user)
+        member = Member.objects.filter(user__username=self.request.user).first()
+        queryset = Receipt.objects.filter(member=member)
+        return queryset

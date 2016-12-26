@@ -8,3 +8,13 @@ class MemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = Member
         fields = ('id', 'user', 'create_date')
+
+
+class ReceiptSerializer(serializers.ModelSerializer):
+    #sub = SubClassificationSerializer(source='SubClassification_set')
+    sub_category_name = serializers.ReadOnlyField()
+
+    class Meta:
+        model = Receipt
+        fields = ('id', 'money', 'remark', 'date', 'category_name', 'sub_category_name', 'payment_type', 'income_or_expense')
+

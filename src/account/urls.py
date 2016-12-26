@@ -41,6 +41,7 @@ urlpatterns = [
     url(r'^getSpecificCategoryChart/$', views.get_specific_category_chart, name='get_specific_category_chart'),
     url(r'^api/$', views.MemberList.as_view()),
     url(r'^api/(?P<pk>[0-9]+)/$', views.MemberDetail.as_view()),
+    url(r'^api/getReceipt/$', views.getReceipt.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
