@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-21 13:52+0800\n"
+"POT-Creation-Date: 2016-12-26 23:29+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,98 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: templates/filter.html:318
+msgid "View by day"
+msgstr "以日瀏覽"
+
+#: templates/filter.html:328
+msgid "View by week"
+msgstr "以週瀏覽"
+
+#: templates/filter.html:338
+msgid "View by month"
+msgstr "以月瀏覽"
+
+#: templates/filter.html:348
+msgid "View by year"
+msgstr "以年瀏覽"
+
+#: templates/filter.html:369
+#, python-format
+msgid "Total expense: %(totalCost)s"
+msgstr "總支出: %(totalCost)s 元"
+
+#: templates/filter.html:370
+#, fuzzy, python-format
+#| msgid "Total expense: %(totalCost)s"
+msgid "Total income: %(totalIncome)s"
+msgstr "總支出: %(totalCost)s 元"
+
+#: templates/filter.html:371
+#, python-format
+msgid "Balance: %(balance)s"
+msgstr ""
+
+#: templates/filter.html:375 templates/filter.html:415
+msgid "Delete"
+msgstr "刪除"
+
+#: templates/filter.html:376 templates/filter.html:415
+msgid "Modify"
+msgstr "修改"
+
+#: templates/filter.html:383 templates/filter.html:395
+msgid "Class"
+msgstr "類別"
+
+#: templates/filter.html:384 templates/filter.html:396
+msgid "Subclass"
+msgstr "子類別"
+
+#: templates/filter.html:385 templates/filter.html:397
+msgid "Remark"
+msgstr "備註"
+
+#: templates/filter.html:386 templates/filter.html:398
+msgid "Income/Expense"
+msgstr "收入/支出"
+
+#: templates/filter.html:387 templates/filter.html:399
+msgid "Payment"
+msgstr "付款方式"
+
+#: templates/filter.html:388 templates/filter.html:400
+msgid "Date"
+msgstr "日期"
+
+#: templates/filter.html:389 templates/filter.html:401
+msgid "Amount"
+msgstr "金額"
+
+#: templates/filter.html:390 templates/filter.html:402
+msgid "Function"
+msgstr "功能"
+
+#: templates/filter.html:415
+msgid "\"Delete\""
+msgstr "刪除"
+
+#: templates/filter.html:415
+msgid "'Modify'"
+msgstr "修改"
+
+#: templates/filter.html:437
+msgid "Modify Record"
+msgstr "修改紀錄"
+
+#: templates/filter.html:444
+msgid "Close"
+msgstr "關閉"
+
+#: templates/filter.html:445
+msgid "Save changes"
+msgstr "儲存"
 
 #: templates/login.html:30 templates/register.html:29
 msgid "Welcome to"
@@ -25,14 +117,12 @@ msgstr "歡迎來到"
 msgid "Login"
 msgstr "登入"
 
-#: templates/register.html:42
-#: templates/login.html:37
+#: templates/login.html:37 templates/register.html:42
 msgid "'Email Address'"
 msgstr "信箱"
 
-#: templates/register.html:46
-#: templates/login.html:40
-msgid " 'Password'"
+#: templates/login.html:40 templates/register.html:46
+msgid "'Password'"
 msgstr "密碼"
 
 #: templates/login.html:45
@@ -54,3 +144,12 @@ msgstr "註冊"
 #: templates/register.html:55
 msgid "Go to Login"
 msgstr "回到登入頁"
+
+#~ msgid "Total income:"
+#~ msgstr "總收入:"
+
+#~ msgid "Balance:"
+#~ msgstr "結餘"
+
+#~ msgid "元"
+#~ msgstr " "

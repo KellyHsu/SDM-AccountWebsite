@@ -1738,26 +1738,26 @@ def get_category_chart(request):
         if len(list_income_classification) == 0:
             list_income_classification.append("none")
             list_income.append(0)
-        ####圓餅圖####
-        #類別-支出
+        ####Pie chart####
+        #expense
         data3 = pd.Series(list_cost, index=list_cost_classification)
         pie_chart = Donut(data3)
-        pie_chart.title.text = "分類支出"
+        pie_chart.title.text = "Expense"
         pie_chart.height=430
         pie_chart.width=430
         # pie_chart.sizing_mode="scale_width"
         script3, div3 = components(pie_chart)
 
-        #類別-收入
+        #income
         data4 = pd.Series(list_income, index=list_income_classification)
         pie_chart_in = Donut(data4)
-        pie_chart_in.title.text = "分類收入"
+        pie_chart_in.title.text = "Income"
         pie_chart_in.height=430
         pie_chart_in.width=430
         # pie_chart_in.sizing_mode="scale_width"
         script4, div4 = components(pie_chart_in)
 
-        #子類別-支出
+        #expense
         name = SubClassification.objects.filter(member=member)
         #print(name)
         sub_list_name=[]
@@ -1778,13 +1778,13 @@ def get_category_chart(request):
         print(sub_list_name)
         data5 = pd.Series(sub_list, index=sub_list_name)
         pie_chart_sub = Donut(data5)
-        pie_chart_sub.title.text = "子分類支出"
+        pie_chart_sub.title.text = "Subclass Expense"
         pie_chart_sub.height=430
         pie_chart_sub.width=430
         # pie_chart_sub.sizing_mode="scale_width"
         script5, div5 = components(pie_chart_sub)
 
-        #子類別-收入
+        #income
         name_in = SubClassification.objects.filter(member=member)
         #print(name)
         sub_list_name_in=[]
@@ -1803,7 +1803,7 @@ def get_category_chart(request):
             sub_list_in.append(0)
         data6 = pd.Series(sub_list_in, index=sub_list_name_in)
         pie_chart_sub_in = Donut(data6)
-        pie_chart_sub_in.title.text = "子分類收入"
+        pie_chart_sub_in.title.text = "Subclass Income"
         pie_chart_sub_in.height=430
         pie_chart_sub_in.width=430
         # pie_chart_sub_in.sizing_mode="scale_width"
@@ -1850,26 +1850,26 @@ def get_specific_category_chart(request):
             list_income_classification.append("none")
             list_income.append(0)
         
-        ####圓餅圖####
-        #類別-支出
+        ####Pie chart####
+        #expense
         data3 = pd.Series(list_cost, index=list_cost_classification)
         pie_chart = Donut(data3)
-        pie_chart.title.text = "分類支出"
+        pie_chart.title.text = "Expense"
         pie_chart.height=430
         pie_chart.width=430
         # pie_chart.sizing_mode="scale_width"
         script3, div3 = components(pie_chart)
 
-        #類別-收入
+        #income
         data4 = pd.Series(list_income, index=list_income_classification)
         pie_chart_in = Donut(data4)
-        pie_chart_in.title.text = "分類收入"
+        pie_chart_in.title.text = "Income"
         pie_chart_in.height=430
         pie_chart_in.width=430
         # pie_chart_in.sizing_mode="scale_width"
         script4, div4 = components(pie_chart_in)
 
-        #子類別-支出
+        #expense
         name = SubClassification.objects.filter(member=member)
         #print(name)
         sub_list_name=[]
@@ -1890,13 +1890,13 @@ def get_specific_category_chart(request):
         print(sub_list_name)
         data5 = pd.Series(sub_list, index=sub_list_name)
         pie_chart_sub = Donut(data5)
-        pie_chart_sub.title.text = "子分類支出"
+        pie_chart_sub.title.text = "Subclass Expense"
         pie_chart_sub.height=430
         pie_chart_sub.width=430
         # pie_chart_sub.sizing_mode="scale_width"
         script5, div5 = components(pie_chart_sub)
 
-        #子類別-收入
+        #income
         name_in = SubClassification.objects.filter(member=member)
         #print(name)
         sub_list_name_in=[]
@@ -1915,7 +1915,7 @@ def get_specific_category_chart(request):
             sub_list_in.append(0)
         data6 = pd.Series(sub_list_in, index=sub_list_name_in)
         pie_chart_sub_in = Donut(data6)
-        pie_chart_sub_in.title.text = "子分類收入"
+        pie_chart_sub_in.title.text = "Subclass Income"
         pie_chart_sub_in.height=430
         pie_chart_sub_in.width=430
         # pie_chart_sub_in.sizing_mode="scale_width"

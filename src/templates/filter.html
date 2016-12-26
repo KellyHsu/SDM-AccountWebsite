@@ -1,6 +1,6 @@
 <!-- 這個頁面是篩選頁 -->
 
-{% load staticfiles %}
+{% load staticfiles i18n %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -315,7 +315,7 @@
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <a href="/filter/"><span class="glyphicon glyphicon-menu-right">
-                                </span>以日瀏覽</a>
+                                </span>{% trans "View by day" %}</a>
                             </h4>
                         </div>
                     </div>  <!-- /.panel 以日瀏覽 -->
@@ -325,7 +325,7 @@
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <a href="/getReceiptByWeek/"><span class="glyphicon glyphicon-menu-right">
-                                </span>以週瀏覽</a>
+                                </span>{% trans "View by week" %}</a>
                             </h4>
                         </div>
                     </div>  <!-- /.panel 以週瀏覽 -->
@@ -335,7 +335,7 @@
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <a href="/getReceiptByMon/"><span class="glyphicon glyphicon-menu-right">
-                                </span>以月瀏覽</a>
+                                </span>{% trans "View by month" %}</a>
                             </h4>
                         </div>
                     </div>  <!-- /.panel 以月瀏覽 -->
@@ -345,7 +345,7 @@
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <a href="/getReceiptByYr/"><span class="glyphicon glyphicon-menu-right">
-                                </span>以年瀏覽</a>
+                                </span>{% trans "View by year" %}</a>
                             </h4>
                         </div>
                     </div>  <!-- /.panel 以年瀏覽 -->
@@ -366,40 +366,40 @@
                                     <span class="glyphicon glyphicon-chevron-right" aria-hidden="true" id="btn_right"></span>
                                 </div>
                                 <div style="text-align: center;">
-                                    <label id="totalCost" style="font-weight: bold; font-size: medium">總支出：{{totalCost}}元</label>
-                                    <label id="totalIncome" style="font-weight: bold; font-size: medium">&nbsp;總收入：{{totalIncome}}元</label>
-                                    <label id="balance" style="font-weight: bold; font-size: medium">&nbsp;結餘：{{balance}}元</label>
+                                    <label id="totalCost" style="font-weight: bold; font-size: medium">{% blocktrans %}Total expense: {{totalCost}}{% endblocktrans %}</label>
+                                    <label id="totalIncome" style="font-weight: bold; font-size: medium">&nbsp;{% blocktrans %}Total income: {{totalIncome}}{% endblocktrans %}</label>
+                                    <label id="balance" style="font-weight: bold; font-size: medium">&nbsp;{% blocktrans %}Balance: {{balance}}{% endblocktrans %}</label>
                                 </div>
                             </div>
                             <div style="margin: 5px 0px 10px 0px;">
-                                <button id="btn_del" class="">刪除</button>
-                                <button style="display: none">修改</button>
+                                <button id="btn_del" class="">{% trans "Delete" %}</button>
+                                <button style="display: none">{% trans "Modify" %}</button>
                             </div>
                             
                             <div>
                             	<table id="example" class="display" cellspacing="0" width="100%">
 							        <thead>
 							            <tr>
-							                <th>分類</th>
-                                            <th>次分類</th>
-							                <th>備註</th>
-							                <th>支/收</th>
-							                <th>付款方式</th>
-							                <th>日期</th>
-							                <th>金額</th>
-                                            <th>功能</th>
+							                <th>{% trans "Class" %}</th>
+                                            <th>{% trans "Subclass" %}</th>
+							                <th>{% trans "Remark" %}</th>
+							                <th>{% trans "Income/Expense" %}</th>
+							                <th>{% trans "Payment" %}</th>
+							                <th>{% trans "Date" %}</th>
+							                <th>{% trans "Amount" %}</th>
+                                            <th>{% trans "Function" %}</th>
 							            </tr>
 							        </thead>
 							        <tfoot>
 							            <tr>
-							                <th>分類</th>
-                                            <th>次分類</th>
-							                <th>備註</th>
-							                <th>支/收</th>
-							                <th>付款方式</th>
-							                <th>日期</th>
-							                <th>金額</th>
-                                            <th>功能</th>
+							                <th>{% trans "Class" %}</th>
+                                            <th>{% trans "Subclass" %}</th>
+							                <th>{% trans "Remark" %}</th>
+							                <th>{% trans "Income/Expense" %}</th>
+							                <th>{% trans "Payment" %}</th>
+							                <th>{% trans "Date" %}</th>
+							                <th>{% trans "Amount" %}</th>
+                                            <th>{% trans "Function" %}</th>
 							            </tr>
 							        </tfoot>
 							        <tbody>
@@ -412,7 +412,7 @@
 							                <td>{{choice.payment}}</td>
 							                <td>{{choice.date}}</td>
 							                <td>{{choice.money}}</td>
-                                            <td style="width: 12%"><button type="button" class="btn btn-danger btn-sm" value="{{choice.id}}" title="刪除">刪除</button>&nbsp;<button type="button" class="btn btn-danger btn-sm" value="{{choice.id}}" title="修改">修改</button></td>
+                                            <td style="width: 12%"><button type="button" class="btn btn-danger btn-sm" value="{{choice.id}}" title={% blocktrans %}"Delete"{% endblocktrans %}>{% trans "Delete" %}</button>&nbsp;<button type="button" class="btn btn-danger btn-sm" value="{{choice.id}}" title={% blocktrans %}'Modify'{% endblocktrans %}>{% trans "Modify" %}</button></td>
                                             <!-- <td style="display: none;">{{choice.id}}</td> -->
 							            </tr>
                                         {% endfor %}
@@ -434,15 +434,15 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title">修改紀錄</h4>
+                    <h4 class="modal-title">{% trans "Modify Record" %}</h4>
                 </div>
                 <div class="modal-body">
                     <form>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
+                    <button type="button" class="btn btn-primary">{% trans "Save changes" %}</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
