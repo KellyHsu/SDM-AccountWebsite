@@ -18,6 +18,8 @@ from bokeh.charts.attributes import ColorAttr, CatAttr
 from rest_framework import generics
 from serializers import *
 from rest_framework.permissions import IsAdminUser
+import django_filters
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 def dashboard(request):
@@ -1968,11 +1970,25 @@ class MemberDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = MemberSerializer
 
 
+class DateFilter(django_filters.rest_framework.FilterSet):
+    start_date = django_filters.DateFilter(name="date",lookup_expr="gte")
+    end_date = django_filters.DateFilter(name="date",lookup_expr="lte")
+    date = django_filters.DateFilter(name="date",lookup_expr="exact")
+    
+    print(start_date)
+    class Meta:
+        model = Receipt
+        fields = ['date']
+
 class getReceipt(generics.ListCreateAPIView):
     #queryset = Member.objects.all()
+    filter_backends = (DjangoFilterBackend,)
     serializer_class = ReceiptSerializer
+    filter_class = DateFilter
 
     def get_queryset(self):
+        #filter_fields = ('date')
+        #print(filter_fields)
         print(self.request.user)
         member = Member.objects.filter(user__username=self.request.user).first()
         queryset = Receipt.objects.filter(member=member)
