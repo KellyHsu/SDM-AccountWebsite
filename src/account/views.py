@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, Http404
 from account.models import Receipt, SubClassification, Payment, IncomeAndExpense, Classification, CyclicalExpenditure, \
     Budget, MonthBudget
 from member.models import Member
@@ -14,6 +14,11 @@ from bokeh.embed import components
 import pandas as pd
 from pandas.compat import StringIO
 from bokeh.charts.attributes import ColorAttr, CatAttr
+from rest_framework import generics
+from serializers import *
+from rest_framework.permissions import IsAdminUser
+import django_filters
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 def dashboard(request):
@@ -1925,3 +1930,39 @@ def get_specific_category_chart(request):
         jsonResult = { "script_pie": script3, "div_pie": div3, "script_pie_in": script4, "div_pie_in": div4, "script_pie_sub": script5, "div_pie_sub": div5, "script_pie_sub_in": script6, "div_pie_sub_in": div6}
     return HttpResponse(json.JSONEncoder().encode(jsonResult))
 
+
+class MemberList(generics.ListCreateAPIView):
+    permission_classes = (IsAdminUser,)
+    queryset = Member.objects.all()
+    serializer_class = MemberSerializer
+
+
+class MemberDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (IsAdminUser,)
+    queryset = Member.objects.all()
+    serializer_class = MemberSerializer
+
+
+class DateFilter(django_filters.rest_framework.FilterSet):
+    start_date = django_filters.DateFilter(name="date",lookup_expr="gte")
+    end_date = django_filters.DateFilter(name="date",lookup_expr="lte")
+    date = django_filters.DateFilter(name="date",lookup_expr="exact")
+    
+    print(start_date)
+    class Meta:
+        model = Receipt
+        fields = ['date']
+
+class getReceipt(generics.ListCreateAPIView):
+    #queryset = Member.objects.all()
+    filter_backends = (DjangoFilterBackend,)
+    serializer_class = ReceiptSerializer
+    filter_class = DateFilter
+
+    def get_queryset(self):
+        #filter_fields = ('date')
+        #print(filter_fields)
+        print(self.request.user)
+        member = Member.objects.filter(user__username=self.request.user).first()
+        queryset = Receipt.objects.filter(member=member)
+        return queryset
