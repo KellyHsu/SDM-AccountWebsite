@@ -30,3 +30,10 @@ pandas==0.19.1
 # http://bokeh.pydata.org/en/latest/docs/installation.html
 bokeh==0.12.3
 
+# Django-filter is a reusable Django application for allowing users to filter querysets dynamically.
+# https://github.com/carltongibson/django-filter
+django-filter==1.0.1
+
+# Django REST framework: Awesome web-browsable Web APIs.
+# https://github.com/tomchristie/django-rest-framework
+djangorestframework==3.5.3
