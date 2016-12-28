@@ -1,6 +1,6 @@
 ﻿<!-- 這個頁面是首頁 -->
 
-{% load staticfiles %}
+{% load staticfiles i18n %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -143,12 +143,12 @@ $(document).ready(function() {
                     $('#cost-list').append(rowcontent.cost);
                     $("#revenue-list tbody tr").remove();
                     $("#revenue-list").append(rowcontent.revenue);
-                    $(".total_expense").text("總計："+ rowcontent.total_expense)
-                    $(".total_income").text("總計："+ rowcontent.total_income)
+                    $(".total_expense").text("{% trans "Total: " %}"+ rowcontent.total_expense)
+                    $(".total_income").text("{% trans "Total: " %}"+ rowcontent.total_income)
                 },
                 error: function(rowcontent, status){
                     console.log(status);
-                    alert("抓新日期失敗")
+                    alert("{% trans "Get date fail" %}")
                 }
             });
         }
@@ -159,10 +159,10 @@ $(document).ready(function() {
         var record_type = $('#recordType').val();
         $('#amount').val('');
         if(record_type === 'expense') {
-            $('#costCategory').attr("value", "食-早餐");
+            $('#costCategory').attr("value", "{% trans 'E' %}-早餐");
         }
         else{
-            $('#costCategory').attr("value", "一般收入-薪資");
+            $('#costCategory').attr("value", "{% trans 'GI' %}-薪資");
         }
         $('#memo').val('');
     })
@@ -179,10 +179,10 @@ $(document).ready(function() {
 
         $('#amount').val('');
         if(record_type === 'expense') {
-            $('#costCategory').attr("value", "食-早餐");
+            $('#costCategory').attr("value", "{% trans 'E' %}-早餐");
         }
         else{
-            $('#costCategory').attr("value", "一般收入-薪資");
+            $('#costCategory').attr("value", "{% trans 'GI' %}-薪資");
         }
         $('#memo').val('');
     })
@@ -213,15 +213,15 @@ $(document).ready(function() {
                         var notificationMessage = result.budget_check;
 
                         if(record_type === 'expense'){
-                            rowcontent = rowcontent.replace("food-", "食-").replace("clothing-", "衣-").replace("housing-", "住-").replace("transportation-", "行-").replace("education-", "育-").replace("entertainment-", "樂-").replace("others-", "其-");
+                            rowcontent = rowcontent.replace("food-", "{% trans 'E' %}-").replace("clothing-", "{% trans 'C' %}-").replace("housing-", "{% trans 'H' %}-").replace("transportation-", "{% trans 'T' %}-").replace("education-", "{% trans 'Ed' %}-").replace("entertainment-", "{% trans 'En' %}-").replace("others-", "{% trans 'O' %}-");
                             $('#cost-list').append(rowcontent);
-                            $('#costCategory').attr("value", "食-早餐");
-                            $(".total_expense").text("總計："+ result.total_value)
+                            $('#costCategory').attr("value", "{% trans 'E' %}-早餐");
+                            $(".total_expense").text("{% trans 'Total ' %}  "+ result.total_value)
                         }else if(record_type === 'income'){
-                            rowcontent = rowcontent.replace("general_revenue-", "收入-").replace("invest_revenue-", "投資-").replace("other_revenue-", "其他-");
+                            rowcontent = rowcontent.replace("general_revenue-", "{% trans 'Income' %}-").replace("invest_revenue-", "{% trans 'Investment' %}-").replace("other_revenue-", "{% trans 'Other' %}-");
                             $('#revenue-list').append(rowcontent);
-                            $('#costCategory').attr("value", "一般收入-薪資");
-                            $(".total_income").text("總計："+ result.total_value)
+                            $('#costCategory').attr("value", "{% trans 'GI' %}-薪資");
+                            $(".total_income").text("{% trans 'Total ' %}  "+ result.total_value)
                         }
                         $('#amount').val('');
                         $('#memo').val('');
@@ -232,17 +232,17 @@ $(document).ready(function() {
                     },
                     error: function(){
                         if(record_type === 'expense'){
-                            $('#costCategory').attr("value", "食-早餐");
+                            $('#costCategory').attr("value", "{% trans 'E' %}-早餐");
                         }else{
-                            $('#costCategory').attr("value", "一般收入-薪資");
+                            $('#costCategory').attr("value", "{% trans 'GI' %}-薪資");
                         }
                         $('#amount').val('');
                         $('#memo').val('');
-                        alert("記帳失敗");
+                        alert("{% trans 'Add record fail' %}");
                     }
                 });
         }else{
-            alert("支出金額為必填");
+            alert("{% trans 'Must inpu amount' %}");
 
         }
     });
@@ -293,13 +293,13 @@ $(document).ready(function() {
                         newSub.val('');
                     }
                     else{
-                        alert("子分類名稱重複")
+                        alert("{% trans "Subclass name repeat " %}")
                         newSub.val('');
                     }
 
                 },
                 error: function(){
-                    alert("新增子分類失敗");
+                    alert("{% trans "Add new class fail" %}");
                 }
             });
         }
@@ -312,11 +312,11 @@ $(document).ready(function() {
         if(type === "expense"){
             $('.revenue-category').hide();
             $('.cost-category').show();
-            $("#costCategory").attr('value', '食-早餐');
+            $("#costCategory").attr('value', '{% trans 'E' %}-早餐');
         }else{
             $('.revenue-category').show();
             $('.cost-category').hide();
-            $("#costCategory").attr('value', '一般收入-薪資');
+            $("#costCategory").attr('value', '{% trans 'GI' %}-薪資');
         }
     });
 
@@ -336,8 +336,8 @@ $(document).ready(function() {
         $(".fa-bell").attr("data-count", notification_len);
     }
 
-    $(".total_expense").text("總計："+ {{ total_expense }})
-    $(".total_income").text("總計："+ {{ total_income }})
+    $(".total_expense").text("{% trans "Total: " %}"+ {{ total_expense }})
+    $(".total_income").text("{% trans "Total: " %}"+ {{ total_income }})
 
 }); // end document ready
 
@@ -363,7 +363,7 @@ function defaultHiding(){
 $(document).on("click", ".deletedRecord", function(){
     var recordValue = $(this).prev().text().trim();
     var record = $(this).parents("tr");
-    var result = confirm("你真的要刪掉：" + recordValue + "嗎？");
+    var result = confirm("{% trans 'You wanna delete: ' %}" + recordValue + "嗎？");
     if(result){
         $.ajax({
             url: "/deleteReceipt/",
@@ -374,13 +374,13 @@ $(document).on("click", ".deletedRecord", function(){
                 record.remove();
                 // change total
                 if(result.receipt_type === 'expense'){
-                    $(".total_expense").text("總計："+ result.total_value)
+                    $(".total_expense").text("{% trans "Total: " %}"+ result.total_value)
                 }else if(result.receipt_type === 'income'){
-                    $(".total_income").text("總計："+ result.total_value)
+                    $(".total_income").text("{% trans "Total: " %}"+ result.total_value)
                 }
             },
             error: function(){
-                alert("刪除" + recordValue + "失敗");
+                alert({% blocktrans %}"Delete" + recordValue + "Fail"{% endblocktrans %});
             }
         });
     }
@@ -410,7 +410,7 @@ $(document).on("click", ".receipt_info", function(){
 
         },
         error: function(){
-            alert("修改" + recordValue + "失敗");
+            alert({% blocktrans %}"Modify" + recordValue + "Fail"{% endblocktrans %});
         }
     });
 }); // end document on click class='deletedRecord'
@@ -442,15 +442,15 @@ $(document).on("click", "#modify-btn", function(){
                     var notificationMessage = result.budget_check;
 
                     if(record_type === 'expense'){
-                        rowcontent = rowcontent.replace("food-", "食-").replace("clothing-", "衣-").replace("housing-", "住-").replace("transportation-", "行-").replace("education-", "育-").replace("entertainment-", "樂-").replace("others-", "其-");
+                        rowcontent = rowcontent.replace("food-", "{% trans 'E' %}-").replace("clothing-", "{% trans 'C' %}-").replace("housing-", "{% trans 'H' %}-").replace("transportation-", "{% trans 'T' %}-").replace("education-", "{% trans 'Ed' %}-").replace("entertainment-", "{% trans 'En' %}-").replace("others-", "其-");
                         $('#cost-list').append(rowcontent);
-                        $('#costCategory').attr("value", "食-早餐");
-                        $(".total_expense").text("總計："+ result.total_value)
+                        $('#costCategory').attr("value", "{% trans 'E' %}-早餐");
+                        $(".total_expense").text("{% trans 'Total ' %} "+ result.total_value)
                     }else if(record_type === 'income'){
-                        rowcontent = rowcontent.replace("general_revenue-", "收入-").replace("invest_revenue-", "投資-").replace("other_revenue-", "其他-");
+                        rowcontent = rowcontent.replace("general_revenue-", "{% trans 'Income' %}-").replace("invest_revenue-", "{% trans 'Investment' %}-").replace("other_revenue-", "{% trans 'Other' %}-");
                         $('#revenue-list').append(rowcontent);
-                        $('#costCategory').attr("value", "一般收入-薪資");
-                        $(".total_income").text("總計："+ result.total_value)
+                        $('#costCategory').attr("value", "{% trans 'GI' %}-薪資");
+                        $(".total_income").text("{% trans 'Total ' %}   "+ result.total_value)
                     }
                     $('#amount').val('');
                     $('#memo').val('');
@@ -461,17 +461,17 @@ $(document).on("click", "#modify-btn", function(){
                 },
                 error: function(){
                     if(record_type === 'expense'){
-                        $('#costCategory').attr("value", "食-早餐");
+                        $('#costCategory').attr("value", "{% trans 'E' %}-早餐");
                     }else{
-                        $('#costCategory').attr("value", "一般收入-薪資");
+                        $('#costCategory').attr("value", "{% trans 'GI' %}-薪資");
                     }
                     $('#amount').val('');
                     $('#memo').val('');
-                    alert("記帳失敗");
+                    alert("{% trans 'Add record fail' %}");
                 }
             });
         }else{
-            alert("支出金額為必填");
+            alert("{% trans 'Must input amount' %}");
 
         }
     });
@@ -537,12 +537,12 @@ $(document).on("click", "#notification-bell", function(){
 
         var last_li_content = $(".dropdown-alerts li:last-child a strong").text();
 
-        if(last_li_content !== "目前沒有通知" && last_li_content !== "清除所有通知"){
+        if(last_li_content !== "{% trans 'No notifiactions now' %}" && last_li_content !== "{% trans 'Clear all notifiactions' %}"){
             if( !$(".dropdown-alerts li:last-child").hasClass("divider") ){
                 $(".dropdown-alerts").append("<li class='divider'></li>");
             }
 
-            $(".dropdown-alerts").append("<li id='clear-alert'><a href='#'><strong>清除所有通知</strong></a></li>");
+            $(".dropdown-alerts").append("<li id='clear-alert'><a href='#'><strong>{% trans 'Clear all notifiactions' %}</strong></a></li>");
         }
 
 
@@ -551,7 +551,7 @@ $(document).on("click", "#notification-bell", function(){
         var expandedAttr = $("#notification-bell").attr("aria-expanded");
 
         if( expandedAttr === "true" ){
-            $(".dropdown-alerts").append("<li><a href='#'><strong>目前沒有通知</strong></a></li>");
+            $(".dropdown-alerts").append("<li><a href='#'><strong>{% trans 'No notifiactions now' %}</strong></a></li>");
         }else{
             $(".dropdown-alerts").empty();	// 關閉視窗
         }
@@ -658,7 +658,7 @@ $(document).on("click", "#clear-alert", function(){
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <a href="/filter/"><span class="glyphicon glyphicon-list-alt">
-                                </span>查看帳本</a>
+                                </span>{% trans "View books" %}</a>
                             </h4>
                         </div>
                     </div>  <!-- /.panel 支出 -->
@@ -668,9 +668,9 @@ $(document).on("click", "#clear-alert", function(){
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-                                    <span class="glyphicon glyphicon-list-alt"></span>支出
+                                    <span class="glyphicon glyphicon-list-alt"></span>{% trans "Expense" %}
                                 </a>
-                                <span class="total_expense">總計：</span>
+                                <span class="total_expense">{% trans "Total" %}</span>
                             </h4>
                         </div>
                         <div id="collapseOne" class="panel-collapse collapse in">
@@ -681,10 +681,10 @@ $(document).on("click", "#clear-alert", function(){
                                         <td>
                                             <span class='glyphicon glyphicon-file text-success'></span>
                                             {% if cost_receipt.remark %}
-                                                <a class="receipt_info" href='#'>{% if cost_receipt.subclassification.classification.classification_type == "food" %}食{% elif cost_receipt.subclassification.classification.classification_type == "clothing" %}衣{% elif cost_receipt.subclassification.classification.classification_type == "housing" %}住{% elif cost_receipt.subclassification.classification.classification_type == "transportation" %}行{% elif cost_receipt.subclassification.classification.classification_type == "education" %}育{% elif cost_receipt.subclassification.classification.classification_type == "entertainment" %}樂{% else %}其{% endif %}-{{cost_receipt.subclassification.name}}-{{cost_receipt.remark}}: {{cost_receipt.money}}
+                                                <a class="receipt_info" href='#'>{% if cost_receipt.subclassification.classification.classification_type == "food" %}{% trans "E" %}{% elif cost_receipt.subclassification.classification.classification_type == "clothing" %}{% trans "C" %}{% elif cost_receipt.subclassification.classification.classification_type == "housing" %}{% trans "H" %}{% elif cost_receipt.subclassification.classification.classification_type == "transportation" %}{% trans "T" %}{% elif cost_receipt.subclassification.classification.classification_type == "education" %}{% trans "Ed" %}{% elif cost_receipt.subclassification.classification.classification_type == "entertainment" %}{% trans "En" %}{% else %}{% trans "O" %}{% endif %}-{{cost_receipt.subclassification.name}}-{{cost_receipt.remark}}: {{cost_receipt.money}}
 												</a>
                                             {% else %}
-                                                <a class="receipt_info" href='#'>{% if cost_receipt.subclassification.classification.classification_type == "food" %}食{% elif cost_receipt.subclassification.classification.classification_type == "clothing" %}衣{% elif cost_receipt.subclassification.classification.classification_type == "housing" %}住{% elif cost_receipt.subclassification.classification.classification_type == "transportation" %}行{% elif cost_receipt.subclassification.classification.classification_type == "education" %}育{% elif cost_receipt.subclassification.classification.classification_type == "entertainment" %}樂{% else %}其{% endif %}-{{cost_receipt.subclassification.name}}: {{cost_receipt.money}}
+                                                <a class="receipt_info" href='#'>{% if cost_receipt.subclassification.classification.classification_type == "food" %}{% trans "E" %}{% elif cost_receipt.subclassification.classification.classification_type == "clothing" %}{% trans "C" %}{% elif cost_receipt.subclassification.classification.classification_type == "housing" %}{% trans "H" %}{% elif cost_receipt.subclassification.classification.classification_type == "transportation" %}{% trans "T" %}{% elif cost_receipt.subclassification.classification.classification_type == "education" %}{% trans "Ed" %}{% elif cost_receipt.subclassification.classification.classification_type == "entertainment" %}{% trans "En" %}{% else %}{% trans "O" %}{% endif %}-{{cost_receipt.subclassification.name}}: {{cost_receipt.money}}
 												</a>
                                             {% endif %}
                                             <span style='float: right; margin-right: 10px; color: #9D9D9D;'></span>
@@ -701,8 +701,8 @@ $(document).on("click", "#clear-alert", function(){
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><span class="glyphicon glyphicon-list-alt">
-                                </span>收入</a>
-                                <span class="total_income">總計：</span>
+                                </span>{% trans "Income" %}</a>
+                                <span class="total_income">{% trans "Total:" %}</span>
                             </h4>
                         </div>
                         <div id="collapseTwo" class="panel-collapse collapse in">
@@ -713,10 +713,10 @@ $(document).on("click", "#clear-alert", function(){
                                         <td>
                                             <span class='glyphicon glyphicon-file text-success'></span>
                                             {% if revenue_receipt.remark %}
-                                                <a class="receipt_info" href='#'>{% if revenue_receipt.subclassification.classification.classification_type == "general_revenue" %}收入{% elif revenue_receipt.subclassification.classification.classification_type == "invest_revenue" %}投資{% else %}其他{% endif %}-{{revenue_receipt.subclassification.name}}-{{revenue_receipt.remark}}: {{revenue_receipt.money}}
+                                                <a class="receipt_info" href='#'>{% if revenue_receipt.subclassification.classification.classification_type == "general_revenue" %}{% trans "Income" %}{% elif revenue_receipt.subclassification.classification.classification_type == "invest_revenue" %}{% trans "Investment" %}{% else %}{% trans "Other" %}{% endif %}-{{revenue_receipt.subclassification.name}}-{{revenue_receipt.remark}}: {{revenue_receipt.money}}
 												</a>
                                             {% else %}
-                                                <a class="receipt_info" href='#'>{% if revenue_receipt.subclassification.classification.classification_type == "general_revenue" %}收入{% elif revenue_receipt.subclassification.classification.classification_type == "invest_revenue" %}投資{% else %}其他{% endif %}-{{revenue_receipt.subclassification.name}}: {{revenue_receipt.money}}
+                                                <a class="receipt_info" href='#'>{% if revenue_receipt.subclassification.classification.classification_type == "general_revenue" %}{% trans "Income" %}{% elif revenue_receipt.subclassification.classification.classification_type == "invest_revenue" %}{% trans "Investment" %}{% else %}{% trans "Other" %}{% endif %}-{{revenue_receipt.subclassification.name}}: {{revenue_receipt.money}}
 												</a>
                                             {% endif %}
                                             <span style='float: right; margin-right: 10px; color: #9D9D9D;'></span>
@@ -741,13 +741,13 @@ $(document).on("click", "#clear-alert", function(){
                             <div id="titleMenu" class="page-header" style="text-align: center;">
                                 <form method="post" id="formadd">
                                     <select id="recordType" name="recordType">
-                                        <option value="expense">支出</option>
-                                        <option value="income">收入</option>
+                                        <option value="expense">{% trans "Expense" %}</option>
+                                        <option value="income">{% trans "Income" %}</option>
                                     </select>
                                     <select id="payment" name="payment" >
-                                        <option value="cash">現金</option>
-                                        <option value="credit_card">信用卡</option>
-                                        <option value="other">其他</option>
+                                        <option value="cash">{% trans "Cash" %}</option>
+                                        <option value="credit_card">{% trans "Credit card" %}</option>
+                                        <option value="other">{% trans "Other" %}</option>
                                     </select>
                                     <input type="text"  data-provide="datepicker" id="datepicker1">
                                 </form>
@@ -758,31 +758,31 @@ $(document).on("click", "#clear-alert", function(){
                                     <input type="number" id="amount">
                                 </div>
                                 <div class="row" id="main-type-choose" style="text-align: center; margin-bottom: 20px;">
-                                    <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="food" style="background: #8D8F76 no-repeat;">食</button>
-                                    <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="clothing" style="background: #BAB6AF no-repeat;">衣</button>
-                                    <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="housing" style="background: #E19F81 no-repeat;">住</button>
-                                    <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="transportation" style="background: #73AFB8 no-repeat;">行</button>
-                                    <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="education" style="background: #BA736A no-repeat;">育</button>
-                                    <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="entertainment" style="background: url('../static/image/yellow.png') no-repeat;">樂</button>
-                                    <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="others" style="background: url('../static/image/brown.png') no-repeat;">其</button>
-                                    <button type="button" class="btn btn-default btn-lg revenue-category" data-toggle="modal" data-target="#myModal-revenue" id="general_revenue" style="background: #8D8F76 no-repeat;">一般收入</button>
-                                    <button type="button" class="btn btn-default btn-lg revenue-category" data-toggle="modal" data-target="#myModal-revenue" id="invest_revenue" style="background: #BAB6AF no-repeat;">投資收入</button>
-                                    <button type="button" class="btn btn-default btn-lg revenue-category" data-toggle="modal" data-target="#myModal-revenue" id="other_revenue" style="background: #E19F81 no-repeat;">其他</button>
+                                    <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="food" style="background: #8D8F76 no-repeat;">{% trans "E" %}</button>
+                                    <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="clothing" style="background: #BAB6AF no-repeat;">{% trans "C" %}</button>
+                                    <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="housing" style="background: #E19F81 no-repeat;">{% trans "H" %}</button>
+                                    <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="transportation" style="background: #73AFB8 no-repeat;">{% trans "T" %}</button>
+                                    <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="education" style="background: #BA736A no-repeat;">{% trans "Ed" %}</button>
+                                    <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="entertainment" style="background: url('../static/image/yellow.png') no-repeat;">{% trans "En" %}</button>
+                                    <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="others" style="background: url('../static/image/brown.png') no-repeat;">{% trans "O" %}</button>
+                                    <button type="button" class="btn btn-default btn-lg revenue-category" data-toggle="modal" data-target="#myModal-revenue" id="general_revenue" style="background: #8D8F76 no-repeat;">{% trans "GI" %}</button>
+                                    <button type="button" class="btn btn-default btn-lg revenue-category" data-toggle="modal" data-target="#myModal-revenue" id="invest_revenue" style="background: #BAB6AF no-repeat;">{% trans "II" %}</button>
+                                    <button type="button" class="btn btn-default btn-lg revenue-category" data-toggle="modal" data-target="#myModal-revenue" id="other_revenue" style="background: #E19F81 no-repeat;">{% trans "Other" %}</button>
                                 </div>
 								
                                 <div class="row" style="margin-bottom: 20px;">
-                                    <label style="font-size: 25px; padding-right: 5px;">分類</label>
-                                    <input type="text" id="costCategory" value="食-早餐" readonly>
+                                    <label style="font-size: 25px; padding-right: 5px;">{% trans "Class" %}</label>
+                                    <input type="text" id="costCategory" value={% blocktrans %}'E-早餐'{% endblocktrans %} readonly>
                                 </div>
                                 <div class="row">
-                                    <label style="font-size: 25px; padding-right: 5px;">備註</label>
+                                    <label style="font-size: 25px; padding-right: 5px;">{% trans "Remark" %}</label>
                                     <input type="text" id="memo" />
                                 </div>
                                 <div class="row" style="margin-top: 30px;margin-bottom: 30px;">
-                                    <input type="submit" class="btn-default btn-lg submit determin" id="submit-btn" value="確定" style="border: 2px solid #03aaa0;">
-                                    <input type="button" class="btn-default btn-lg submit clear" id="last-btn" value="清空" style="border: 2px solid #03aaa0;">
-                                    <input type="submit" class="btn-default btn-lg submit modify_btn hidden" id="modify-btn" value="修改" style="border: 2px solid #03aaa0;">
-                                    <input type="button" class="btn-default btn-lg submit clear hidden" id="cancel-btn" value="取消" style="border: 2px solid #03aaa0;">
+                                    <input type="submit" class="btn-default btn-lg submit determin" id="submit-btn" value="{% trans "Confirm" %}" style="border: 2px solid #03aaa0;">
+                                    <input type="button" class="btn-default btn-lg submit clear" id="last-btn" value={% blocktrans %}'Clear'{% endblocktrans %} style="border: 2px solid #03aaa0;">
+                                    <input type="submit" class="btn-default btn-lg submit modify_btn hidden" id="modify-btn" value={% blocktrans %}'Modify'{% endblocktrans %} style="border: 2px solid #03aaa0;">
+                                    <input type="button" class="btn-default btn-lg submit clear hidden" id="cancel-btn" value="{% trans "Cancel" %}" style="border: 2px solid #03aaa0;">
                                 </div>
                                 </div>
                             </form>
@@ -804,7 +804,7 @@ $(document).on("click", "#clear-alert", function(){
 	            <div class="modal-header">
                     <h1 id="main-cate" style="display: none;"></h1>
 	                <button type="button" class="close" data-dismiss="modal">&times;</button>
-	                <h4 class="modal-title">請選擇子分類</h4>
+	                <h4 class="modal-title">{% trans "Choose subclass" %}</h4>
 	            </div> <!-- /.modal-header -->
 
 	            <div class="modal-body">
@@ -834,13 +834,13 @@ $(document).on("click", "#clear-alert", function(){
                 
 	            <div class="modal-footer">
                     <div style="float: left;">
-                        <button type="button" class="btn btn-default subCategoryAdder">新增子分類</button>
-                        <input type="text" id="new-expense-sub-text" class="new-sub-handler" placeholder="請輸入次分類名稱" maxlength="10" />
-                        <button type="button" class="btn btn-success btn-sm new-sub-handler new-sub-submit">新增</button>
-                        <button type="button" class="btn btn-danger btn-sm new-sub-handler">取消</button>
+                        <button type="button" class="btn btn-default subCategoryAdder">{% trans "Add new subclass" %}</button>
+                        <input type="text" id="new-expense-sub-text" class="new-sub-handler" placeholder={% blocktrans %}'Enter subclass name'{% endblocktrans %} maxlength="10" />
+                        <button type="button" class="btn btn-success btn-sm new-sub-handler new-sub-submit">{% trans "Add" %}</button>
+                        <button type="button" class="btn btn-danger btn-sm new-sub-handler">{% trans "Cancel" %}</button>
                     </div>
-	                <button type="button" class="btn btn-default modal-btn modal-submit" data-dismiss="modal">確定</button>
-	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal">取消</button>
+	                <button type="button" class="btn btn-default modal-btn modal-submit" data-dismiss="modal">{% trans "Confirm" %}</button>
+	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal">{% trans "Cancel" %}</button>
 	            </div> <!-- /.modal-footer -->
 	        </div>
 	    </div>
@@ -856,7 +856,7 @@ $(document).on("click", "#clear-alert", function(){
                 <div class="modal-header">
                     <h1 id="main-cate" style="display: none;"></h1>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">請選擇子分類</h4>
+                    <h4 class="modal-title">{% trans "Choose subclass" %}</h4>
                 </div> <!-- /.modal-header -->
 
                 <div class="modal-body">
@@ -873,13 +873,13 @@ $(document).on("click", "#clear-alert", function(){
                 
                 <div class="modal-footer">
                     <div style="float: left;">
-                        <button type="button" class="btn btn-default subCategoryAdder">新增子分類</button>
-                        <input type="text" id="new-income-sub-text" class="new-sub-handler" placeholder="請輸入次分類名稱" maxlength="10" />
-                        <button type="button" class="btn btn-success btn-sm new-sub-handler new-sub-submit">新增</button>
-                        <button type="button" class="btn btn-danger btn-sm new-sub-handler">取消</button>
+                        <button type="button" class="btn btn-default subCategoryAdder">{% trans "Add new subclass" %}</button>
+                        <input type="text" id="new-income-sub-text" class="new-sub-handler" placeholder={% blocktrans %}'Enter subclass name'{% endblocktrans %} maxlength="10" />
+                        <button type="button" class="btn btn-success btn-sm new-sub-handler new-sub-submit">{% trans "Add" %}</button>
+                        <button type="button" class="btn btn-danger btn-sm new-sub-handler">{% trans "Cancel" %}</button>
                     </div>
-                    <button type="button" class="btn btn-default modal-btn modal-submit" data-dismiss="modal">確定</button>
-                    <button type="button" class="btn btn-default modal-btn" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-default modal-btn modal-submit" data-dismiss="modal">{% trans "Confirm" %}</button>
+                    <button type="button" class="btn btn-default modal-btn" data-dismiss="modal">{% trans "Cancel" %}</button>
                 </div> <!-- /.modal-footer -->
             </div>
         </div>

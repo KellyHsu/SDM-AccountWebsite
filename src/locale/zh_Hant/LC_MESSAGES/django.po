@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-28 10:48+0800\n"
+"POT-Creation-Date: 2016-12-28 11:57+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,7 +19,6 @@ msgstr ""
 
 #: templates/chart.html:129 templates/chart.html:152 templates/chart.html:175
 #: templates/chart.html:199 templates/chart.html:258
-#| msgid "Update fail"
 msgid "Load data fail"
 msgstr "讀取資料失敗"
 
@@ -28,7 +27,7 @@ msgid "Total class analysis"
 msgstr "總類別分析"
 
 #: templates/chart.html:231 templates/chart.html:279
-#| msgid "Update fail"
+#: templates/dashboard.html:151
 msgid "Get date fail"
 msgstr "讀取日期失敗"
 
@@ -47,6 +46,231 @@ msgstr "年度收支"
 #: templates/chart.html:399
 msgid "Class analysis"
 msgstr "類別分析"
+
+#: templates/dashboard.html:146 templates/dashboard.html:147
+#: templates/dashboard.html:339 templates/dashboard.html:340
+#: templates/dashboard.html:377 templates/dashboard.html:379
+msgid "Total: "
+msgstr "總計:"
+
+#: templates/dashboard.html:162 templates/dashboard.html:182
+#: templates/dashboard.html:216 templates/dashboard.html:218
+#: templates/dashboard.html:235 templates/dashboard.html:315
+#: templates/dashboard.html:445 templates/dashboard.html:447
+#: templates/dashboard.html:464 templates/dashboard.html:684
+#: templates/dashboard.html:687 templates/dashboard.html:761
+#: templates/setting.html:1053 templates/setting.html:1199
+#: templates/setting.html:1346
+msgid "E"
+msgstr "食"
+
+#: templates/dashboard.html:165 templates/dashboard.html:185
+#: templates/dashboard.html:223 templates/dashboard.html:237
+#: templates/dashboard.html:319 templates/dashboard.html:452
+#: templates/dashboard.html:466 templates/dashboard.html:768
+msgid "GI"
+msgstr "一般收入"
+
+#: templates/dashboard.html:216 templates/dashboard.html:445
+#: templates/dashboard.html:684 templates/dashboard.html:687
+#: templates/dashboard.html:762 templates/setting.html:1061
+#: templates/setting.html:1212 templates/setting.html:1347
+msgid "C"
+msgstr "衣"
+
+#: templates/dashboard.html:216 templates/dashboard.html:445
+#: templates/dashboard.html:684 templates/dashboard.html:687
+#: templates/dashboard.html:763 templates/setting.html:1069
+#: templates/setting.html:1225 templates/setting.html:1348
+msgid "H"
+msgstr "住"
+
+#: templates/dashboard.html:216 templates/dashboard.html:445
+#: templates/dashboard.html:684 templates/dashboard.html:687
+#: templates/dashboard.html:764 templates/setting.html:269
+#: templates/setting.html:1077 templates/setting.html:1238
+#: templates/setting.html:1349
+msgid "T"
+msgstr "行"
+
+#: templates/dashboard.html:216 templates/dashboard.html:445
+#: templates/dashboard.html:684 templates/dashboard.html:687
+#: templates/dashboard.html:765 templates/setting.html:1085
+#: templates/setting.html:1251 templates/setting.html:1350
+msgid "Ed"
+msgstr "育"
+
+#: templates/dashboard.html:216 templates/dashboard.html:445
+#: templates/dashboard.html:684 templates/dashboard.html:687
+#: templates/dashboard.html:766 templates/setting.html:1093
+#: templates/setting.html:1264 templates/setting.html:1351
+msgid "En"
+msgstr "樂"
+
+#: templates/dashboard.html:216 templates/dashboard.html:684
+#: templates/dashboard.html:687 templates/dashboard.html:767
+#: templates/setting.html:1101 templates/setting.html:1145
+#: templates/setting.html:1277
+msgid "O"
+msgstr "其他"
+
+#: templates/dashboard.html:219 templates/dashboard.html:224
+#: templates/dashboard.html:448 templates/dashboard.html:453
+#| msgid "Total: "
+msgid "Total "
+msgstr "總計:"
+
+#: templates/dashboard.html:221 templates/dashboard.html:450
+#: templates/dashboard.html:704 templates/dashboard.html:716
+#: templates/dashboard.html:719 templates/dashboard.html:745
+msgid "Income"
+msgstr "收入"
+
+#: templates/dashboard.html:221 templates/dashboard.html:450
+#: templates/dashboard.html:716 templates/dashboard.html:719
+msgid "Investment"
+msgstr "投資"
+
+#: templates/dashboard.html:221 templates/dashboard.html:450
+#: templates/dashboard.html:716 templates/dashboard.html:719
+#: templates/dashboard.html:750 templates/dashboard.html:770
+#: templates/setting.html:1352 templates/setting.html:1386
+msgid "Other"
+msgstr "其他"
+
+#: templates/dashboard.html:241 templates/dashboard.html:470
+#| msgid "Add fail"
+msgid "Add record fail"
+msgstr "新增帳目失敗"
+
+#: templates/dashboard.html:245
+#| msgid "Budget limit amount"
+msgid "Must inpu amount"
+msgstr "金額必須輸入"
+
+#: templates/dashboard.html:296
+msgid "Subclass name repeat "
+msgstr "子分類名稱重複"
+
+#: templates/dashboard.html:302
+msgid "Add new class fail"
+msgstr "新增子分類失敗"
+
+#: templates/dashboard.html:366
+msgid "You wanna delete: "
+msgstr "你要刪除: "
+
+#: templates/dashboard.html:383
+msgid "\"Delete\" + recordValue + \"Fail\""
+msgstr "\"刪除\" + recordValue + \"失敗\""
+
+#: templates/dashboard.html:413
+msgid "\"Modify\" + recordValue + \"Fail\""
+msgstr "\"修改\" + recordValue + \"失敗\""
+
+#: templates/dashboard.html:474
+#| msgid "Budget limit amount"
+msgid "Must input amount"
+msgstr "金額必填"
+
+#: templates/dashboard.html:540 templates/dashboard.html:554
+#| msgid "Notification on"
+msgid "No notifiactions now"
+msgstr "目前沒有通知"
+
+#: templates/dashboard.html:540 templates/dashboard.html:545
+#| msgid "Pay bill notification"
+msgid "Clear all notifiactions"
+msgstr "清除所有通知"
+
+#: templates/dashboard.html:661
+msgid "View books"
+msgstr "查看帳本"
+
+#: templates/dashboard.html:671 templates/dashboard.html:744
+msgid "Expense"
+msgstr "支出"
+
+#: templates/dashboard.html:673
+msgid "Total"
+msgstr "總計"
+
+#: templates/dashboard.html:705
+msgid "Total:"
+msgstr "總計:"
+
+#: templates/dashboard.html:748
+msgid "Cash"
+msgstr "現金"
+
+#: templates/dashboard.html:749
+msgid "Credit card"
+msgstr "信用"
+
+#: templates/dashboard.html:769
+msgid "II"
+msgstr "投資收入"
+
+#: templates/dashboard.html:774 templates/filter.html:383
+#: templates/filter.html:395
+msgid "Class"
+msgstr "類別"
+
+#: templates/dashboard.html:775
+msgid "'E-早餐'"
+msgstr "食-早餐"
+
+#: templates/dashboard.html:778 templates/filter.html:385
+#: templates/filter.html:397
+msgid "Remark"
+msgstr "備註"
+
+#: templates/dashboard.html:782 templates/dashboard.html:842
+#: templates/dashboard.html:881 templates/setting.html:1176
+#: templates/setting.html:1180 templates/setting.html:1203
+#: templates/setting.html:1207 templates/setting.html:1216
+#: templates/setting.html:1220 templates/setting.html:1229
+#: templates/setting.html:1233 templates/setting.html:1242
+#: templates/setting.html:1246 templates/setting.html:1255
+#: templates/setting.html:1259 templates/setting.html:1268
+#: templates/setting.html:1272 templates/setting.html:1281
+#: templates/setting.html:1285 templates/setting.html:1362
+#: templates/setting.html:1396 templates/setting.html:1439
+#: templates/setting.html:1482
+msgid "Confirm"
+msgstr "確定"
+
+#: templates/dashboard.html:783
+msgid "'Clear'"
+msgstr "清空"
+
+#: templates/dashboard.html:784 templates/filter.html:415
+msgid "'Modify'"
+msgstr "修改"
+
+#: templates/dashboard.html:785 templates/dashboard.html:840
+#: templates/dashboard.html:843 templates/dashboard.html:879
+#: templates/dashboard.html:882 templates/setting.html:1363
+#: templates/setting.html:1397 templates/setting.html:1440
+#: templates/setting.html:1483
+msgid "Cancel"
+msgstr "取消"
+
+#: templates/dashboard.html:807 templates/dashboard.html:859
+msgid "Choose subclass"
+msgstr "選擇子類別"
+
+#: templates/dashboard.html:837 templates/dashboard.html:876
+msgid "Add new subclass"
+msgstr "新增子類別"
+
+#: templates/dashboard.html:838 templates/dashboard.html:877
+msgid "'Enter subclass name'"
+msgstr "輸入子類別名稱"
+
+#: templates/dashboard.html:839 templates/dashboard.html:878
+msgid "Add"
+msgstr "新增"
 
 #: templates/filter.html:318
 msgid "View by day"
@@ -88,18 +312,10 @@ msgstr "刪除"
 msgid "Modify"
 msgstr "修改"
 
-#: templates/filter.html:383 templates/filter.html:395
-msgid "Class"
-msgstr "類別"
-
 #: templates/filter.html:384 templates/filter.html:396
 #: templates/setting.html:1356 templates/setting.html:1390
 msgid "Subclass"
 msgstr "子類別"
-
-#: templates/filter.html:385 templates/filter.html:397
-msgid "Remark"
-msgstr "備註"
 
 #: templates/filter.html:386 templates/filter.html:398
 msgid "Income/Expense"
@@ -124,10 +340,6 @@ msgstr "功能"
 #: templates/filter.html:415
 msgid "\"Delete\""
 msgstr "刪除"
-
-#: templates/filter.html:415
-msgid "'Modify'"
-msgstr "修改"
 
 #: templates/filter.html:437
 msgid "Modify Record"
@@ -176,11 +388,6 @@ msgstr "註冊"
 #: templates/register.html:56
 msgid "Go to Login"
 msgstr "回到登入頁"
-
-#: templates/setting.html:269 templates/setting.html:1077
-#: templates/setting.html:1238 templates/setting.html:1349
-msgid "T"
-msgstr "行"
 
 #: templates/setting.html:307
 msgid "The items you want to delete are："
@@ -377,36 +584,6 @@ msgstr "支出主類別"
 msgid "Expense subclass"
 msgstr "支出子類別"
 
-#: templates/setting.html:1053 templates/setting.html:1199
-#: templates/setting.html:1346
-msgid "E"
-msgstr "食"
-
-#: templates/setting.html:1061 templates/setting.html:1212
-#: templates/setting.html:1347
-msgid "C"
-msgstr "衣"
-
-#: templates/setting.html:1069 templates/setting.html:1225
-#: templates/setting.html:1348
-msgid "H"
-msgstr "住"
-
-#: templates/setting.html:1085 templates/setting.html:1251
-#: templates/setting.html:1350
-msgid "Ed"
-msgstr "育"
-
-#: templates/setting.html:1093 templates/setting.html:1264
-#: templates/setting.html:1351
-msgid "En"
-msgstr "樂"
-
-#: templates/setting.html:1101 templates/setting.html:1145
-#: templates/setting.html:1277
-msgid "O"
-msgstr "其他"
-
 #: templates/setting.html:1115
 msgid "Income subclass setting"
 msgstr "收入子分類設定"
@@ -446,19 +623,6 @@ msgstr "逼近上限金額通知"
 #: templates/setting.html:1171
 msgid "Monthly total budget"
 msgstr "每個月總預算"
-
-#: templates/setting.html:1176 templates/setting.html:1180
-#: templates/setting.html:1203 templates/setting.html:1207
-#: templates/setting.html:1216 templates/setting.html:1220
-#: templates/setting.html:1229 templates/setting.html:1233
-#: templates/setting.html:1242 templates/setting.html:1246
-#: templates/setting.html:1255 templates/setting.html:1259
-#: templates/setting.html:1268 templates/setting.html:1272
-#: templates/setting.html:1281 templates/setting.html:1285
-#: templates/setting.html:1362 templates/setting.html:1396
-#: templates/setting.html:1439 templates/setting.html:1482
-msgid "Confirm"
-msgstr "確定"
 
 #: templates/setting.html:1181 templates/setting.html:1208
 #: templates/setting.html:1221 templates/setting.html:1234
@@ -539,19 +703,10 @@ msgstr "新增子類別"
 msgid "Choose main class"
 msgstr "選擇主類別"
 
-#: templates/setting.html:1352 templates/setting.html:1386
-msgid "Other"
-msgstr "其他"
-
 #: templates/setting.html:1357 templates/setting.html:1391
 #: templates/setting.html:1418 templates/setting.html:1461
 msgid "'New subclass'"
 msgstr "新子類別"
-
-#: templates/setting.html:1363 templates/setting.html:1397
-#: templates/setting.html:1440 templates/setting.html:1483
-msgid "Cancel"
-msgstr "取消"
 
 #: templates/setting.html:1412
 msgid "Add Cyclical Expenditure Notification"
@@ -578,9 +733,6 @@ msgstr "編輯週期性支出項目"
 #~| msgid "'Notificetion off'"
 #~ msgid "Notifacation off"
 #~ msgstr "通知關"
-
-#~ msgid "Total income:"
-#~ msgstr "總收入:"
 
 #~ msgid "Balance:"
 #~ msgstr "結餘"
