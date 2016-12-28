@@ -7,6 +7,12 @@
     <link href="{% static 'datatables/jquery-ui.css' %}" rel="stylesheet">
     <link href="{% static 'datatables/dataTables.jqueryui.min.css' %}" rel="stylesheet">
 
+        <!--datepicker CSS-->
+    <link href="{% static 'css/bootstrap-datepicker.css' %}" rel="stylesheet">
+    <link href="{% static 'css/datepicker.css' %}" rel="stylesheet">
+
+        <!--datepicker-->
+    <script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
 
         <!-- datatables JavaScript -->
     <script src="{% static 'datatables/jquery.dataTables.min.js' %}"></script>
@@ -182,8 +188,6 @@
                         $('#totalIncome').text("總收入"+result.income);
                         $('#balance').text("餘額"+result.balance);
                         $('#modal').modal('toggle');
-                        var url = window.location.href;
-                        window.location = url;
                     },
                     error: function(result, status){
                         console.log(status);
@@ -399,28 +403,62 @@
     .dataTables_filter label{
         margin: 0px;
     }
-    #recordType, #payment{
-        width: 90px;
-        padding: 0px;
+    
+
+    @media(max-width: 1960px){
+       #recordType, #payment{
+            width: 90px;
+            padding: 2px;
+        }
+        #datepicker1{
+            margin-left: 6px;
+        }
+        #amount{
+            font-size: 20px;
+            border-bottom: 2px solid black;
+            margin: 0px;
+        }
+        #category, #subcat{
+            width: 90px;
+            border: #000000 1px solid;
+            padding: 2px;
+        }
+        #second_level{
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+        #subcat{
+            margin-left: 20px;
+        }
     }
-    #datepicker1{
-        margin-left: 6px;
-    }
-    #amount{
-        font-size: 20px;
-        border-bottom: 2px solid black;
-        margin: 0px;
-    }
-    #category, #subcat{
-        width: 90px;
-        border: #000000 1px solid;
-    }
-    #second_level{
-        margin-top: 15px;
-        margin-bottom: 5px;
-    }
-    #subcat{
-        margin-left: 20px;
+
+    @media(max-width: 480px){
+        #recordType, #payment{
+            width: 90px;
+            padding: 0px;
+        }
+        #datepicker1{
+            margin-left: 6px;
+        }
+        #amount{
+            font-size: 20px;
+            border-bottom: 2px solid black;
+            margin: 0px;
+        }
+        #category, #subcat{
+            width: 90px;
+            border: #000000 1px solid;
+        }
+        #second_level{
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+        #subcat{
+            margin-left: 0px;
+        }
+        #category,#recordType,#datepicker1{
+            margin-left: 15px;
+        }
     }
 </style>
 {% endblock %}
@@ -573,9 +611,9 @@
                                     <option value="credit_card">信用卡</option>
                                     <option value="other">其他</option>
                                 </select>
-                                <label>日期</label>
-                                <input type="text" data-provide="datepicker" id="datepicker1">
                             </div>
+                            <label>日期：</label>
+                            <input type="text" data-provide="datepicker" id="datepicker1">
                         </div>
                         <div class="form-inline" id="second_level">
                             <div class="form-group">
