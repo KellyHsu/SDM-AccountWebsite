@@ -1,6 +1,6 @@
 <!-- 這個頁面是圖表頁 -->
 
-{% load staticfiles %}
+{% load staticfiles i18n %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -126,7 +126,7 @@
                 },
                 error: function(status){
                     console.log(status);
-                    alert("周收支讀取失敗")
+                    alert("{% trans "Load data fail" %}")
                 }
             }); 
         });
@@ -149,7 +149,7 @@
                 },
                 error: function(status){
                     console.log(status);
-                    alert("月收支讀取失敗")
+                    alert("{% trans "Load data fail" %}")
                 }
             });  
         });
@@ -172,7 +172,7 @@
                 },
                 error: function(status){
                     console.log(status);
-                    alert("年收支讀取失敗")
+                    alert("{% trans "Load data fail" %}")
                 }
             }); 
         });
@@ -181,7 +181,7 @@
             $('#week-page').removeClass("now-click")
             $('#month-page').removeClass("now-click")
             $('#year-page').removeClass("now-click")
-            $('#title-text').find( "h3" ).html("總類別分析");
+            $('#title-text').find( "h3" ).html("{% trans "Total class analysis" %}");
             $.ajax({
                dataType: 'json',
                url: "/getCategoryChart/",
@@ -196,7 +196,7 @@
                 },
                 error: function(status){
                     console.log(status);
-                    alert("類別分析讀取失敗")
+                    alert("{% trans "Load data fail" %}")
                 }
             }); 
         });
@@ -228,7 +228,7 @@
                 error: function(result, status){
                     console.log(status);
                     console.log(result);
-                    alert("抓新日期失敗")
+                    alert("{% trans "Get date fail" %}")
                 }
             });
         });
@@ -240,7 +240,7 @@
             if(choosen == "------------"){
                 choosen="月份";
                 $('#menu1').html(choosen+' <span class=\"caret\"></span>');
-                $('#title-text').find( "h3" ).html("總類別分析");
+                $('#title-text').find( "h3" ).html("{% trans "Total class analysis" %}");
                 $.ajax({
                     dataType: 'json',
                     url: "/getCategoryChart/",
@@ -255,7 +255,7 @@
                     },
                     error: function(status){
                         console.log(status);
-                        alert("類別分析讀取失敗")
+                        alert("{% trans "Load data fail" %}")
                     }
                 }); 
             }else{
@@ -276,7 +276,7 @@
                     },
                     error: function(status){
                         console.log(status);
-                        alert("類別分析抓新日期失敗")
+                        alert("{% trans "Get date fail" %}")
                     }
                 });
             }
@@ -367,7 +367,7 @@
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <span class="fa fa-bar-chart" style="padding-right: 10px;">
-                                </span>本周收支
+                                </span>{% trans "Weekly Income Starement" %}
                             </h4>
                         </div>
                     </div>  <!-- /.panel 本周收支 -->
@@ -377,7 +377,7 @@
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <span class="fa fa-bar-chart" style="padding-right: 10px;">
-                                </span>本月收支
+                                </span>{% trans "Monthly Income Starement" %}
                             </h4>
                         </div>
                     </div>  <!-- /.panel 本月收支 -->
@@ -387,7 +387,7 @@
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <span class="fa fa-bar-chart" style="padding-right: 10px;">
-                                </span>年度收支
+                                </span>{% trans "Yearly Income Starement" %}
                             </h4>
                         </div>
                     </div>  <!-- /.panel 年度收支 -->
@@ -396,7 +396,7 @@
                     <div class="panel panel-default" id="category-page">
                         <div class="panel-heading">
                             <h4 class="panel-title">
-                                <span class="fa fa-pie-chart" style="padding-right: 10px;"></span>類別分析
+                                <span class="fa fa-pie-chart" style="padding-right: 10px;"></span>{% trans "Class analysis" %}
                             </h4>
                         </div>
                     </div>  <!-- /.panel 類別分析 -->
@@ -420,7 +420,7 @@
                                     <HR>
                                 </div>
                                 <div style="margin: 20px 0px 50px 0px; display:none;" id="title-text">
-                                    <h3><b>總類別分析</b></h3>
+                                    <h3><b>{% trans "Total class analysis" %}</b></h3>
                                     <div class="dropdown" style="text-align: right;">
                                         <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">月份
                                         <span class="caret"></span></button>
