@@ -1,60 +1,18 @@
 <!-- 這個頁面是設定頁 -->
-
+{% extends 'base.html' %}
 {% load staticfiles %}
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>MoneyKeeper</title>
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    <link href="{% static 'css/base.css' %}" rel="stylesheet">
-    	<!-- Bootstrap Core CSS -->
-    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
-
-		<!-- Custom CSS -->
-    <link href="{% static 'dist/css/metisMenu.min.css' %}" rel="stylesheet">
-    <link href="{% static 'dist/css/sb-admin-2.css' %}" rel="stylesheet">
-
-        <!--datepicker CSS-->
-    <link href="{% static 'css/bootstrap-responsive.css' %}" rel="stylesheet">
-
-    	<!-- Custom Fonts -->
-    <link href="{% static 'font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
-
+{% block local_include %}
     	<!-- Animate CSS -->
     <link href="{% static 'css/animate.css' %}" rel="stylesheet">
 
     	<!-- bootstrap-toggle CSS -->
 	<link href="{% static 'css/bootstrap-toggle.min.css' %}" rel="stylesheet">
-
-		<!-- jQuery -->
-    <script src="{% static 'js/jquery.js' %}"></script>
-    <!-- <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script> -->
-
-    	<!-- Bootstrap Core JavaScript -->
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-
-		<!-- Custom Theme JavaScript -->
-    <script src="{% static 'dist/js/metisMenu.min.js' %}"></script>
-    <script src="{% static 'dist/js/sb-admin-2.js' %}"></script>
-
-    	<!-- bootstrap-toggle JS -->
+	    	<!-- bootstrap-toggle JS -->
     <script src="{% static 'js/bootstrap-toggle.min.js' %}"></script>
+{% endblock %}
 
+{% block local_css %}
 
     <style type="text/css">
     	span.item-title {
@@ -133,7 +91,9 @@
 
 
     </style>
+{% endblock %}
 
+{% block local_js %}
     <script>
 
 	$(document).ready(function(){
@@ -940,395 +900,331 @@
 	}
 
     </script>
+{% endblock %}
 
-</head>
-
-<body>
-
-    <!-- whole page wrapper -->
-    <div id="wrapper container">
-
-        <!-- Navigation -->
-        <nav class="navbar navbar-light navbar-static-top" role="navigation">
-            <div>
-                <a class="navbar-brand glyphicon glyphicon-book" href="/dashboard/"></a>
-                <a  href="/dashboard/"><img src="../static/image/logo.png" alt="logo" class="navbar-brand glyphicon glyphicon-book" height="30px" width="200px" border="0" /></a>
-
-	            <ul class="nav navbar-top-links navbar-right">
-	                
-	                <!-- start bell dropdown -->
-	                <li class="dropdown">
-	                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="color: white;">
-	                        <i class="fa fa-bell fa-fw"></i> <i class="fa fa-caret-down"></i>
-	                    </a>
-	                    <ul class="dropdown-menu dropdown-alerts">
-	                        <li>
-	                            <a href="#">
-	                                <div>
-	                                    <i class="fa fa-comment fa-fw"></i> 以後會放提醒內容
-	                                </div>
-	                            </a>
-	                        </li>
-	                        <li class="divider"></li>
-	                        <li>
-	                            <a href="#">
-	                                <div>
-	                                    <i class="fa fa-comment fa-fw"></i> 以後會放提醒內容
-	                                </div>
-	                            </a>
-	                        </li>
-	                        <li class="divider"></li>
-	                        <li>
-	                            <a href="#">
-	                                <strong>See All Alerts</strong>
-	                                <i class="fa fa-angle-right"></i>
-	                            </a>
-	                        </li>
-	                    </ul><!-- /.dropdown-alerts -->
-	                </li><!-- /.dropdown -->
-
-	                <!-- start user dropdown -->
-	                <li class="dropdown">
-	                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="color: white;">
-	                        <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
-	                    </a>
-	                    <ul class="dropdown-menu dropdown-user">
-	                        <li><a href="/setting/"><i class="fa fa-gear fa-fw"></i> Settings</a>
-	                        </li>
-	                        <li class="divider"></li>
-							<li><a href="/chart/"><i class="fa fa-gear fa-fw"></i> Chart</a>
-	                        </li>
-	                        <li class="divider"></li>
-	                        <li><a href="/logout/"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
-	                        </li>
-	                    </ul>
-	                    
-	                </li><!-- /.dropdown-user -->
-	                
-	            </ul><!-- /.dropdown -->
-            </div><!-- /.navbar-header -->
-            
-        </nav><!-- /.navbar-top-links -->
+{% block main_content %}
                    
-                   <!-- main container -->
-        <div class="container">
-            <div class="row">
-                <div><h1>個人帳戶設定 </h1> </div> 
+<!-- main container -->
+<div class="container">
+    <div class="row">
+        <div><h1>個人帳戶設定 </h1> </div> 
 
-                <div class="col-md-12 well" style="margin-top: 30px;">
-                    <legend id="anch1">個人基本資料設定</legend>
-                    <form>
-                        <p><span class="item-title">帳 號: </span>
-						    <input type="text" name="userName" placeholder="{{ member }}" readonly>
-						    <button type="button" class="btn btn-primary" id="go-passwd-set">重設密碼</button>
-						</p>
-						<div class="passwd-set">
-						    <span class="item-title">密 碼: </span>
-						    <input type="password" name="userName" placeholder="請輸入新密碼" class="passwd-set" id="password">
-						    <span class="item-title" style="padding-left: 20px;">確認密碼: </span>
-						    <input type="password" name="userName" placeholder="再次輸入密碼" class="" id="confirmpassword">
-						        <button type="button" class="btn btn-default passwd-submit" id="new-passwd-submit">
-						        確認</button>
-						        <button type="button" class="btn btn-default passwd-submit" id="not-passwd-submit">取消修改</button>
-						</div>
+        <div class="col-md-12 well" style="margin-top: 30px;">
+            <legend id="anch1">個人基本資料設定</legend>
+            <form>
+                <p><span class="item-title">帳 號: </span>
+				    <input type="text" name="userName" placeholder="{{ member }}" readonly>
+				    <button type="button" class="btn btn-primary" id="go-passwd-set">重設密碼</button>
+				</p>
+				<div class="passwd-set">
+				    <span class="item-title">密 碼: </span>
+				    <input type="password" name="userName" placeholder="請輸入新密碼" class="passwd-set" id="password">
+				    <span class="item-title" style="padding-left: 20px;">確認密碼: </span>
+				    <input type="password" name="userName" placeholder="再次輸入密碼" class="" id="confirmpassword">
+				        <button type="button" class="btn btn-default passwd-submit" id="new-passwd-submit">
+				        確認</button>
+				        <button type="button" class="btn btn-default passwd-submit" id="not-passwd-submit">取消修改</button>
+				</div>
 
-                    </form>
-                </div>
+            </form>
+        </div>
 
-                <div class="col-md-12 well">
-                    <legend id="anch1"><span style="margin-right: 10px;">支出子分類設定</span>
-                    	<button type="button" name="btnAddSub" class="edit-img-btn" id="btn-sub-category-add" style="background-image: url(/static/image/add.png);" data-toggle="modal" data-target="#modal-subCategory"></button>
-                    	<button type="button" name="btnDelSub" class="edit-img-btn" id="btn-sub-category-del" style="background-image: url(/static/image/delete.png);"></button>
-                    	<button type="button" class="btn btn-success btn-md sub-category-del-submit" id="sub-category-del-finish">刪除完畢</button>
-                    </legend>
-                    <form>
-					    <p>
-						   <table class="table table-bordered table-striped table-responsive" id="table1">
-						      <thead> 
-							     <th class="col-md-3">支出主分類 </th>
-								 <th class="col-md-9">支出子分類 </th>
-							  </thead>
-							  <tbody>
-								  <tr> 
-								     <td id="food">食</td>
-									 <td>
-										{% for food in food_list %}
-									    	<button type="button" class="btn btn-link btn-md sub-category">{{ food.name }}</button>
-										{% endfor %}
-									</td>
-								  </tr>
-								  <tr> 
-								     <td id="clothing">衣</td>
-								     <td>
-										{% for clothing in clothing_list %}
-								     		<button type="button" class="btn btn-link btn-md sub-category">{{ clothing.name }}</button>
-										{% endfor %}
-									 </td>
-								  </tr>
-								  <tr> 
-								     <td id="housing">住</td>
-								     <td>
-										{% for housing in housing_list %}
-							     			<button type="button" class="btn btn-link btn-md sub-category">{{ housing.name }}</button>
-								     	{% endfor %}
-									 </td>
-								  </tr>
-								  <tr> 
-								     <td id="transportation">行</td>
-								     <td>
-										{% for transportation in transportation_list %}
-								    	 	<button type="button" class="btn btn-link btn-md sub-category">{{ transportation.name }}</button>
-										{% endfor %}
-									 </td>
-								  </tr>
-								  <tr> 
-								     <td id="education">育</td>
-								     <td>
-										{% for education in education_list %}
-										 	<button type="button" class="btn btn-link btn-md sub-category">{{ education.name }}</button>
-                    					{% endfor %}
-									 </td>
-								  </tr>
-								  <tr> 
-								     <td id="entertainment">樂</td>
-								     <td>
-										{% for entertainment in entertainment_list %}
-										 	<button type="button" class="btn btn-link btn-md sub-category">{{ entertainment.name }}</button>
-                    					{% endfor %}
-									 </td>
-								  </tr>
-								  <tr> 
-								     <td id="others">其他</td>
-								     <td>
-										{% for others in others_list %}
-										 	<button type="button" class="btn btn-link btn-md sub-category">{{ others.name }}</button>
-                    					{% endfor %}
-									 </td>
-								  </tr>
-							  </tbody>
-						   </table>
-						</p>                        
-                    </form>
-                </div>
+        <div class="col-md-12 well">
+            <legend id="anch1"><span style="margin-right: 10px;">支出子分類設定</span>
+            	<button type="button" name="btnAddSub" class="edit-img-btn" id="btn-sub-category-add" style="background-image: url(/static/image/add.png);" data-toggle="modal" data-target="#modal-subCategory"></button>
+            	<button type="button" name="btnDelSub" class="edit-img-btn" id="btn-sub-category-del" style="background-image: url(/static/image/delete.png);"></button>
+            	<button type="button" class="btn btn-success btn-md sub-category-del-submit" id="sub-category-del-finish">刪除完畢</button>
+            </legend>
+            <form>
+			    <p>
+				   <table class="table table-bordered table-striped table-responsive" id="table1">
+				      <thead> 
+					     <th class="col-md-3">支出主分類 </th>
+						 <th class="col-md-9">支出子分類 </th>
+					  </thead>
+					  <tbody>
+						  <tr> 
+						     <td id="food">食</td>
+							 <td>
+								{% for food in food_list %}
+							    	<button type="button" class="btn btn-link btn-md sub-category">{{ food.name }}</button>
+								{% endfor %}
+							</td>
+						  </tr>
+						  <tr> 
+						     <td id="clothing">衣</td>
+						     <td>
+								{% for clothing in clothing_list %}
+						     		<button type="button" class="btn btn-link btn-md sub-category">{{ clothing.name }}</button>
+								{% endfor %}
+							 </td>
+						  </tr>
+						  <tr> 
+						     <td id="housing">住</td>
+						     <td>
+								{% for housing in housing_list %}
+					     			<button type="button" class="btn btn-link btn-md sub-category">{{ housing.name }}</button>
+						     	{% endfor %}
+							 </td>
+						  </tr>
+						  <tr> 
+						     <td id="transportation">行</td>
+						     <td>
+								{% for transportation in transportation_list %}
+						    	 	<button type="button" class="btn btn-link btn-md sub-category">{{ transportation.name }}</button>
+								{% endfor %}
+							 </td>
+						  </tr>
+						  <tr> 
+						     <td id="education">育</td>
+						     <td>
+								{% for education in education_list %}
+								 	<button type="button" class="btn btn-link btn-md sub-category">{{ education.name }}</button>
+            					{% endfor %}
+							 </td>
+						  </tr>
+						  <tr> 
+						     <td id="entertainment">樂</td>
+						     <td>
+								{% for entertainment in entertainment_list %}
+								 	<button type="button" class="btn btn-link btn-md sub-category">{{ entertainment.name }}</button>
+            					{% endfor %}
+							 </td>
+						  </tr>
+						  <tr> 
+						     <td id="others">其他</td>
+						     <td>
+								{% for others in others_list %}
+								 	<button type="button" class="btn btn-link btn-md sub-category">{{ others.name }}</button>
+            					{% endfor %}
+							 </td>
+						  </tr>
+					  </tbody>
+				   </table>
+				</p>                        
+            </form>
+        </div>
 
-                <div class="col-md-12 well">
-                    <legend id="anch1"><span style="margin-right: 10px;">收入子分類設定</span>
-                    	<button type="button" name="btnAddSub" class="edit-img-btn" id="btn-sub-category-add" style="background-image: url(/static/image/add.png);" data-toggle="modal" data-target="#modal-subCategoryofrevenue"></button>
-                    	<button type="button" name="btnDelSub" class="edit-img-btn" id="btn-sub-category-del-revenue" style="background-image: url(/static/image/delete.png);"></button>
-                    	<button type="button" class="btn btn-success btn-md sub-category-del-submit-revenue" id="sub-category-del-finish">刪除完畢</button>
-                    </legend>
-                    <form>
-					    <p>
-						   <table class="table table-bordered table-striped table-responsive" id="table2">
-						      <thead> 
-							     <th class="col-md-3">收入主分類 </th>
-								 <th class="col-md-9">收入子分類 </th>
-							  </thead>
-							  <tbody>
-								  <tr> 
-								     <td id="general_revenue">一般收入</td>
-									 <td>
-										{% for general_revenue in general_revenue_list %}
-									    	<button type="button" class="btn btn-link btn-md revenue-sub-category">{{ general_revenue.name }}</button>
-										{% endfor %}
-									</td>
-								  </tr>
-								  <tr> 
-								     <td id="invest_revenue">投資收入</td>
-								     <td>
-										{% for invest_revenue in invest_revenue_list %}
-								     		<button type="button" class="btn btn-link btn-md revenue-sub-category">{{ invest_revenue.name }}</button>
-										{% endfor %}
-									 </td>
-								  </tr>
-								  <tr> 
-								     <td id="other_revenue">其他</td>
-								     <td>
-										{% for other_revenue in other_revenue_list %}
-							     			<button type="button" class="btn btn-link btn-md revenue-sub-category">{{ other_revenue.name }}</button>
-								     	{% endfor %}
-									 </td>
-								  </tr>
-							  </tbody>
-						   </table>
-						</p>                        
-                    </form>
-                </div>
+        <div class="col-md-12 well">
+            <legend id="anch1"><span style="margin-right: 10px;">收入子分類設定</span>
+            	<button type="button" name="btnAddSub" class="edit-img-btn" id="btn-sub-category-add" style="background-image: url(/static/image/add.png);" data-toggle="modal" data-target="#modal-subCategoryofrevenue"></button>
+            	<button type="button" name="btnDelSub" class="edit-img-btn" id="btn-sub-category-del-revenue" style="background-image: url(/static/image/delete.png);"></button>
+            	<button type="button" class="btn btn-success btn-md sub-category-del-submit-revenue" id="sub-category-del-finish">刪除完畢</button>
+            </legend>
+            <form>
+			    <p>
+				   <table class="table table-bordered table-striped table-responsive" id="table2">
+				      <thead> 
+					     <th class="col-md-3">收入主分類 </th>
+						 <th class="col-md-9">收入子分類 </th>
+					  </thead>
+					  <tbody>
+						  <tr> 
+						     <td id="general_revenue">一般收入</td>
+							 <td>
+								{% for general_revenue in general_revenue_list %}
+							    	<button type="button" class="btn btn-link btn-md revenue-sub-category">{{ general_revenue.name }}</button>
+								{% endfor %}
+							</td>
+						  </tr>
+						  <tr> 
+						     <td id="invest_revenue">投資收入</td>
+						     <td>
+								{% for invest_revenue in invest_revenue_list %}
+						     		<button type="button" class="btn btn-link btn-md revenue-sub-category">{{ invest_revenue.name }}</button>
+								{% endfor %}
+							 </td>
+						  </tr>
+						  <tr> 
+						     <td id="other_revenue">其他</td>
+						     <td>
+								{% for other_revenue in other_revenue_list %}
+					     			<button type="button" class="btn btn-link btn-md revenue-sub-category">{{ other_revenue.name }}</button>
+						     	{% endfor %}
+							 </td>
+						  </tr>
+					  </tbody>
+				   </table>
+				</p>                        
+            </form>
+        </div>
 
-				
-				
-				<div class="col-md-12 well">
-                    <legend id="anch1"><span style="margin-right: 10px;">單月預算上限設定</span>
-                    </legend>
-                    <form>
-						   <table class="table table-bordered table-striped table-responsive">
-						      <tr> 
-							     <th class="col-md-2">時間 </th>
-								 <th class="col-md-5">預算上限金額 </th>
-								 <th class="col-md-5">逼近上限金額通知設定 </th>
-							  </tr>
-							  <tr> 
-							     <td>每個月總預算
-                                 </td>
-                                 <td>
-                                 	<input type="number" value="{{ month_budget.budget }}" id="m-b" readonly/>								 
-								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" id="month-budget">確定</button>
-						         </td>
-								 <td><input type="number" value="{{ month_budget.reminder }}" id="m-b-r" readonly/>
-						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button> 
-						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" id="month-budget-reminder">確定</button>
-						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" id="m-b-r-checkbox" {% if month_budget.is_reminded %} checked {% endif %}/>
-						         </td>
-							  </tr>
-						   </table>
-					</form>
-                </div>
+		
+		
+		<div class="col-md-12 well">
+            <legend id="anch1"><span style="margin-right: 10px;">單月預算上限設定</span>
+            </legend>
+            <form>
+				   <table class="table table-bordered table-striped table-responsive">
+				      <tr> 
+					     <th class="col-md-2">時間 </th>
+						 <th class="col-md-5">預算上限金額 </th>
+						 <th class="col-md-5">逼近上限金額通知設定 </th>
+					  </tr>
+					  <tr> 
+					     <td>每個月總預算
+                         </td>
+                         <td>
+                         	<input type="number" value="{{ month_budget.budget }}" id="m-b" readonly/>								 
+						    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+						    <button type="button" class="btn btn-success btn-sm amount-setting-submit" id="month-budget">確定</button>
+				         </td>
+						 <td><input type="number" value="{{ month_budget.reminder }}" id="m-b-r" readonly/>
+				            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button> 
+				            <button type="button" class="btn btn-success btn-sm amount-setting-submit" id="month-budget-reminder">確定</button>
+				            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" id="m-b-r-checkbox" {% if month_budget.is_reminded %} checked {% endif %}/>
+				         </td>
+					  </tr>
+				   </table>
+			</form>
+        </div>
 
-                <div class="col-md-12 well">
-                    <legend id="anch1"><span style="margin-right: 10px;">分類預算上限設定</span>
-                    </legend>
-                    <form>
-						   <table class="table table-bordered table-striped table-responsive">
-						      <tr> 
-							     <th class="col-md-2">支出類別 </th>
-								 <th class="col-md-5">預算上限金額 </th>
-								 <th class="col-md-5">逼近上限金額通知設定 </th>
-							  </tr>
-							  <tr> 
-							     <td>食
-                                 </td>
-                                 <td><input type="number" value="{{ budget_food.budget }}" class="kind-b" readonly/>								 
-								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'food')">確定</button>
-						         </td>
-								 <td><input type="number" value="{{ budget_food.reminder }}" class="kind-b-r" readonly/>
-						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'food')">確定</button>
-								    <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'food')" {% if budget_food.is_reminded %} checked {% endif %}/>
-						         </td>
-							  </tr>
-							  <tr> 
-							     <td>衣 
-                                 </td>
-                                 <td><input type="number" value="{{ budget_clothing.budget }}" class="kind-b" readonly/>								 
-								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'clothing')">確定</button>
-						         </td>
-								 <td><input type="number" value="{{ budget_clothing.reminder }}" class="kind-b-r" readonly/>
-						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'clothing')">確定</button>
-						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'clothing')" {% if budget_clothing.is_reminded %} checked {% endif %}/>
-						         </td>
-							  </tr>
-							  <tr> 
-							     <td>住 
-                                 </td>
-                                 <td><input type="number" value="{{ budget_housing.budget }}" class="kind-b" readonly/>								 
-								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'housing')">確定</button>
-						         </td>
-								 <td><input type="number" value="{{ budget_housing.reminder }}" class="kind-b-r" readonly/>
-						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'housing')">確定</button>
-						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'housing')" {% if budget_housing.is_reminded %} checked {% endif %}/>
-						         </td>
-							  </tr>
-							  <tr> 
-							     <td>行 
-                                 </td>
-                                 <td><input type="number" value="{{ budget_transportation.budget }}" class="kind-b" readonly/>								 
-								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'transportation')">確定</button>
-						         </td>
-								 <td><input type="number" value="{{ budget_transportation.reminder }}" class="kind-b-r" readonly/>
-						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'transportation')">確定</button>
-						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'transportation')" {% if budget_transportation.is_reminded %} checked {% endif %}/>
-						         </td>
-							  </tr>
-							  <tr> 
-							     <td>育 
-                                 </td>
-                                 <td><input type="number" value="{{ budget_education.budget }}" class="kind-b" readonly/>								 
-								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'education')">確定</button>
-						         </td>
-								 <td><input type="number" value="{{ budget_education.reminder }}" class="kind-b-r" readonly/>
-						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'education')">確定</button>
-						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'education')" {% if budget_education.is_reminded %} checked {% endif %}/>
-						         </td>
-							  </tr>
-							  <tr> 
-							     <td>樂 
-                                 </td>
-                                 <td><input type="number" value="{{ budget_entertainment.budget }}" class="kind-b" readonly/>								 
-								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'entertainment')">確定</button>
-						         </td>
-								 <td><input type="number" value="{{ budget_entertainment.reminder }}" class="kind-b-r" readonly/>
-						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'entertainment')">確定</button>
-						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'entertainment')" {% if budget_entertainment.is_reminded %} checked {% endif %}/>
-						         </td>
-							  </tr>
-							  <tr> 
-							     <td>其他 
-                                 </td>
-                                 <td><input type="number" value="{{ budget_other.budget }}" class="kind-b" readonly/>								 
-								    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-								    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'others')">確定</button>
-						         </td>
-								 <td><input type="number" value="{{ budget_other.reminder }}" class="kind-b-r" readonly/>
-						            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
-						            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'others')">確定</button>
-						            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'others')" {% if budget_other.is_reminded %} checked {% endif %}/>
-						         </td>
-							  </tr>
-						   </table>
-					</form>
-                </div>
+        <div class="col-md-12 well">
+            <legend id="anch1"><span style="margin-right: 10px;">分類預算上限設定</span>
+            </legend>
+            <form>
+				   <table class="table table-bordered table-striped table-responsive">
+				      <tr> 
+					     <th class="col-md-2">支出類別 </th>
+						 <th class="col-md-5">預算上限金額 </th>
+						 <th class="col-md-5">逼近上限金額通知設定 </th>
+					  </tr>
+					  <tr> 
+					     <td>食
+                         </td>
+                         <td><input type="number" value="{{ budget_food.budget }}" class="kind-b" readonly/>								 
+						    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+						    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'food')">確定</button>
+				         </td>
+						 <td><input type="number" value="{{ budget_food.reminder }}" class="kind-b-r" readonly/>
+				            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+				            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'food')">確定</button>
+						    <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'food')" {% if budget_food.is_reminded %} checked {% endif %}/>
+				         </td>
+					  </tr>
+					  <tr> 
+					     <td>衣 
+                         </td>
+                         <td><input type="number" value="{{ budget_clothing.budget }}" class="kind-b" readonly/>								 
+						    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+						    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'clothing')">確定</button>
+				         </td>
+						 <td><input type="number" value="{{ budget_clothing.reminder }}" class="kind-b-r" readonly/>
+				            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+				            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'clothing')">確定</button>
+				            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'clothing')" {% if budget_clothing.is_reminded %} checked {% endif %}/>
+				         </td>
+					  </tr>
+					  <tr> 
+					     <td>住 
+                         </td>
+                         <td><input type="number" value="{{ budget_housing.budget }}" class="kind-b" readonly/>								 
+						    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+						    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'housing')">確定</button>
+				         </td>
+						 <td><input type="number" value="{{ budget_housing.reminder }}" class="kind-b-r" readonly/>
+				            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+				            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'housing')">確定</button>
+				            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'housing')" {% if budget_housing.is_reminded %} checked {% endif %}/>
+				         </td>
+					  </tr>
+					  <tr> 
+					     <td>行 
+                         </td>
+                         <td><input type="number" value="{{ budget_transportation.budget }}" class="kind-b" readonly/>								 
+						    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+						    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'transportation')">確定</button>
+				         </td>
+						 <td><input type="number" value="{{ budget_transportation.reminder }}" class="kind-b-r" readonly/>
+				            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+				            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'transportation')">確定</button>
+				            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'transportation')" {% if budget_transportation.is_reminded %} checked {% endif %}/>
+				         </td>
+					  </tr>
+					  <tr> 
+					     <td>育 
+                         </td>
+                         <td><input type="number" value="{{ budget_education.budget }}" class="kind-b" readonly/>								 
+						    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+						    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'education')">確定</button>
+				         </td>
+						 <td><input type="number" value="{{ budget_education.reminder }}" class="kind-b-r" readonly/>
+				            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+				            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'education')">確定</button>
+				            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'education')" {% if budget_education.is_reminded %} checked {% endif %}/>
+				         </td>
+					  </tr>
+					  <tr> 
+					     <td>樂 
+                         </td>
+                         <td><input type="number" value="{{ budget_entertainment.budget }}" class="kind-b" readonly/>								 
+						    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+						    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'entertainment')">確定</button>
+				         </td>
+						 <td><input type="number" value="{{ budget_entertainment.reminder }}" class="kind-b-r" readonly/>
+				            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+				            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'entertainment')">確定</button>
+				            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'entertainment')" {% if budget_entertainment.is_reminded %} checked {% endif %}/>
+				         </td>
+					  </tr>
+					  <tr> 
+					     <td>其他 
+                         </td>
+                         <td><input type="number" value="{{ budget_other.budget }}" class="kind-b" readonly/>								 
+						    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+						    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'others')">確定</button>
+				         </td>
+						 <td><input type="number" value="{{ budget_other.reminder }}" class="kind-b-r" readonly/>
+				            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+				            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'others')">確定</button>
+				            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'others')" {% if budget_other.is_reminded %} checked {% endif %}/>
+				         </td>
+					  </tr>
+				   </table>
+			</form>
+        </div>
 
-                <div class="col-md-12 well">
-                    <legend id="anch1"><span style="margin-right: 10px;">週期性支出設定</span>
-                    	<button type="button" class="edit-img-btn" id="btn-periodic-cost-add" 
-                    			style="background-image: url(/static/image/add.png);" data-toggle="modal" data-target="#modal-periodic"></button>
-                    	<button type="button" class="edit-img-btn" id="btn-periodic-cost-del" 
-                    			style="background-image: url(/static/image/delete.png);"></button>
-                 		<button type="button" class="btn btn-success btn-md table4-del-submit" id="table4-del-finish">確定刪除</button>
-                    	<button type="button" class="btn btn-danger btn-md table4-del-submit" id="table4-del-cancel">取消刪除</button>
-                    </legend>
+        <div class="col-md-12 well">
+            <legend id="anch1"><span style="margin-right: 10px;">週期性支出設定</span>
+            	<button type="button" class="edit-img-btn" id="btn-periodic-cost-add" 
+            			style="background-image: url(/static/image/add.png);" data-toggle="modal" data-target="#modal-periodic"></button>
+            	<button type="button" class="edit-img-btn" id="btn-periodic-cost-del" 
+            			style="background-image: url(/static/image/delete.png);"></button>
+         		<button type="button" class="btn btn-success btn-md table4-del-submit" id="table4-del-finish">確定刪除</button>
+            	<button type="button" class="btn btn-danger btn-md table4-del-submit" id="table4-del-cancel">取消刪除</button>
+            </legend>
 
-                    <form>
-						   <table class="table table-bordered table-striped table-responsive" id="table4">
-						      <tr> 
-							     <th class="col-md-3">週期性支出項目 </th>
-								 <th class="col-md-4">預定支出日期 </th>
-								 <th class="col-md-3">繳費提醒通知日期 </th>
-								 <th class="col-md-2">通知與日期設定 </th>
-							  </tr>
-							  {% for cyclicalExpenditure in cyclicalExpenditure_list %}
-							  	<tr> 
-							    	<td>{{ cyclicalExpenditure.name }}</td>
-										<td>{% if cyclicalExpenditure.expenditure_type == "month" %}每月 {{cyclicalExpenditure.expenditure_date}}號{% else %}每週 星期{% if cyclicalExpenditure.expenditure_date == 1 %}一{% elif cyclicalExpenditure.expenditure_date == 2 %}二{% elif cyclicalExpenditure.expenditure_date == 3 %}三{% elif cyclicalExpenditure.expenditure_date == 4 %}四{% elif cyclicalExpenditure.expenditure_date == 5 %}五{% elif cyclicalExpenditure.expenditure_date == 6 %}六{% elif cyclicalExpenditure.expenditure_date == 7 %}日{% endif %}{% endif %}</td>
-								 		<td>{% if cyclicalExpenditure.reminder_type == "month" %}每月 {{cyclicalExpenditure.reminder_date}}號{% else %}每週 星期{% if cyclicalExpenditure.reminder_date == 1 %}一{% elif cyclicalExpenditure.reminder_date == 2 %}二{% elif cyclicalExpenditure.reminder_date == 3 %}三{% elif cyclicalExpenditure.reminder_date == 4 %}四{% elif cyclicalExpenditure.reminder_date == 5 %}五{% elif cyclicalExpenditure.reminder_date == 6 %}六{% elif cyclicalExpenditure.reminder_date == 7 %}日{% endif %}{% endif %}</td>
-                                 		<!--<td>每週 星期三</td>-->
-								 		<!--<td>每月 3號</td>-->
-						         	<td>
-						         		<button type='button' class='btn btn-primary btn-sm periodic-date-setting' data-toggle='modal' data-target='#modal-periodic-edit'>設定</button>
-						            	<input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="cyc_checkbox(this)" {% if cyclicalExpenditure.is_reminded %} checked {% endif %}/>
-						         	</td>
-							  	</tr>
-							  {% endfor %}
-						   </table>
-			           </form>
-                </div>
-            </div><!-- /.row -->
-        </div><!-- /.container -->
+            <form>
+				   <table class="table table-bordered table-striped table-responsive" id="table4">
+				      <tr> 
+					     <th class="col-md-3">週期性支出項目 </th>
+						 <th class="col-md-4">預定支出日期 </th>
+						 <th class="col-md-3">繳費提醒通知日期 </th>
+						 <th class="col-md-2">通知與日期設定 </th>
+					  </tr>
+					  {% for cyclicalExpenditure in cyclicalExpenditure_list %}
+					  	<tr> 
+					    	<td>{{ cyclicalExpenditure.name }}</td>
+								<td>{% if cyclicalExpenditure.expenditure_type == "month" %}每月 {{cyclicalExpenditure.expenditure_date}}號{% else %}每週 星期{% if cyclicalExpenditure.expenditure_date == 1 %}一{% elif cyclicalExpenditure.expenditure_date == 2 %}二{% elif cyclicalExpenditure.expenditure_date == 3 %}三{% elif cyclicalExpenditure.expenditure_date == 4 %}四{% elif cyclicalExpenditure.expenditure_date == 5 %}五{% elif cyclicalExpenditure.expenditure_date == 6 %}六{% elif cyclicalExpenditure.expenditure_date == 7 %}日{% endif %}{% endif %}</td>
+						 		<td>{% if cyclicalExpenditure.reminder_type == "month" %}每月 {{cyclicalExpenditure.reminder_date}}號{% else %}每週 星期{% if cyclicalExpenditure.reminder_date == 1 %}一{% elif cyclicalExpenditure.reminder_date == 2 %}二{% elif cyclicalExpenditure.reminder_date == 3 %}三{% elif cyclicalExpenditure.reminder_date == 4 %}四{% elif cyclicalExpenditure.reminder_date == 5 %}五{% elif cyclicalExpenditure.reminder_date == 6 %}六{% elif cyclicalExpenditure.reminder_date == 7 %}日{% endif %}{% endif %}</td>
+                         		<!--<td>每週 星期三</td>-->
+						 		<!--<td>每月 3號</td>-->
+				         	<td>
+				         		<button type='button' class='btn btn-primary btn-sm periodic-date-setting' data-toggle='modal' data-target='#modal-periodic-edit'>設定</button>
+				            	<input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="cyc_checkbox(this)" {% if cyclicalExpenditure.is_reminded %} checked {% endif %}/>
+				         	</td>
+					  	</tr>
+					  {% endfor %}
+				   </table>
+	           </form>
+        </div>
+    </div><!-- /.row -->
+</div><!-- /.container -->
 
-    </div><!-- /#wrapper (whole page)-->
+{% endblock %}
 
+
+{% block other_content %}
 	<!-- Modal 增加支出子分類 -->
 	<div class="modal fade" id="modal-subCategory" role="dialog">
 	    <div class="modal-dialog">
@@ -1487,6 +1383,4 @@
 	</div>
     <!-- /.modal -->	
 
-</body>
-
-</html>
+{% endblock %}

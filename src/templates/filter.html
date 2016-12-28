@@ -1,65 +1,21 @@
 <!-- 這個頁面是篩選頁 -->
-
+{% extends 'base.html' %}
 {% load staticfiles %}
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>MoneyKeeper</title>
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    <link href="{% static 'css/base.css' %}" rel="stylesheet">
-    	<!-- Bootstrap Core CSS -->
-    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
-
-		<!-- Custom CSS -->
-    <link href="{% static 'dist/css/metisMenu.min.css' %}" rel="stylesheet">
-    <link href="{% static 'dist/css/sb-admin-2.css' %}" rel="stylesheet">
-
-         <!--datepicker CSS-->
-    <link href="{% static 'css/bootstrap-responsive.css' %}" rel="stylesheet">
-    <link href="{% static 'css/bootstrap-datepicker.css' %}" rel="stylesheet">
-    <link href="{% static 'css/datepicker.css' %}" rel="stylesheet">
-
-    	<!--datatables CSS-->
+{% block local_include %}
+        <!--datatables CSS-->
     <link href="{% static 'datatables/jquery-ui.css' %}" rel="stylesheet">
     <link href="{% static 'datatables/dataTables.jqueryui.min.css' %}" rel="stylesheet">
 
-    	<!-- Custom Fonts -->
-    <link href="{% static 'font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
 
-		<!-- jQuery -->
-    <script src="{% static 'js/jquery.js' %}"></script>
-    <!-- <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script> -->
-
-    	<!-- Bootstrap Core JavaScript -->
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-
-    	<!-- datatables JavaScript -->
+        <!-- datatables JavaScript -->
     <script src="{% static 'datatables/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'datatables/dataTables.jqueryui.min.js' %}"></script>
+{% endblock %}
 
-		<!-- Custom Theme JavaScript -->
-    <script src="{% static 'dist/js/metisMenu.min.js' %}"></script>
-    <script src="{% static 'dist/js/sb-admin-2.js' %}"></script>
+{% block local_js %}
 
-        <!--datepicker-->
-    <script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
-
-<script type="text/javascript">
+<script>
 	$(document).ready(function() {
         var table = $('#example').DataTable({
             responsive: true,
@@ -417,21 +373,11 @@
 	} ); //end of document.ready
 
 </script>
+{% endblock %}
+
+
+{% block local_css %}
 <style type="text/css">
-    body {
-        background-color: rgb(229, 228, 219);
-    }
-    #page-wrapper {
-        min-height: 167px;
-        background-color: rgb(229, 228, 219);
-    }
-
-    #center-content {
-        background-color: #fff;
-        margin-top: 20px;
-        padding-bottom: 20px;
-    }
-
     .dataTables_wrapper .ui-toolbar{
         background: #DCDCDC ;
     }
@@ -472,197 +418,127 @@
         margin-left: 20px;
     }
 </style>
-</head>
+{% endblock %}
 
-<body>
+{% block left_side_content %}
+<div class="container-fluid">
+	<div class="row col-sm-3 col-md-3 left-side">
+        <div class="panel-group collapse in" id="accordion" aria-expanded="true">
 
-    <!-- whole page wrapper -->
-    <div id="wrapper container">
+            <!-- start panel 以日瀏覽 -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a href="/filter/"><span class="glyphicon glyphicon-menu-right">
+                        </span>以日瀏覽</a>
+                    </h4>
+                </div>
+            </div>  <!-- /.panel 以日瀏覽 -->
 
-        <!-- Navigation -->
-        <nav class="navbar navbar-light navbar-static-top" role="navigation">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".panel-group">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand glyphicon glyphicon-book" href="/dashboard/"></a>
-                <a  href="/dashboard/"><img src="../static/image/logo.png" alt="logo" class="navbar-brand glyphicon glyphicon-book" height="30px" width="200px" border="0" /></a>
-            </div><!-- /.navbar-header -->
+            <!-- start panel 以週瀏覽 -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a href="/getReceiptByWeek/"><span class="glyphicon glyphicon-menu-right">
+                        </span>以週瀏覽</a>
+                    </h4>
+                </div>
+            </div>  <!-- /.panel 以週瀏覽 -->
 
-            <ul class="nav navbar-top-links navbar-right">
-                
-                <!-- start bell dropdown -->
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="color: white;">
-                        <i class="fa fa-bell fa-fw"></i> <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-alerts">
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-comment fa-fw"></i> 以後會放提醒內容
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-comment fa-fw"></i> 以後會放提醒內容
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <strong>See All Alerts</strong>
-                                <i class="fa fa-angle-right"></i>
-                            </a>
-                        </li>
-                    </ul><!-- /.dropdown-alerts -->
-                </li><!-- /.dropdown -->
+            <!-- start panel 以月瀏覽 -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a href="/getReceiptByMon/"><span class="glyphicon glyphicon-menu-right">
+                        </span>以月瀏覽</a>
+                    </h4>
+                </div>
+            </div>  <!-- /.panel 以月瀏覽 -->
 
-                <!-- start user dropdown -->
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="color: white;">
-                        <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-user">
-                        <li><a href="/setting/"><i class="fa fa-gear fa-fw"></i> Settings</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li><a href="/chart/"><i class="fa fa-gear fa-fw"></i> Chart</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li><a href="/logout/"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
-                        </li>
-                    </ul>
+            <!-- start panel 以年瀏覽 -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a href="/getReceiptByYr/"><span class="glyphicon glyphicon-menu-right">
+                        </span>以年瀏覽</a>
+                    </h4>
+                </div>
+            </div>  <!-- /.panel 以年瀏覽 -->
+
+        </div>  <!-- /.panel group -->
+    </div>  <!-- /.left-side row -->
+{% endblock %}
+
+{% block main_content %}
+   <!-- Main container -->
+    <div id="page-wrapper" class="col-sm-9 col-md-9">
+        <div class="container-fluid col-xs-12 col-sm-12">
+            <div class="row">
+                <div class="col-lg-12" id="center-content">
+                    <div id="titleMenu" class="page-header" style="text-align: center; padding-bottom: 13px; padding-top: 13px; margin: 10px;">
+                        <div style="padding: 8px 12px; margin: 6px;">
+                            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true" id="btn_left"></span>
+                            <span class="label label-default" id="pageHeader_date" style=" margin: 6px; border-radius: 4px; background-color: #FFFF33; color: #000000; font-weight: bold; font-size: medium; padding-top: 7px;">{{title}}</span>
+                            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true" id="btn_right"></span>
+                        </div>
+                        <div style="text-align: center;">
+                            <label id="totalCost" style="font-weight: bold; font-size: medium">總支出：{{totalCost}}元</label>
+                            <label id="totalIncome" style="font-weight: bold; font-size: medium">&nbsp;總收入：{{totalIncome}}元</label>
+                            <label id="balance" style="font-weight: bold; font-size: medium">&nbsp;結餘：{{balance}}元</label>
+                        </div>
+                    </div>
                     
-                </li><!-- /.dropdown-user -->
-                
-            </ul><!-- /.dropdown -->
-            
-        </nav><!-- /.navbar-top-links -->
+                    <div>
+                    	<table id="example" class="display responsive nowrap" cellspacing="0" width="100%">
+                	        <thead>
+                	            <tr>
+                	                <th>分類</th>
+                                    <th>次分類</th>
+                	                <th>備註</th>
+                	                <th>支/收</th>
+                	                <th>付款方式</th>
+                	                <th>日期</th>
+                	                <th>金額</th>
+                                    <th>功能</th>
+                	            </tr>
+                	        </thead>
+                	        <tfoot>
+                	            <tr>
+                	                <th>分類</th>
+                                    <th>次分類</th>
+                	                <th>備註</th>
+                	                <th>支/收</th>
+                	                <th>付款方式</th>
+                	                <th>日期</th>
+                	                <th>金額</th>
+                                    <th>功能</th>
+                	            </tr>
+                	        </tfoot>
+                	        <tbody>
+                                {% for choice in receipts %}
+                	            <tr>
+                	                <td>{{choice.subclassification.classification.classification_type}}</td>
+                                    <td>{{choice.subclassification}}</td>
+                	                <td>{{choice.remark}}</td>
+                	                <td>{{choice.incomeandexpense}}</td>
+                	                <td>{{choice.payment}}</td>
+                	                <td>{{choice.date}}</td>
+                	                <td>{{choice.money}}</td>
+                                    <td style="width: 12%"><button type="button" class="btn btn-danger btn-sm" value="{{choice.id}}" title="刪除">刪除</button>&nbsp;<button type="button" class="btn btn-danger btn-sm" value="{{choice.id}}" title="修改" data-toggle="modal" data-target=".bd-example-modal-lg">修改</button></td>
+                                    <!-- <td style="display: none;">{{choice.id}}</td> -->
+                	            </tr>
+                                {% endfor %}
+                	        </tbody>
+                	    </table>
+                    </div>
+                </div><!-- /#center-content -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div><!-- /#page-wrapper (main container) -->
+</div><!-- /.container-fluid (whole div below navbar) -->
+{% endblock %}
 
-        <!-- main container -->
-        <div class="container-fluid">
-        	<div class="row col-sm-2 col-md-2 left-side">
-                <div class="panel-group collapse in" id="accordion" aria-expanded="true">
-
-                    <!-- start panel 以日瀏覽 -->
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h4 class="panel-title">
-                                <a href="/filter/"><span class="glyphicon glyphicon-menu-right">
-                                </span>以日瀏覽</a>
-                            </h4>
-                        </div>
-                    </div>  <!-- /.panel 以日瀏覽 -->
-
-                    <!-- start panel 以週瀏覽 -->
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h4 class="panel-title">
-                                <a href="/getReceiptByWeek/"><span class="glyphicon glyphicon-menu-right">
-                                </span>以週瀏覽</a>
-                            </h4>
-                        </div>
-                    </div>  <!-- /.panel 以週瀏覽 -->
-
-                    <!-- start panel 以月瀏覽 -->
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h4 class="panel-title">
-                                <a href="/getReceiptByMon/"><span class="glyphicon glyphicon-menu-right">
-                                </span>以月瀏覽</a>
-                            </h4>
-                        </div>
-                    </div>  <!-- /.panel 以月瀏覽 -->
-
-                    <!-- start panel 以年瀏覽 -->
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h4 class="panel-title">
-                                <a href="/getReceiptByYr/"><span class="glyphicon glyphicon-menu-right">
-                                </span>以年瀏覽</a>
-                            </h4>
-                        </div>
-                    </div>  <!-- /.panel 以年瀏覽 -->
-
-                </div>  <!-- /.panel group -->
-            </div>  <!-- /.left-side row -->
-
-
-	        <!-- Main container -->
-	        <div id="page-wrapper" class="col-sm-10 col-md-10">
-	        	<div class="container-fluid col-xs-12 col-sm-12">
-			    	<div class="row">
-                        <div class="col-lg-12" id="center-content">
-                            <div id="titleMenu" class="page-header" style="text-align: center; padding-bottom: 13px; padding-top: 13px; margin: 10px;">
-                                <div style="padding: 8px 12px; margin: 6px;">
-                                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true" id="btn_left"></span>
-                                    <span class="label label-default" id="pageHeader_date" style=" margin: 6px; border-radius: 4px; background-color: #FFFF33; color: #000000; font-weight: bold; font-size: medium; padding-top: 7px;">{{title}}</span>
-                                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true" id="btn_right"></span>
-                                </div>
-                                <div style="text-align: center;">
-                                    <label id="totalCost" style="font-weight: bold; font-size: medium">總支出：{{totalCost}}元</label>
-                                    <label id="totalIncome" style="font-weight: bold; font-size: medium">&nbsp;總收入：{{totalIncome}}元</label>
-                                    <label id="balance" style="font-weight: bold; font-size: medium">&nbsp;結餘：{{balance}}元</label>
-                                </div>
-                            </div>
-                            
-                            <div>
-                            	<table id="example" class="display responsive nowrap" cellspacing="0" width="100%">
-							        <thead>
-							            <tr>
-							                <th>分類</th>
-                                            <th>次分類</th>
-							                <th>備註</th>
-							                <th>支/收</th>
-							                <th>付款方式</th>
-							                <th>日期</th>
-							                <th>金額</th>
-                                            <th>功能</th>
-							            </tr>
-							        </thead>
-							        <tfoot>
-							            <tr>
-							                <th>分類</th>
-                                            <th>次分類</th>
-							                <th>備註</th>
-							                <th>支/收</th>
-							                <th>付款方式</th>
-							                <th>日期</th>
-							                <th>金額</th>
-                                            <th>功能</th>
-							            </tr>
-							        </tfoot>
-							        <tbody>
-                                        {% for choice in receipts %}
-							            <tr>
-							                <td>{{choice.subclassification.classification.classification_type}}</td>
-                                            <td>{{choice.subclassification}}</td>
-							                <td>{{choice.remark}}</td>
-							                <td>{{choice.incomeandexpense}}</td>
-							                <td>{{choice.payment}}</td>
-							                <td>{{choice.date}}</td>
-							                <td>{{choice.money}}</td>
-                                            <td style="width: 12%"><button type="button" class="btn btn-danger btn-sm" value="{{choice.id}}" title="刪除">刪除</button>&nbsp;<button type="button" class="btn btn-danger btn-sm" value="{{choice.id}}" title="修改" data-toggle="modal" data-target=".bd-example-modal-lg">修改</button></td>
-                                            <!-- <td style="display: none;">{{choice.id}}</td> -->
-							            </tr>
-                                        {% endfor %}
-							        </tbody>
-							    </table>
-                            </div>
-                        </div>
-                    </div><!-- /.row -->
-		    	</div><!-- /.container-fluid -->
-	    	</div><!-- /#page-wrapper (main container) -->
-        </div><!-- /.container-fluid (whole div below navbar) -->
-    </div><!-- /#wrapper (whole page)-->
+{% block other_content %}
 
     <!-- modal html -->
     <div class="modal fade bd-example-modal-lg" id="modal"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -728,7 +604,4 @@
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 	
-
-</body>
-
-</html>
+{% endblock %}
