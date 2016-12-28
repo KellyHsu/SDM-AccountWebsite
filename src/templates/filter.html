@@ -37,7 +37,8 @@
     	<!--datatables CSS-->
     <link href="{% static 'datatables/jquery-ui.css' %}" rel="stylesheet">
     <link href="{% static 'datatables/dataTables.jqueryui.min.css' %}" rel="stylesheet">
-
+    <link href="{% static 'datatables/responsive.dataTables.min.css' %}" rel="stylesheet">
+    
     	<!-- Custom Fonts -->
     <link href="{% static 'font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
 
@@ -51,6 +52,7 @@
     	<!-- datatables JavaScript -->
     <script src="{% static 'datatables/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'datatables/dataTables.jqueryui.min.js' %}"></script>
+    <script src="{% static 'datatables/dataTables.responsive.min.js' %}"></script>
 
 		<!-- Custom Theme JavaScript -->
     <script src="{% static 'dist/js/metisMenu.min.js' %}"></script>
@@ -63,6 +65,11 @@
 	$(document).ready(function() {
         var table = $('#example').DataTable({
             responsive: true,
+            columnDefs: [
+                { responsivePriority: 1, targets: 0 },
+                { responsivePriority: 1, targets: -2 },
+                { responsivePriority: 2, targets: -1 }
+            ]
             //"scrollx": true,
         });
         var ecatList_ch = ["食", "衣", "住","行","育","樂","其"];
@@ -221,6 +228,8 @@
                         $('#totalIncome').text("總收入"+result.income);
                         $('#balance').text("餘額"+result.balance);
                         $('#modal').modal('toggle');
+                        var url = window.location.href;
+                        window.location = url;
                     },
                     error: function(result, status){
                         console.log(status);
@@ -448,20 +457,18 @@
     }
     #recordType, #payment{
         width: 90px;
+        padding: 0px;
     }
     #datepicker1{
         margin-left: 6px;
     }
-    #modal_memo{
-        margin-top: 15px;
-    }
     #amount{
         font-size: 20px;
         border-bottom: 2px solid black;
+        margin: 0px;
     }
     #category, #subcat{
         width: 90px;
-        padding: 5px;
         border: #000000 1px solid;
     }
     #second_level{
@@ -615,7 +622,7 @@
                             </div>
                             
                             <div>
-                            	<table id="example" class="display responsive nowrap" cellspacing="0" width="100%">
+                            	<table id="example" class="display nowrap" cellspacing="0" width="100%">
 							        <thead>
 							            <tr>
 							                <th>分類</th>
