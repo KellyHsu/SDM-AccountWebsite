@@ -113,11 +113,11 @@
             var sign;
             console.log(pathname);
             console.log(idClick); 
-            if(pathname == "/filter/"){
+            if(pathname == "/zh-hant/filter/" || pathname == "/en/filter/"){
                 sign = "day";
-            }else if(pathname == "/getReceiptByWeek/"){
+            }else if(pathname == "/zh-hant/getReceiptByWeek/" || pathname == "/en/getReceiptByWeek/"){
                 sign = "week";
-            }else if(pathname == "/getReceiptByMon/"){
+            }else if(pathname == "/zh-hant/getReceiptByMon/" || pathname == "/en/getReceiptByMon/"){
                 sign = "month";
             }else{
                 sign = "year";
@@ -126,9 +126,9 @@
             console.log(typeof(pageHeader_date));
             $.ajax({
                dataType: 'json',
-               url: "/backwardTime/",
+               url: "../backwardTime/",
                 type:"POST",
-                data: {pageHeader_date : pageHeader_date, sign: sign, id: idClick},
+                data: {pageHeader_date : pageHeader_date, sign: sign, id: idClick, pathname:pathname},
                 success: function(result){
                     $('#example tbody tr').remove();
                     console.log(result.tableContent);
@@ -156,11 +156,11 @@
             var pageHeader_date = $('#pageHeader_date').html();
             var sign;
             console.log(pathname);
-            if(pathname == "/filter/"){
+            if(pathname == "/zh-hant/filter/" || pathname == "/en/filter/"){
                 sign = "day";
-            }else if(pathname == "/getReceiptByWeek/"){
+            }else if(pathname == "/zh-hant/getReceiptByWeek/" || pathname == "/en/getReceiptByWeek/"){
                 sign = "week";
-            }else if(pathname == "/getReceiptByMon/"){
+            }else if(pathname == "/zh-hant/getReceiptByMon/" || pathname == "/en/getReceiptByMon/"){
                 sign = "month";
             }else{
                 sign = "year";
@@ -170,7 +170,7 @@
             if(title =="刪除"){
                 $.ajax({
                     dataType: 'json',
-                    url: "/filterDelRecord/",
+                    url: "../filterDelRecord/",
                     type:"POST",
                     data: {id: id, pageHeader_date: pageHeader_date, sign: sign},
                     success: function(result){
