@@ -1505,11 +1505,12 @@ def get_week_chart(request):
             income_sat = int(income_sat['money__sum'])
 
         data = {
-            'week': ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun', 'sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', ],
+            'week': ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'],
             'dollar': [cost_sun, cost_mon, cost_tue, cost_wed, cost_thu, cost_fri, cost_sat, income_sun, income_mon, income_tue, income_wed, income_thu, income_fri, income_sat],
             'origin':['expense','expense','expense','expense','expense','expense','expense',
                       'income','income','income','income','income','income','income']
         }
+        print(len(data['week']), len(data['dollar']), len(data['origin']))
         bar2 = Bar(data, label=CatAttr(columns=['week'], sort=False,), values='dollar', plot_height=400, responsive=True, group='origin')
         script2, div2 = components(bar2)
 
