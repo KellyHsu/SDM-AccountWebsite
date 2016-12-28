@@ -128,7 +128,7 @@
                dataType: 'json',
                url: "../backwardTime/",
                 type:"POST",
-                data: {pageHeader_date : pageHeader_date, sign: sign, id: idClick, pathname:pathname},
+                data: {pageHeader_date : pageHeader_date, sign: sign, id: idClick},
                 success: function(result){
                     $('#example tbody tr').remove();
                     console.log(result.tableContent);

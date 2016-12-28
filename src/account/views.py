@@ -903,7 +903,6 @@ def backwardtime(request):
     if request.method == 'POST':
         # print(request.POST)
         print (request.POST["sign"])
-        print (request.POST["pathname"])
         print(request.POST["pageHeader_date"])
         member = Member.objects.filter(user__username=request.user).first()
         if request.POST["sign"] == "day":
