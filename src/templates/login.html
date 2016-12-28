@@ -1,6 +1,7 @@
 <!-- 登入做在這頁 -->
 
 {% load staticfiles i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -28,7 +29,7 @@
             <div class="col-md-4 card card-container">
                 <section class="login-form">
                     <h1 class="welcome text-center">{% trans "Welcome to" %}<br> Money Keeper</h1>
-                    <form method="post" action="/login/" role="login">
+                    <form method="post" action="/{{ LANGUAGE_CODE }}/login/" role="login">
                         {% csrf_token %}
                         <h2 class='login_title text-center'>{% trans "Login" %}</h2>
                         <hr>
