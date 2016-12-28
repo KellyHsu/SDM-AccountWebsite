@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-26 23:29+0800\n"
+"POT-Creation-Date: 2016-12-28 09:49+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -49,6 +49,7 @@ msgid "Balance: %(balance)s"
 msgstr "結餘: %(balance)s 元"
 
 #: templates/filter.html:375 templates/filter.html:415
+#: templates/setting.html:1042 templates/setting.html:1118
 msgid "Delete"
 msgstr "刪除"
 
@@ -61,6 +62,7 @@ msgid "Class"
 msgstr "類別"
 
 #: templates/filter.html:384 templates/filter.html:396
+#: templates/setting.html:1356 templates/setting.html:1390
 msgid "Subclass"
 msgstr "子類別"
 
@@ -143,6 +145,414 @@ msgstr "註冊"
 #: templates/register.html:55
 msgid "Go to Login"
 msgstr "回到登入頁"
+
+#: templates/setting.html:1 templates/setting.html:705
+#: templates/setting.html:1175 templates/setting.html:1179
+#: templates/setting.html:1202 templates/setting.html:1206
+#: templates/setting.html:1215 templates/setting.html:1219
+#: templates/setting.html:1228 templates/setting.html:1232
+#: templates/setting.html:1241 templates/setting.html:1245
+#: templates/setting.html:1254 templates/setting.html:1258
+#: templates/setting.html:1267 templates/setting.html:1271
+#: templates/setting.html:1280 templates/setting.html:1284
+#: templates/setting.html:1319
+msgid "Setting"
+msgstr "設定"
+
+#: templates/setting.html:269 templates/setting.html:1077
+#: templates/setting.html:1238 templates/setting.html:1349
+msgid "T"
+msgstr "行"
+
+#: templates/setting.html:307
+msgid "The items you want to delete are："
+msgstr "刪除的項目有"
+
+#: templates/setting.html:310
+msgid "Delete cyclical item fail!"
+msgstr "刪除週期性項目失敗"
+
+#: templates/setting.html:360
+msgid "Update month budget fail"
+msgstr "更新月預算失敗"
+
+#: templates/setting.html:377
+msgid "Update month budget notification fail"
+msgstr "更新月預算提醒失敗"
+
+#: templates/setting.html:402 templates/setting.html:436
+#: templates/setting.html:461 templates/setting.html:748
+msgid "Fail"
+msgstr "失敗"
+
+#: templates/setting.html:481
+msgid "Delete Record"
+msgstr "刪除記錄"
+
+#: templates/setting.html:504
+msgid "Content error, please call for website administrator."
+msgstr "內容顯示錯誤，請洽工程師"
+
+#: templates/setting.html:519 templates/setting.html:551
+msgid "\"You wanna delete subclass '\" + btnText + \"' ？\""
+msgstr "\"你真的要刪掉次分類： '\" + btnText + \"' 嗎？\""
+
+#: templates/setting.html:528 templates/setting.html:560
+msgid "You delete"
+msgstr "刪除了"
+
+#: templates/setting.html:531 templates/setting.html:563
+msgid "Delete subclass fail"
+msgstr "刪除子分類失敗"
+
+#: templates/setting.html:583 templates/setting.html:637
+#: templates/setting.html:672 templates/setting.html:861
+#: templates/setting.html:896 templates/setting.html:1314
+#: templates/setting.html:1315
+msgid "Sunday"
+msgstr "星期日"
+
+#: templates/setting.html:583 templates/setting.html:640
+#: templates/setting.html:675 templates/setting.html:864
+#: templates/setting.html:899 templates/setting.html:1314
+#: templates/setting.html:1315
+msgid "Monday"
+msgstr "星期一"
+
+#: templates/setting.html:583 templates/setting.html:643
+#: templates/setting.html:678 templates/setting.html:867
+#: templates/setting.html:902 templates/setting.html:1314
+#: templates/setting.html:1315
+msgid "Tuesday"
+msgstr "星期二"
+
+#: templates/setting.html:583 templates/setting.html:646
+#: templates/setting.html:681 templates/setting.html:870
+#: templates/setting.html:905 templates/setting.html:1314
+#: templates/setting.html:1315
+msgid "Wednesday"
+msgstr "星期三"
+
+#: templates/setting.html:583 templates/setting.html:649
+#: templates/setting.html:684 templates/setting.html:908
+#: templates/setting.html:1314 templates/setting.html:1315
+msgid "Thursday"
+msgstr "星期四"
+
+#: templates/setting.html:583 templates/setting.html:652
+#: templates/setting.html:687 templates/setting.html:876
+#: templates/setting.html:911 templates/setting.html:1314
+#: templates/setting.html:1315
+msgid "Friday"
+msgstr "星期五"
+
+#: templates/setting.html:583 templates/setting.html:655
+#: templates/setting.html:690 templates/setting.html:879
+#: templates/setting.html:914 templates/setting.html:1314
+#: templates/setting.html:1315
+msgid "Saturday"
+msgstr "星期六"
+
+#: templates/setting.html:607 templates/setting.html:1423
+#: templates/setting.html:1431 templates/setting.html:1466
+#: templates/setting.html:1474
+msgid "Every month"
+msgstr "每月"
+
+#: templates/setting.html:710 templates/setting.html:742
+#| msgid "'Notification on'"
+msgid "Notification on"
+msgstr "通知開"
+
+#: templates/setting.html:711 templates/setting.html:744
+#| msgid "'Notification off'"
+msgid "Notification off"
+msgstr "通知關"
+
+#: templates/setting.html:716
+#| msgid "Add subclass"
+msgid "Add success"
+msgstr "新增子類別"
+
+#: templates/setting.html:719 templates/setting.html:778
+#: templates/setting.html:809
+msgid "Add fail"
+msgstr "新增失敗"
+
+#: templates/setting.html:773 templates/setting.html:805
+msgid "Subclass name repeat"
+msgstr "子分類名稱重複"
+
+#: templates/setting.html:853 templates/setting.html:1314
+#: templates/setting.html:1315
+msgid "Every"
+msgstr "每週"
+
+#: templates/setting.html:888 templates/setting.html:1424
+#: templates/setting.html:1432 templates/setting.html:1467
+#: templates/setting.html:1475
+msgid "Every week"
+msgstr "每週"
+
+#: templates/setting.html:934
+msgid "Update success"
+msgstr "更新成功"
+
+#: templates/setting.html:937
+#| msgid "Update month budget fail"
+msgid "Update fail"
+msgstr "更新失敗"
+
+#: templates/setting.html:1016
+msgid "Personal Account Setting"
+msgstr "個人帳戶設定"
+
+#: templates/setting.html:1019
+msgid "Personal Setting"
+msgstr "個人基本資料設定"
+
+#: templates/setting.html:1021
+#| msgid "Amount"
+msgid "Account"
+msgstr "帳戶"
+
+#: templates/setting.html:1023
+msgid "Reset password"
+msgstr "重設密碼"
+
+#: templates/setting.html:1026
+msgid "Password"
+msgstr "密碼"
+
+#: templates/setting.html:1027
+msgid "'Enter password'"
+msgstr "輸入密碼"
+
+#: templates/setting.html:1028
+msgid "Password again"
+msgstr "再次輸入密碼"
+
+#: templates/setting.html:1029
+msgid "'Enter password again'"
+msgstr "確認密碼"
+
+#: templates/setting.html:1032
+msgid "Modify cancel"
+msgstr "修改取消"
+
+#: templates/setting.html:1039
+msgid "Expense subclass setting"
+msgstr "支出子類別設定"
+
+#: templates/setting.html:1048
+msgid "Expense main class"
+msgstr "支出主類別"
+
+#: templates/setting.html:1049
+msgid "Expense subclass"
+msgstr "支出子類別"
+
+#: templates/setting.html:1053 templates/setting.html:1199
+#: templates/setting.html:1346
+msgid "E"
+msgstr "食"
+
+#: templates/setting.html:1061 templates/setting.html:1212
+#: templates/setting.html:1347
+msgid "C"
+msgstr "衣"
+
+#: templates/setting.html:1069 templates/setting.html:1225
+#: templates/setting.html:1348
+msgid "H"
+msgstr "住"
+
+#: templates/setting.html:1085 templates/setting.html:1251
+#: templates/setting.html:1350
+msgid "Ed"
+msgstr "育"
+
+#: templates/setting.html:1093 templates/setting.html:1264
+#: templates/setting.html:1351
+msgid "En"
+msgstr "樂"
+
+#: templates/setting.html:1101 templates/setting.html:1145
+#: templates/setting.html:1277
+msgid "O"
+msgstr "其他"
+
+#: templates/setting.html:1115
+msgid "Income subclass setting"
+msgstr "收入子分類設定"
+
+#: templates/setting.html:1124
+msgid "Income main class"
+msgstr "收入主類別"
+
+#: templates/setting.html:1125
+msgid "Income subclass"
+msgstr "收入子類別"
+
+#: templates/setting.html:1129 templates/setting.html:1384
+msgid "General Income"
+msgstr "一般收入"
+
+#: templates/setting.html:1137 templates/setting.html:1385
+msgid "Investment Income"
+msgstr "投資收入"
+
+#: templates/setting.html:1161
+msgid "Month budget limit setting"
+msgstr "單月預算上限設定"
+
+#: templates/setting.html:1166
+msgid "Time"
+msgstr "時間"
+
+#: templates/setting.html:1167
+msgid "Budget limit amount"
+msgstr "預算上限金額"
+
+#: templates/setting.html:1168
+msgid "Budget limit amount notification"
+msgstr "逼近上限金額通知"
+
+#: templates/setting.html:1171
+msgid "Monthly total budget"
+msgstr "每個月總預算"
+
+#: templates/setting.html:1176 templates/setting.html:1180
+#: templates/setting.html:1203 templates/setting.html:1207
+#: templates/setting.html:1216 templates/setting.html:1220
+#: templates/setting.html:1229 templates/setting.html:1233
+#: templates/setting.html:1242 templates/setting.html:1246
+#: templates/setting.html:1255 templates/setting.html:1259
+#: templates/setting.html:1268 templates/setting.html:1272
+#: templates/setting.html:1281 templates/setting.html:1285
+#: templates/setting.html:1362 templates/setting.html:1396
+#: templates/setting.html:1439 templates/setting.html:1482
+msgid "Confirm"
+msgstr "確定"
+
+#: templates/setting.html:1181 templates/setting.html:1208
+#: templates/setting.html:1221 templates/setting.html:1234
+#: templates/setting.html:1247 templates/setting.html:1260
+#: templates/setting.html:1273 templates/setting.html:1286
+#: templates/setting.html:1320
+msgid "'Notification on'"
+msgstr "通知開"
+
+#: templates/setting.html:1181 templates/setting.html:1208
+#: templates/setting.html:1221 templates/setting.html:1234
+#: templates/setting.html:1247 templates/setting.html:1260
+#: templates/setting.html:1273 templates/setting.html:1286
+#: templates/setting.html:1320
+msgid "'Notification off'"
+msgstr "通知關"
+
+#: templates/setting.html:1189
+msgid "Limit amount of class setting"
+msgstr "分類預算上限設定"
+
+#: templates/setting.html:1194
+msgid "Expense class"
+msgstr "支出類別"
+
+#: templates/setting.html:1195
+msgid "Limit amount"
+msgstr "金額上限"
+
+#: templates/setting.html:1196
+msgid "Limit amount notification"
+msgstr "逼近上限金額通知"
+
+#: templates/setting.html:1294
+msgid "Cyclical Expenditure Setting"
+msgstr "週期性支出設定"
+
+#: templates/setting.html:1299
+msgid "Confirm Delete"
+msgstr "確定刪除"
+
+#: templates/setting.html:1300
+msgid "Cancel Delete"
+msgstr "取消刪除"
+
+#: templates/setting.html:1306 templates/setting.html:1417
+#: templates/setting.html:1460
+msgid "Cyclical Expenditure Item"
+msgstr "週期性支出項目"
+
+#: templates/setting.html:1307
+msgid "Scheduled Payment Date"
+msgstr "預定支出日期"
+
+#: templates/setting.html:1308
+msgid "Pay bill notification Date"
+msgstr "繳費提醒通知日期"
+
+#: templates/setting.html:1309
+msgid "Notification and Date Setting"
+msgstr "通知與日期設定"
+
+#: templates/setting.html:1314
+#, python-format
+msgid "Every month %(cyclicalExpenditure.expenditure_date)s"
+msgstr "每月 %(cyclicalExpenditure.expenditure_date)s"
+
+#: templates/setting.html:1315
+#, python-format
+msgid "Every month %(cyclicalExpenditure.reminder_date)s"
+msgstr "每月 %(cyclicalExpenditure.reminder_date)s"
+
+#: templates/setting.html:1339 templates/setting.html:1377
+msgid "Add subclass"
+msgstr "新增子類別"
+
+#: templates/setting.html:1344 templates/setting.html:1382
+msgid "Choose main class"
+msgstr "選擇主類別"
+
+#: templates/setting.html:1352 templates/setting.html:1386
+msgid "Other"
+msgstr "其他"
+
+#: templates/setting.html:1357 templates/setting.html:1391
+#: templates/setting.html:1418 templates/setting.html:1461
+msgid "'New subclass'"
+msgstr "新子類別"
+
+#: templates/setting.html:1363 templates/setting.html:1397
+#: templates/setting.html:1440 templates/setting.html:1483
+msgid "Cancel"
+msgstr "取消"
+
+#: templates/setting.html:1412
+msgid "Add Cyclical Expenditure Notification"
+msgstr "新增週期性支出提醒設定"
+
+#: templates/setting.html:1421 templates/setting.html:1464
+msgid "Expense Date"
+msgstr "支出日期"
+
+#: templates/setting.html:1429 templates/setting.html:1472
+msgid "Pay bill notification"
+msgstr "繳費提醒通知"
+
+#: templates/setting.html:1455
+msgid "Edit Cyclical Expenditure Item"
+msgstr "編輯週期性支出項目"
+
+#, fuzzy
+#~| msgid "'Notificetion on'"
+#~ msgid "Notifacation on"
+#~ msgstr "通知開"
+
+#, fuzzy
+#~| msgid "'Notificetion off'"
+#~ msgid "Notifacation off"
+#~ msgstr "通知關"
 
 #~ msgid "Total income:"
 #~ msgstr "總收入:"
