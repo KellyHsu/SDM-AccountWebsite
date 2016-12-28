@@ -153,7 +153,7 @@
 			if($("#password").val() == $('#confirmpassword').val()){		
 				var new_password=$("#password").val();
 				$.ajax({
-            	    url: "/changePassword/",
+            	    url: "../changePassword/",
             	    type:"POST",
             	    data: {new_password : new_password},
             	    success: function(rowcontent){
@@ -163,7 +163,8 @@
 							height: 'toggle'
 						});
 						$("#go-passwd-set").show(1000);
-{#						alert("修改密碼成功");#}
+						alert("Modify success!");
+						window.location.href = '/login/';
             	    },
             	    error: function(){
                 		alert("修改密碼失敗")
@@ -285,7 +286,7 @@
 			//post
 			if(deltArr){
             	$.ajax({
-                	url: "/deleteCyclicalExpenditure/",
+                	url: "../deleteCyclicalExpenditure/",
                 	type:"POST",
                 	data: {deltArr : deltArr},
                 	success: function(rowcontent){
@@ -350,7 +351,7 @@
 		$("#month-budget").click(function(){
 			var month_budget = $("#m-b").val();
 			$.ajax({
-                url: "/updateMonthBudget/",
+                url: "../updateMonthBudget/",
                 type:"POST",
                 data: {month_budget : month_budget},
                 success: function(rowcontent){
@@ -367,7 +368,7 @@
 			var month_reminder = $("#m-b-r").val();
 			console.log(month_reminder);
 			$.ajax({
-                url: "/updateMonthBudgetReminder/",
+                url: "../updateMonthBudgetReminder/",
                 type:"POST",
                 data: {month_reminder : month_reminder},
                 success: function(rowcontent){
@@ -388,7 +389,7 @@
 				isreminded="False";
 			}
 			$.ajax({
-                url: "/updateMonthBudgetIsreminded/",
+                url: "../updateMonthBudgetIsreminded/",
                 type:"POST",
                 data: {isreminded : isreminded},
                 success: function(rowcontent){
@@ -410,7 +411,7 @@
 	function category_budget(object,category){
 		var budget = $(object).prev().prev('input').val();
 		$.ajax({
-                url: "/updateBudget/",
+                url: "../updateBudget/",
                 type:"POST",
                 data: {budget : budget, category : category},
                 success: function(rowcontent){
@@ -426,7 +427,7 @@
 	function category_reminder(object,category){
 		var reminder = $(object).prev().prev('input').val();
 		$.ajax({
-                url: "/updateBudgetReminder/",
+                url: "../updateBudgetReminder/",
                 type:"POST",
                 data: {reminder : reminder, category : category},
                 success: function(rowcontent){
@@ -447,7 +448,7 @@
 				isreminded="False";
 			}
 			$.ajax({
-                url: "/updateBudgetIsreminded/",
+                url: "../updateBudgetIsreminded/",
                 type:"POST",
                 data: {isreminded : isreminded, category : category},
                 success: function(rowcontent){
@@ -521,7 +522,7 @@
 					delSub.remove();	
 					//post
 					$.ajax({
-                		url: "/deleteSubClassificationInSettingPage/",
+                		url: "../deleteSubClassificationInSettingPage/",
                 		type:"POST",
                 		data: {name:btnText},
                 		success: function(rowcontent){
@@ -553,7 +554,7 @@
 					delSub.remove();	
 					//post
 					$.ajax({
-                		url: "/deleteSubClassificationInSettingPage/",
+                		url: "../deleteSubClassificationInSettingPage/",
                 		type:"POST",
                 		data: {name:btnText},
                 		success: function(rowcontent){
@@ -697,7 +698,7 @@
 		//post
 		if( title.trim() ){
             $.ajax({
-            	url: "/createCyclicalExpenditure/",
+            	url: "../createCyclicalExpenditure/",
             	type:"POST",
             	data: {name:title, expenditure_type:expenditure_type, expenditure_date:expenditure_date, reminder_type:reminder_type, reminder_date:reminder_date},
                 success: function(repeated_name){
@@ -734,7 +735,7 @@
 				isreminded="False";
 			}
 			$.ajax({
-                url: "/updateCyclicalExpenditureIsreminded/",
+                url: "../updateCyclicalExpenditureIsreminded/",
                 type:"POST",
                 data: {isreminded : isreminded, name : name},
                 success: function(rowcontent){
@@ -757,7 +758,7 @@
 		//post
  		if(newSub){
             $.ajax({
-                url: "/createSubClassificationInSettingPage/",
+                url: "../createSubClassificationInSettingPage/",
                 type:"POST",
                 dataType: 'json',
                 data: {newSub : newSub, category : mainType},
@@ -790,7 +791,7 @@
 		//post
  		if(newSub){
             $.ajax({
-                url: "/createSubClassificationInSettingPage/",
+                url: "../createSubClassificationInSettingPage/",
                 type:"POST",
                 dataType: 'json',
                 data: {newSub : newSub, category : mainType},
@@ -919,7 +920,7 @@
 				reminder_date=date1[0];
 		}
 		$.ajax({
-            url: "/updateCyclicalExpenditure/",
+            url: "../updateCyclicalExpenditure/",
             type:"POST",
             data: {name:name, expenditure_type:expenditure_type, expenditure_date:expenditure_date, reminder_type:reminder_type, reminder_date:reminder_date},
             success: function(content){
@@ -1037,8 +1038,8 @@
 
                 <div class="col-md-12 well">
                     <legend id="anch1"><span style="margin-right: 10px;">{% trans "Expense subclass setting" %}</span>
-                    	<button type="button" name="btnAddSub" class="edit-img-btn" id="btn-sub-category-add" style="background-image: url(/static/image/add.png);" data-toggle="modal" data-target="#modal-subCategory"></button>
-                    	<button type="button" name="btnDelSub" class="edit-img-btn" id="btn-sub-category-del" style="background-image: url(/static/image/delete.png);"></button>
+                    	<button type="button" name="btnAddSub" class="edit-img-btn" id="btn-sub-category-add" style="background-image: url(../../static/image/add.png);" data-toggle="modal" data-target="#modal-subCategory"></button>
+                    	<button type="button" name="btnDelSub" class="edit-img-btn" id="btn-sub-category-del" style="background-image: url(../../static/image/delete.png);"></button>
                     	<button type="button" class="btn btn-success btn-md sub-category-del-submit" id="sub-category-del-finish">{% trans "Delete" %}</button>
                     </legend>
                     <form>
@@ -1113,8 +1114,8 @@
 
                 <div class="col-md-12 well">
                     <legend id="anch1"><span style="margin-right: 10px;">{% trans "Income subclass setting" %}</span>
-                    	<button type="button" name="btnAddSub" class="edit-img-btn" id="btn-sub-category-add" style="background-image: url(/static/image/add.png);" data-toggle="modal" data-target="#modal-subCategoryofrevenue"></button>
-                    	<button type="button" name="btnDelSub" class="edit-img-btn" id="btn-sub-category-del-revenue" style="background-image: url(/static/image/delete.png);"></button>
+                    	<button type="button" name="btnAddSub" class="edit-img-btn" id="btn-sub-category-add" style="background-image: url(../../static/image/add.png);" data-toggle="modal" data-target="#modal-subCategoryofrevenue"></button>
+                    	<button type="button" name="btnDelSub" class="edit-img-btn" id="btn-sub-category-del-revenue" style="background-image: url(../../static/image/delete.png);"></button>
                     	<button type="button" class="btn btn-success btn-md sub-category-del-submit-revenue" id="sub-category-del-finish">{% trans "Delete" %}</button>
                     </legend>
                     <form>
@@ -1293,9 +1294,9 @@
                 <div class="col-md-12 well">
                     <legend id="anch1"><span style="margin-right: 10px;">{% trans "Cyclical Expenditure Setting" %}</span>
                     	<button type="button" class="edit-img-btn" id="btn-periodic-cost-add" 
-                    			style="background-image: url(/static/image/add.png);" data-toggle="modal" data-target="#modal-periodic"></button>
+                    			style="background-image: url(../../static/image/add.png);" data-toggle="modal" data-target="#modal-periodic"></button>
                     	<button type="button" class="edit-img-btn" id="btn-periodic-cost-del" 
-                    			style="background-image: url(/static/image/delete.png);"></button>
+                    			style="background-image: url(../../static/image/delete.png);"></button>
                  		<button type="button" class="btn btn-success btn-md table4-del-submit" id="table4-del-finish">{% trans "Confirm Delete" %}</button>
                     	<button type="button" class="btn btn-danger btn-md table4-del-submit" id="table4-del-cancel">{% trans "Cancel Delete" %}</button>
                     </legend>

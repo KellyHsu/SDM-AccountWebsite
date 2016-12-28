@@ -65,7 +65,7 @@ def setting(request):
         return HttpResponseRedirect('/login/')
     else:
         member = Member.objects.filter(user__username=request.user).first()
-
+        print(request.user)
         c1 = Classification.objects.filter(classification_type='food').first()
         food_list = SubClassification.objects.filter(member=member, classification=c1, exist=True)
         c2 = Classification.objects.filter(classification_type='clothing').first()
