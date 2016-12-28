@@ -128,6 +128,11 @@ def filter(request):
                                            incomeandexpense__income_type="expense").aggregate(Sum('money'))
         totalIncome = Receipt.objects.filter(member=member, date=date.today(),
                                              incomeandexpense__income_type="income").aggregate(Sum('money'))
+        subCat = SubClassification.objects.filter(member=member)
+        print type(subCat)
+        for i in subCat:
+
+            print i,subCat
         # print type(str(totalIncome['money__sum']))
         if str(totalIncome['money__sum']) == "None":
             income = 0
@@ -139,9 +144,10 @@ def filter(request):
             cost = int(totalCost['money__sum'])
         balance = income - cost
         print balance, type(balance)
+ 
     return render(request, 'filter.html',
                   {"member": member, "receipts": receipts, "title": currentDate, "totalCost": cost,
-                   "totalIncome": income, "balance": balance})
+                   "totalIncome": income, "balance": balance, "subcat": subCat})
 
 
 def chart(request):
@@ -841,6 +847,7 @@ def getreceipt_week(request):
                                            incomeandexpense__income_type="expense").aggregate(Sum('money'))
         totalIncome = Receipt.objects.filter(member=member, date__range=[startDay, endDay],
                                              incomeandexpense__income_type="income").aggregate(Sum('money'))
+        subCat = SubClassification.objects.filter(member=member)
         # print type(str(totalIncome['money__sum']))
         if str(totalIncome['money__sum']) == "None":
             income = 0
@@ -854,7 +861,7 @@ def getreceipt_week(request):
         print balance, type(balance)
     return render(request, 'filter.html',
                   {"member": member, "receipts": receipts, "title": week, "totalCost": cost, "totalIncome": income,
-                   "balance": balance})
+                   "balance": balance, "subcat": subCat})
 
 
 def getreceipt_mon(request):
@@ -869,6 +876,7 @@ def getreceipt_mon(request):
                                            incomeandexpense__income_type="expense").aggregate(Sum('money'))
         totalIncome = Receipt.objects.filter(member=member, date__month=currentDate.month,
                                              incomeandexpense__income_type="income").aggregate(Sum('money'))
+        subCat = SubClassification.objects.filter(member=member)
         # print type(str(totalIncome['money__sum']))
         if str(totalIncome['money__sum']) == "None":
             income = 0
@@ -882,7 +890,7 @@ def getreceipt_mon(request):
         print balance, type(balance)
     return render(request, 'filter.html',
                   {"member": member, "receipts": receipts, "title": title, "totalCost": cost, "totalIncome": income,
-                   "balance": balance})
+                   "balance": balance, "subcat": subCat})
 
 
 def getreceipt_yr(request):
@@ -897,6 +905,7 @@ def getreceipt_yr(request):
                                            incomeandexpense__income_type="expense").aggregate(Sum('money'))
         totalIncome = Receipt.objects.filter(member=member, date__year=currentDate.year,
                                              incomeandexpense__income_type="income").aggregate(Sum('money'))
+        subCat = SubClassification.objects.filter(member=member)
         # print type(str(totalIncome['money__sum']))
         if str(totalIncome['money__sum']) == "None":
             income = 0
@@ -910,7 +919,7 @@ def getreceipt_yr(request):
         print balance, type(balance)
     return render(request, 'filter.html',
                   {"member": member, "receipts": receipts, "title": yr, "totalCost": cost, "totalIncome": income,
-                   "balance": balance})
+                   "balance": balance, "subcat": subCat})
 
 
 def backwardtime(request):
@@ -999,7 +1008,8 @@ def backwardtime(request):
                      "<td>{6}</td><td style='width: 12%'>" \
                      "<button type='button' class='btn btn-danger btn-sm' value='{7}' title='刪除'>" \
                      "刪除</button>&nbsp;<button type='button' class='btn btn-danger btn-sm'" \
-                     " value='{8}' title='修改'>修改</button></td></tr>".format(
+                     " value='{8}' title='修改' data-toggle='modal' data-target='.bd-example-modal-lg'>修改" \
+                     "</button></td></tr>".format(
                 receipt.subclassification.classification.classification_type.encode('utf-8'),
                 receipt.subclassification.name.encode('utf-8'), receipt.remark.encode('utf-8'),
                 receipt.incomeandexpense,
@@ -1068,14 +1078,39 @@ def get_total(receipt_list):
 
 def filterdelrecord(request):
     if request.method == 'POST':
+        if request.POST["id"]==None:
+            print "no"
+        else:
+            print "ggggggggggggg"+request.POST["id"] 
         print request.POST["id"],type(request.POST["id"])
         member = Member.objects.filter(user__username=request.user).first()
         receipt = Receipt.objects.filter(id=int(request.POST["id"]))
-        if receipt is not None:
-            print(receipt)
-            receipt.delete()
-            a = "OK"
-            print a
+        print request.POST.get('recordType'), request.POST.get('payment'),request.POST.get('subcat'),request.POST.get('memo'),request.POST.get('amount')
+        if request.POST.get("title")=="save":
+            subclass = SubClassification.objects.filter(member=member, name=request.POST.get('subcat')).first()
+            print type(subclass)
+            print subclass
+            payment = Payment.objects.filter(payment_type=request.POST.get('payment')).first()
+            # print "payment"+payment
+            incomeandexpense = IncomeAndExpense.objects.filter(income_type=request.POST['recordType']).first()
+            print incomeandexpense
+            # print len(incomeandexpense)
+            new_receipt, created = Receipt.objects.update_or_create(member=member, id=request.POST["id"],
+                                                                defaults={"money": request.POST["amount"],
+                                                                          "remark": request.POST["memo"],
+                                                                          "date": datetime.strptime(request.POST["date"], "%Y/%m/%d"),
+                                                                          "subclassification": subclass, "payment": payment,
+                                                                          "incomeandexpense":incomeandexpense,
+                                                                          "member": member})
+            print created
+            a = "OK insert"
+        else:
+            if receipt is not None:
+                print(receipt)
+                receipt.delete()
+                a = "OK"
+                print a
+
         if request.POST["sign"] == "day":
             target = datetime.strptime(request.POST["pageHeader_date"], "%Y/%m/%d")
             new_receipts = Receipt.objects.filter(member=member, date=target)
@@ -1126,7 +1161,8 @@ def filterdelrecord(request):
                      "<td>{6}</td><td style='width: 12%'>" \
                      "<button type='button' class='btn btn-danger btn-sm' value='{7}' title='刪除'>" \
                      "刪除</button>&nbsp;<button type='button' class='btn btn-danger btn-sm'" \
-                     " value='{8}' title='修改'>修改</button></td></tr>".format(
+                     " value='{8}' title='修改' data-toggle='modal' data-target='.bd-example-modal-lg'>修改" \
+                     "</button></td></tr>".format(
                 receipt.subclassification.classification.classification_type.encode('utf-8'),
                 receipt.subclassification.name.encode('utf-8'), receipt.remark.encode('utf-8'),
                 receipt.incomeandexpense,
@@ -1732,8 +1768,6 @@ def get_yr_chart(request):
         jsonResult = { 'title': title, "the_script": script, "the_div": div, "script_bar": script2, "div_bar": div2}
     return HttpResponse(json.JSONEncoder().encode(jsonResult))
 
-
-
 def get_category_chart(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/')
@@ -1955,8 +1989,6 @@ def get_specific_category_chart(request):
 
 
         jsonResult = { "script_pie": script3, "div_pie": div3, "script_pie_in": script4, "div_pie_in": div4, "script_pie_sub": script5, "div_pie_sub": div5, "script_pie_sub_in": script6, "div_pie_sub_in": div6}
-    return HttpResponse(json.JSONEncoder().encode(jsonResult))
-
 
 class MemberList(generics.ListCreateAPIView):
     permission_classes = (IsAdminUser,)

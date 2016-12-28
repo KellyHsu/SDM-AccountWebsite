@@ -29,8 +29,10 @@
     <link href="{% static 'dist/css/metisMenu.min.css' %}" rel="stylesheet">
     <link href="{% static 'dist/css/sb-admin-2.css' %}" rel="stylesheet">
 
-        <!--datepicker CSS-->
+         <!--datepicker CSS-->
     <link href="{% static 'css/bootstrap-responsive.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap-datepicker.css' %}" rel="stylesheet">
+    <link href="{% static 'css/datepicker.css' %}" rel="stylesheet">
 
     	<!--datatables CSS-->
     <link href="{% static 'datatables/jquery-ui.css' %}" rel="stylesheet">
@@ -54,57 +56,64 @@
     <script src="{% static 'dist/js/metisMenu.min.js' %}"></script>
     <script src="{% static 'dist/js/sb-admin-2.js' %}"></script>
 
+        <!--datepicker-->
+    <script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
 
 <script type="text/javascript">
 	$(document).ready(function() {
         var table = $('#example').DataTable({
             responsive: true,
-            "scrollX": true,
-            
-            
+            //"scrollx": true,
         });
-        // $('#example tbody').on( 'click', 'tr', function () {
-        //     //點同一個row,取消選擇
-        //     if ( $(this).hasClass('selected') ) {
-        //         $(this).removeClass('selected');
-        //     //取消已選
-        //     }
-        //     else {
-        //         table.$('tr.selected').removeClass('selected');
-        //         $(this).addClass('selected');
-        //     }
+        var ecatList_ch = ["食", "衣", "住","行","育","樂","其"];
+        var ecatList_en = ["food", "clothing", "housing","transportation","education","entertainment","others"];
+        var icatList_ch = ["一般收入", "投資收入", "其他"];
+        var icatList_en = ["general_revenue", "invest_revenue", "other_revenue"];
+        var row_id;
+        var a,b;
+        var empty_subcat_I=[]
+        var empty_subcat_E=[]
 
-        //     $(this).find('td').each (function() {
-        //         console.log($(this).html());
-        //     });
-        //     //console.log($(this).context);
-        //     //console.log($('#money').html());
-                                          
-        // } );
+        //取得次類別內容
+        var subcatArray = [[],[],[],[],[],[],[],[],[],[]];
+        {% for sub in subcat %}
+            
+            if("{{sub.classification}}"=="food")
+                subcatArray[0].push("{{sub.name}}")
+            if("{{sub.classification}}"=="clothing")
+                subcatArray[1].push("{{sub.name}}")
+            if("{{sub.classification}}"=="housing")
+                subcatArray[2].push("{{sub.name}}")
+            if("{{sub.classification}}"=="transportation")
+                subcatArray[3].push("{{sub.name}}")
+            if("{{sub.classification}}"=="education")
+                subcatArray[4].push("{{sub.name}}")
+            if("{{sub.classification}}"=="entertainment")
+                subcatArray[5].push("{{sub.name}}")
+            if("{{sub.classification}}"=="others")
+                subcatArray[6].push("{{sub.name}}")
+            if("{{sub.classification}}"=="general_revenue")
+                subcatArray[7].push("{{sub.name}}")
+            if("{{sub.classification}}"=="invest_revenue")
+                subcatArray[8].push("{{sub.name}}")
+            if("{{sub.classification}}"=="other_revenue")
+                subcatArray[9].push("{{sub.name}}")
+
+        {% endfor %}
+        console.log(subcatArray);
+        for( a=0 ;a<7;a++){
+            if(subcatArray[a].length==0){
+                empty_subcat_E.push(a);
+            }
+        }
+        for(b=7;b<10;b++){
+            if(subcatArray[b].length==0){
+                empty_subcat_I.push(b);
+            }    
+        }
+        console.log(empty_subcat_I);
+        console.log(empty_subcat_E);
         
-        //點按鈕刪除
-        // $('#btn_del').click( function () {
-        //     console.log(table.row('.selected').data()[7]);
-        //     var id = table.row('.selected').data()[7];
-        //     $.ajax({
-        //        dataType: 'json',
-        //        url: "/filterDelRecord/",
-        //         type:"POST",
-        //         data: {id: id},
-        //         success: function(result){
-        //             console.log("jaja");
-        //             console.log(result.answer);
-        //             table.row('.selected').remove().draw( false );
-        //             var url = window.location.href;
-        //             window.location = url;
-        //         },
-        //         error: function(result, status){
-        //             console.log(status);
-        //             alert("刪除失敗")
-        //         }
-        //     });
-        // } );
-
         //左右方向箭號的事件
         $('#btn_left,#btn_right').click(function(e){
             var idClick = e.target.id;
@@ -123,7 +132,6 @@
                 sign = "year";
             }
             console.log(pageHeader_date);
-            console.log(typeof(pageHeader_date));
             $.ajax({
                dataType: 'json',
                url: "/backwardTime/",
@@ -147,15 +155,15 @@
         });
 
         //刪除和修改
-        $('button').click(function(e){
-            console.log(e.target.value);
-            console.log(e.target.title);
+        $('body').on('click', 'button', function (e){
+            // console.log(e.target.value);
+            // console.log(e.target.title);
             var id = e.target.value;
             var title = e.target.title;
             var pathname = window.location.pathname; // Returns path only
             var pageHeader_date = $('#pageHeader_date').html();
             var sign;
-            console.log(pathname);
+            // console.log(pathname);
             if(pathname == "/filter/"){
                 sign = "day";
             }else if(pathname == "/getReceiptByWeek/"){
@@ -165,6 +173,8 @@
             }else{
                 sign = "year";
             }
+            console.log("title"+title);
+            console.log("id"+id);
             console.log(pageHeader_date);
             console.log(typeof(pageHeader_date));
             if(title =="刪除"){
@@ -187,14 +197,224 @@
                         console.log(status);
                         alert("刪除失敗")
                     }
+                });}
+            if(title=="save"){
+                console.log("idddddd"+row_id);
+                console.log($('#amount').val());
+                console.log($('#memo').val());
+                console.log($('#recordType').val());
+                console.log($('#subcat').val());
+                console.log($('#payment').val());
+                console.log($("#datepicker1").val());
+                $.ajax({
+                    dataType: 'json',
+                    url: "/filterDelRecord/",
+                    type:"POST",
+                    data: {id: row_id, amount: $('#amount').val(), memo: $('#memo').val(), recordType: $('#recordType').val(), subcat: $('#subcat').val(), payment: $('#payment').val(), date: $("#datepicker1").val(), pageHeader_date: pageHeader_date, sign: sign, title: title },
+                    success: function(result){
+                        console.log("save successful");
+                        console.log(result.answer);
+                        $('#example tbody tr').remove();
+                        console.log(result.tableContent);
+                        $('#example tbody').append(result.tableContent);
+                        $('#totalCost').text("總支出"+result.cost);
+                        $('#totalIncome').text("總收入"+result.income);
+                        $('#balance').text("餘額"+result.balance);
+                        $('#modal').modal('toggle');
+                    },
+                    error: function(result, status){
+                        console.log(status);
+                        alert("刪除失敗")
+                    }
                 });
-            }else{
-
             }
+            if(title="修改"){
+                var count=1;
+                var i;
+                var sub_title;
+                row_id = id;
+                //按鈕的parent的parent，找每個td tag
+                $(this).parent().parent().find('td').each (function() {
+                    //每次找的td tag
+                    console.log($(this).html());
+
+                    switch(count) {
+                        case 1:
+                            selectedCat = $(this).html();
+                            break;
+                        case 2:
+                            selectedSubCat = $(this).html();
+                            console.log("haha"+selectedSubCat);
+                            break;
+                        case 3:
+                            $('#memo').val($(this).html());
+                            break;
+                        case 4:
+                            $('#category').find('option').remove().end();
+                            if($(this).html()=="expense")
+                            {
+                                console.log("我是支出");
+                                $("#recordType").val("expense");
+                                for( i = 0; i < ecatList_ch.length; i++){
+                                    $("#category").append($('<option></option>').val(ecatList_en[i]).text(ecatList_ch[i]));
+                                }
+                                //拿掉次分類為空的類別 disable
+                                for(i=0;i<empty_subcat_E.length;i++){
+                                    console.log(ecatList_en[empty_subcat_E[i]]);
+                                    $('#category option[value='+ecatList_en[empty_subcat_E[i]]+']').attr('disabled','disabled');
+                                }
+                            }else{
+
+                                $("#recordType").val("income");
+                                for( i = 0; i < icatList_ch.length; i++){
+                                    $("#category").append($('<option></option>').val(icatList_en[i]).text(icatList_ch[i]));
+                                }
+                                //disable掉次分類為空的類別
+                                console.log(empty_subcat_I.length);
+                                for(i=0;i<empty_subcat_I.length;i++){
+                                    console.log(icatList_en[empty_subcat_I[i]-7]);
+                                    $('#category option[value='+icatList_en[empty_subcat_I[i]-7]+']').attr('disabled','disabled');
+                                }
+                            }
+                            $('#category').val(selectedCat);
+                            switch(selectedCat){
+                                case "food":
+                                    sub_title = 0;
+                                    break;
+                                case "clothing":
+                                    sub_title = 1;
+                                    break;
+                                case "housing":
+                                    sub_title = 2;
+                                    break;
+                                case "transportation":
+                                    sub_title = 3;
+                                    break;
+                                case "education":
+                                    sub_title = 4;
+                                    break;
+                                case "entertainment":
+                                    sub_title = 5;
+                                    break;
+                                case "others":
+                                    sub_title = 6;
+                                    break;
+                                case "general_revenue":
+                                    sub_title = 7;
+                                    break;
+                                case "invest_revenue":
+                                    sub_title = 8;
+                                    break;
+                                case "other_revenue":
+                                    sub_title = 9;
+                                    break;
+                                default:
+                                    break;
+                            }
+                            console.log("sub_title"+sub_title);
+                            $('#subcat').find('option').remove().end();
+                            for( i = 0; i < subcatArray[sub_title].length; i++){
+                                $("#subcat").append($('<option></option>').val(subcatArray[sub_title][i]).text(subcatArray[sub_title][i]));
+                            }
+                            $('#subcat').val(selectedSubCat);
+                            break;
+                        case 5:
+                            switch($(this).html()) {
+                                case "cash":
+                                    console.log("我是現金");
+                                    $("#payment").val("cash");
+                                    break;
+                                case "credit_card":
+                                    console.log("我是信用卡");
+                                    $("#payment").val("credit_card");
+                                    break;
+                                case "other":
+                                    console.log("我是其他");
+                                    $("#payment").val("other");
+                                    break;
+                                default:
+                                    break;
+                            }    
+                            break;
+                        case 6:
+                            console.log("時間時間");
+                            // var set_date = $(this).html();
+                            var set_date = new Date($(this).html());
+                            console.log($(this).html());
+                            $('#datepicker1').datepicker({
+                                autoclose: true,
+                                todayHighlight: true,
+                                format: "yyyy/mm/dd",
+                                monthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                                 "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+                            });
+                            $("#datepicker1").datepicker("setDate", set_date);
+                            break;
+                        case 7:
+                            $('#amount').val($(this).html());
+                            break;
+                        default:
+                            break;
+                    }
+                    count++;
+                });
+            }//end of switch
             
+        });//end of button edit and delete
+
+        //modal的 收/支(select)改變，類別、次類別跟著變動
+        $('#recordType').on('change', function() {
+            var i,j;
+            $('#category').find('option').remove().end();
+            $('#subcat').find('option').remove().end();
+            if (this.value=="expense"){
+                for( i = 0; i < ecatList_ch.length; i++){
+                    $("#category").append($('<option></option>').val(ecatList_en[i]).text(ecatList_ch[i]));
+                }
+                //拿掉次分類為空的類別 disable
+                for(i=0;i<empty_subcat_E.length;i++){
+                    console.log(ecatList_en[empty_subcat_E[i]]);
+                    $('#category option[value='+ecatList_en[empty_subcat_E[i]]+']').attr('disabled','disabled');
+                }
+                for( j = 0; j < subcatArray[0].length; j++){
+                    $("#subcat").append($('<option></option>').val(subcatArray[0][j]).text(subcatArray[0][j]));
+                }
+            }else{
+                for( i = 0; i < icatList_ch.length; i++){
+                    $("#category").append($('<option></option>').val(icatList_en[i]).text(icatList_ch[i]));
+                }
+                //disable掉次分類為空的類別
+                for(i=0;i<empty_subcat_I.length;i++){
+                    //console.log(icatList_en[empty_subcat_I[i]-7]);
+                    $('#category option[value='+icatList_en[empty_subcat_I[i]-7]+']').attr('disabled','disabled');
+                }
+                for( j = 0; j < subcatArray[7].length; j++){
+                    $("#subcat").append($('<option></option>').val(subcatArray[7][j]).text(subcatArray[7][j]));
+                }
+            }
         });
 
-	} );
+        //類別改變次類別跟著變
+        $('#category').on('change', function() {
+            var j;
+            var sub_title;
+            sub_title = $('#category option:selected').index();
+            //console.log($('#category option:selected').index());
+            $('#subcat').find('option').remove().end();
+            //console.log("zzzzzz"+$('#recordType option:selected').val());
+            if($('#recordType option:selected').val()=="expense"){
+                for( j = 0; j < subcatArray[sub_title].length; j++){
+                    $("#subcat").append($('<option></option>').val(subcatArray[sub_title][j]).text(subcatArray[sub_title][j]));
+                }    
+            }else{
+                sub_title = sub_title + 7;
+                for( j = 0; j < subcatArray[sub_title].length; j++){
+                    $("#subcat").append($('<option></option>').val(subcatArray[sub_title][j]).text(subcatArray[sub_title][j]));
+                }
+            }
+        });
+
+	} ); //end of document.ready
 
 </script>
 <style type="text/css">
@@ -226,8 +446,30 @@
     .dataTables_filter label{
         margin: 0px;
     }
-    div .DataTables_sort_wrapper{
-        
+    #recordType, #payment{
+        width: 90px;
+    }
+    #datepicker1{
+        margin-left: 6px;
+    }
+    #modal_memo{
+        margin-top: 15px;
+    }
+    #amount{
+        font-size: 20px;
+        border-bottom: 2px solid black;
+    }
+    #category, #subcat{
+        width: 90px;
+        padding: 5px;
+        border: #000000 1px solid;
+    }
+    #second_level{
+        margin-top: 15px;
+        margin-bottom: 5px;
+    }
+    #subcat{
+        margin-left: 20px;
     }
 </style>
 </head>
@@ -371,13 +613,9 @@
                                     <label id="balance" style="font-weight: bold; font-size: medium">&nbsp;結餘：{{balance}}元</label>
                                 </div>
                             </div>
-                            <div style="margin: 5px 0px 10px 0px;">
-                                <button id="btn_del" class="">刪除</button>
-                                <button style="display: none">修改</button>
-                            </div>
                             
                             <div>
-                            	<table id="example" class="display" cellspacing="0" width="100%">
+                            	<table id="example" class="display responsive nowrap" cellspacing="0" width="100%">
 							        <thead>
 							            <tr>
 							                <th>分類</th>
@@ -412,7 +650,7 @@
 							                <td>{{choice.payment}}</td>
 							                <td>{{choice.date}}</td>
 							                <td>{{choice.money}}</td>
-                                            <td style="width: 12%"><button type="button" class="btn btn-danger btn-sm" value="{{choice.id}}" title="刪除">刪除</button>&nbsp;<button type="button" class="btn btn-danger btn-sm" value="{{choice.id}}" title="修改">修改</button></td>
+                                            <td style="width: 12%"><button type="button" class="btn btn-danger btn-sm" value="{{choice.id}}" title="刪除">刪除</button>&nbsp;<button type="button" class="btn btn-danger btn-sm" value="{{choice.id}}" title="修改" data-toggle="modal" data-target=".bd-example-modal-lg">修改</button></td>
                                             <!-- <td style="display: none;">{{choice.id}}</td> -->
 							            </tr>
                                         {% endfor %}
@@ -427,8 +665,8 @@
     </div><!-- /#wrapper (whole page)-->
 
     <!-- modal html -->
-    <div class="modal fade">
-        <div class="modal-dialog" role="document">
+    <div class="modal fade bd-example-modal-lg" id="modal"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -437,12 +675,54 @@
                     <h4 class="modal-title">修改紀錄</h4>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form method="post" id="edit_form" action="/filterSaveEdit/" >
+                        <div class="form-inline">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="for_record_type">收支：</label>
+                                <select id="recordType" name="recordType">
+                                    <option value="expense">支出</option>
+                                    <option value="income">收入</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="for_payment">付款方式：</label>
+                                <select id="payment" name="payment" >
+                                    <option value="cash">現金</option>
+                                    <option value="credit_card">信用卡</option>
+                                    <option value="other">其他</option>
+                                </select>
+                                <label>日期</label>
+                                <input type="text" data-provide="datepicker" id="datepicker1">
+                            </div>
+                        </div>
+                        <div class="form-inline" id="second_level">
+                            <div class="form-group">
+                                <label for="for_category">類別：</label>
+                                <select id="category" name="category">
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="for_subcat">次類別：</label>
+                                <select id="subcat" name="subcat">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-inline">
+                            <div class="form-group" id="modal_memo">
+                                <label for="for_memo">備註：</label>
+                                <input type="text" class="form-control" id="memo">
+                            </div>
+                            <div class="form-group" id="modal_amount">
+                                <label for="for_amount">金額：</label>
+                                <input type="text" class="form-control" id="amount">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" title="save" >Save changes</button>
+                        </div>
                     </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
