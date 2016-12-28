@@ -19,6 +19,11 @@
 	$(document).ready(function() {
         var table = $('#example').DataTable({
             responsive: true,
+            columnDefs: [
+                { responsivePriority: 1, targets: 0 },
+                { responsivePriority: 1, targets: -2 },
+                { responsivePriority: 2, targets: -1 }
+            ]
             //"scrollx": true,
         });
         var ecatList_ch = ["食", "衣", "住","行","育","樂","其"];
@@ -177,6 +182,8 @@
                         $('#totalIncome').text("總收入"+result.income);
                         $('#balance').text("餘額"+result.balance);
                         $('#modal').modal('toggle');
+                        var url = window.location.href;
+                        window.location = url;
                     },
                     error: function(result, status){
                         console.log(status);
@@ -394,20 +401,18 @@
     }
     #recordType, #payment{
         width: 90px;
+        padding: 0px;
     }
     #datepicker1{
         margin-left: 6px;
     }
-    #modal_memo{
-        margin-top: 15px;
-    }
     #amount{
         font-size: 20px;
         border-bottom: 2px solid black;
+        margin: 0px;
     }
     #category, #subcat{
         width: 90px;
-        padding: 5px;
         border: #000000 1px solid;
     }
     #second_level{
