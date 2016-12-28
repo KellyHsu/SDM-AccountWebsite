@@ -1,0 +1,56 @@
+<!-- Navigation template -->
+<nav class="navbar navbar-light navbar-static-top" role="navigation">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".panel-group">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand glyphicon glyphicon-book" href="/dashboard/"></a>
+        <a href="/dashboard/"><img src="../static/image/logo.png" alt="logo" class="navbar-brand glyphicon glyphicon-book" height="30px" width="200px" border="0" /></a>
+    </div>
+    <!-- /.navbar-header -->
+    <ul class="nav navbar-top-links navbar-right">
+        <!-- start bell dropdown -->
+        <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="color: white;" id="notification-bell">
+                <i class="fa fa-bell fa-fw"></i> <i class="fa fa-caret-down"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-alerts">
+                {% for notification in periodic_notification_list %}
+                <li>
+                    <a href='#'>
+                        <div>
+                            <i class='fa fa-comment fa-fw'></i> {{notification}}
+                        </div>
+                    </a>
+                </li>
+                {% if not forloop.last %}
+                <li class='divider'></li>
+                {% endif %} {% endfor %}
+            </ul>
+            <!-- /.dropdown-alerts -->
+        </li>
+        <!-- /.dropdown -->
+        <!-- start user dropdown -->
+        <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="color: white;">
+                <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-user">
+                <li><a href="/setting/"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                </li>
+                <li class="divider"></li>
+                <li><a href="/chart/"><i class="fa fa-gear fa-fw"></i> Chart</a>
+                </li>
+                <li class="divider"></li>
+                <li><a href="/logout/"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                </li>
+            </ul>
+        </li>
+        <!-- /.dropdown-user -->
+    </ul>
+    <!-- /.dropdown -->
+</nav>
+<!-- /.navbar-top-links -->

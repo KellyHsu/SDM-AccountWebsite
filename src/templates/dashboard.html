@@ -1,60 +1,20 @@
 ﻿<!-- 這個頁面是首頁 -->
-
+{% extends 'base.html' %}
 {% load staticfiles %}
 
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>MoneyKeeper</title>
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    <link href="{% static 'css/base.css' %}" rel="stylesheet">
-    	<!-- Bootstrap Core CSS -->
-    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
-
-		<!-- Custom CSS -->
-    <link href="{% static 'dist/css/metisMenu.min.css' %}" rel="stylesheet">
-    <link href="{% static 'dist/css/sb-admin-2.css' %}" rel="stylesheet">
+{% block local_include %}
 
         <!--datepicker CSS-->
-    <link href="{% static 'css/bootstrap-responsive.css' %}" rel="stylesheet">
     <link href="{% static 'css/bootstrap-datepicker.css' %}" rel="stylesheet">
     <link href="{% static 'css/datepicker.css' %}" rel="stylesheet">
 
-        <!-- bootstrap notification bell -->
-    <link href="{% static 'dist/css/bootstrap-notifications.min.css' %}" rel="stylesheet">
-
-    	<!-- Custom Fonts -->
-    <link href="{% static 'font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
-
-		<!-- jQuery -->
-    <script src="{% static 'js/jquery.js' %}"></script>
-    <!-- <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script> -->
-
-    	<!-- Bootstrap Core JavaScript -->
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-
-		<!-- Custom Theme JavaScript -->
-    <script src="{% static 'dist/js/metisMenu.min.js' %}"></script>
-    <script src="{% static 'dist/js/sb-admin-2.js' %}"></script>
-
         <!--datepicker-->
     <script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
-    
-    
+{% endblock %}
+
+
+{% block local_js %}
 
 <script>
 $(document).ready(function() {
@@ -329,13 +289,6 @@ $(document).ready(function() {
     });
 
 
-    // notification handling
-    var notification_len = {{ periodic_notification_count}};
-    if(notification_len > 0){
-        $(".fa-bell").addClass('notification-icon');
-        $(".fa-bell").attr("data-count", notification_len);
-    }
-
     $(".total_expense").text("總計："+ {{ total_expense }})
     $(".total_income").text("總計："+ {{ total_income }})
 
@@ -491,311 +444,161 @@ $(document).on({
 }, "#cost-list tr td, #revenue-list tr td");    // end document on mouse event.
 
 
-// 檢查是否有通知訊息需要發出
-function checkNotificationBellMessage(message){
-    console.log("訊息" + message);
-    if(message === "正常")    // 如果檢查正常不用警告
-        return;
-    else if(message === null || message === "") // 如果沒訊息
-        return;
-    else{
-        if( $(".dropdown-alerts").children().length > 0 ){
-
-            var content = $(".dropdown-alerts strong").text();
-            if(content === "目前沒有通知"){
-                $(".dropdown-alerts").empty();
-            }
-
-            if( $(".fa-bell").hasClass("notification-icon") ){
-               var count = parseInt( $(".fa-bell").attr("data-count") );
-                count = count + 1;
-                $(".fa-bell").attr("data-count", count);
-            }else{
-                $(".fa-bell").addClass("notification-icon");
-                $(".fa-bell").attr("data-count","1");
-            }
-
-            $(".dropdown-alerts").prepend("<li><a href='#'><div><i class='fa fa-comment fa-fw'></i>" 
-                                + message + "</div></a></li><li class='divider'></li>");
-        }else{
-            $(".fa-bell").addClass("notification-icon");
-            $(".fa-bell").attr("data-count","1");
-
-            $(".dropdown-alerts").append("<li><a href='#'><div><i class='fa fa-comment fa-fw'></i>" 
-                                    + message + "</div></a></li><li class='divider'></li>");
-            $(".dropdown-alerts").append("<li id='clear-alert'><a href='#'><strong>清除所有通知</strong></a></li>");
-        }   
-    }
-}
-
-
-// 處理按下通知鈴鐺後的改變
-$(document).on("click", "#notification-bell", function(){
-    if( $(".dropdown-alerts").children().length > 0 ){
-        $(".fa-bell").removeClass("notification-icon");
-        $(".fa-bell").removeAttr("data-count");
-
-        var last_li_content = $(".dropdown-alerts li:last-child a strong").text();
-
-        if(last_li_content !== "目前沒有通知" && last_li_content !== "清除所有通知"){
-            if( !$(".dropdown-alerts li:last-child").hasClass("divider") ){
-                $(".dropdown-alerts").append("<li class='divider'></li>");
-            }
-
-            $(".dropdown-alerts").append("<li id='clear-alert'><a href='#'><strong>清除所有通知</strong></a></li>");
-        }
-
-
-    }else{
-		// 如果沒通知卻按下鈴鐺要有相對應文字
-        var expandedAttr = $("#notification-bell").attr("aria-expanded");
-
-        if( expandedAttr === "true" ){
-            $(".dropdown-alerts").append("<li><a href='#'><strong>目前沒有通知</strong></a></li>");
-        }else{
-            $(".dropdown-alerts").empty();	// 關閉視窗
-        }
-    }
-});
-
-$(document).on("click", "#clear-alert", function(){
-    $(".dropdown-alerts").empty();
-});
-    
-
 </script>
 
-<style type="text/css">
-    body {
-        background-color: rgb(229, 228, 219);
-    }
-    
-    #page-wrapper {
-        min-height: 167px;
-        background-color: rgb(229, 228, 219);
-    }
-
-    #center-content {
-        background-color: #fff;
-        margin-top: 20px;
-    }
-</style>
+{% endblock %}
 
 
-</head>
+{% block left_side_content %}
 
-<body>
+<!-- Below the navbar starting -->
+<div class="container-fluid">
 
-    <!-- whole page wrapper -->
-    <div id="wrapper container">
+    <div class="row col-sm-3 col-md-3 left-side">
+        <div class="panel-group collapse in" id="accordion" aria-expanded="true">
 
-        <!-- Navigation -->
-        <nav class="navbar navbar-light navbar-static-top" role="navigation">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".panel-group">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand glyphicon glyphicon-book" href="/dashboard/"></a>
-                <a href="/dashboard/"><img src="../static/image/logo.png" alt="logo" class="navbar-brand glyphicon glyphicon-book" height="30px" width="200px" border="0" /></a>
-            </div><!-- /.navbar-header -->
-            <ul class="nav navbar-top-links navbar-right">
+            <!-- start panel 支出 -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a href="/filter/"><span class="glyphicon glyphicon-list-alt">
+                        </span>查看帳本</a>
+                    </h4>
+                </div>
+            </div>  <!-- /.panel 支出 -->
 
-                <!-- start bell dropdown -->
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="color: white;" id="notification-bell">
-                        <i class="fa fa-bell fa-fw"></i> <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-alerts">
-                        {% for notification in periodic_notification_list %}
-                            <li>
-                                <a href='#'>
-                                    <div>
-                                        <i class='fa fa-comment fa-fw'></i>
-                                            {{notification}}
-                                    </div>
-                                </a>
-                            </li>
-                            {% if not forloop.last %}
-                                <li class='divider'></li>
-                            {% endif %}
-                        {% endfor %}
-                    </ul><!-- /.dropdown-alerts -->
-                </li><!-- /.dropdown -->
+            <!-- start panel 支出 -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                            <span class="glyphicon glyphicon-list-alt"></span>支出
+                        </a>
+                        <span class="total_expense">總計：</span>
+                    </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <table class="table" id="cost-list">
+                            {% for cost_receipt in cost_list %}
+                            <tr class="receipt{{ cost_receipt.id  }}">
+                                <td>
+                                    <span class='glyphicon glyphicon-file text-success'></span>
+                                    {% if cost_receipt.remark %}
+                                        <a class="receipt_info" href='#'>{% if cost_receipt.subclassification.classification.classification_type == "food" %}食{% elif cost_receipt.subclassification.classification.classification_type == "clothing" %}衣{% elif cost_receipt.subclassification.classification.classification_type == "housing" %}住{% elif cost_receipt.subclassification.classification.classification_type == "transportation" %}行{% elif cost_receipt.subclassification.classification.classification_type == "education" %}育{% elif cost_receipt.subclassification.classification.classification_type == "entertainment" %}樂{% else %}其{% endif %}-{{cost_receipt.subclassification.name}}-{{cost_receipt.remark}}: {{cost_receipt.money}}
+                                        </a>
+                                    {% else %}
+                                        <a class="receipt_info" href='#'>{% if cost_receipt.subclassification.classification.classification_type == "food" %}食{% elif cost_receipt.subclassification.classification.classification_type == "clothing" %}衣{% elif cost_receipt.subclassification.classification.classification_type == "housing" %}住{% elif cost_receipt.subclassification.classification.classification_type == "transportation" %}行{% elif cost_receipt.subclassification.classification.classification_type == "education" %}育{% elif cost_receipt.subclassification.classification.classification_type == "entertainment" %}樂{% else %}其{% endif %}-{{cost_receipt.subclassification.name}}: {{cost_receipt.money}}
+                                        </a>
+                                    {% endif %}
+                                    <span style='float: right; margin-right: 10px; color: #9D9D9D;'></span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>  <!-- /.panel 支出 -->
 
-                <!-- start user dropdown -->
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="color: white;">
-                        <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-user">
-                        <li><a href="/setting/"><i class="fa fa-gear fa-fw"></i> Settings</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li><a href="/chart/"><i class="fa fa-gear fa-fw"></i> Chart</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li><a href="/logout/"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
-                        </li>
-                    </ul>
+                <!-- start panel 收入 -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><span class="glyphicon glyphicon-list-alt">
+                        </span>收入</a>
+                        <span class="total_income">總計：</span>
+                    </h4>
+                </div>
+                <div id="collapseTwo" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <table class="table" id="revenue-list">
+                            {% for revenue_receipt in revenue_list %}
+                            <tr class="receipt{{ revenue_receipt.id  }}">
+                                <td>
+                                    <span class='glyphicon glyphicon-file text-success'></span>
+                                    {% if revenue_receipt.remark %}
+                                        <a class="receipt_info" href='#'>{% if revenue_receipt.subclassification.classification.classification_type == "general_revenue" %}收入{% elif revenue_receipt.subclassification.classification.classification_type == "invest_revenue" %}投資{% else %}其他{% endif %}-{{revenue_receipt.subclassification.name}}-{{revenue_receipt.remark}}: {{revenue_receipt.money}}
+                                        </a>
+                                    {% else %}
+                                        <a class="receipt_info" href='#'>{% if revenue_receipt.subclassification.classification.classification_type == "general_revenue" %}收入{% elif revenue_receipt.subclassification.classification.classification_type == "invest_revenue" %}投資{% else %}其他{% endif %}-{{revenue_receipt.subclassification.name}}: {{revenue_receipt.money}}
+                                        </a>
+                                    {% endif %}
+                                    <span style='float: right; margin-right: 10px; color: #9D9D9D;'></span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>  <!-- /.panel 收入 -->
 
-                </li><!-- /.dropdown-user -->
+        </div>  <!-- /.panel group -->
+    </div>  <!-- /.left-side row -->
 
-            </ul><!-- /.dropdown -->
-        </nav><!-- /.navbar-top-links -->
+{% endblock %}
 
 
-        <!-- Below the navbar starting -->
-        <div class="container-fluid">
-
-            <div class="row col-sm-3 col-md-3 left-side">
-                <div class="panel-group collapse in" id="accordion" aria-expanded="true">
-
-                    <!-- start panel 支出 -->
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h4 class="panel-title">
-                                <a href="/filter/"><span class="glyphicon glyphicon-list-alt">
-                                </span>查看帳本</a>
-                            </h4>
+{% block main_content %}
+   <!-- Main container -->
+    <div id="page-wrapper" class="col-sm-9 col-md-9">
+        <div class="container-fluid col-xs-12 col-sm-12">
+            <div class="row">
+                <div class="col-lg-12" id="center-content">
+                    <div id="titleMenu" class="page-header" style="text-align: center;">
+                        <form method="post" id="formadd">
+                            <select id="recordType" name="recordType">
+                                <option value="expense">支出</option>
+                                <option value="income">收入</option>
+                            </select>
+                            <select id="payment" name="payment" >
+                                <option value="cash">現金</option>
+                                <option value="credit_card">信用卡</option>
+                                <option value="other">其他</option>
+                            </select>
+                            <input type="text"  data-provide="datepicker" id="datepicker1">
+                        </form>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="display: inline-block;">
+                            <label id="dollarSign" style="font-size: 100px;padding-right: 20px;">$</label>
+                            <input type="number" id="amount">
                         </div>
-                    </div>  <!-- /.panel 支出 -->
-
-                    <!-- start panel 支出 -->
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-                                    <span class="glyphicon glyphicon-list-alt"></span>支出
-                                </a>
-                                <span class="total_expense">總計：</span>
-                            </h4>
+                        <div class="row" id="main-type-choose" style="text-align: center; margin-bottom: 20px;">
+                            <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="food" style="background: #8D8F76 no-repeat;">食</button>
+                            <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="clothing" style="background: #BAB6AF no-repeat;">衣</button>
+                            <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="housing" style="background: #E19F81 no-repeat;">住</button>
+                            <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="transportation" style="background: #73AFB8 no-repeat;">行</button>
+                            <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="education" style="background: #BA736A no-repeat;">育</button>
+                            <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="entertainment" style="background: url('../static/image/yellow.png') no-repeat;">樂</button>
+                            <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="others" style="background: url('../static/image/brown.png') no-repeat;">其</button>
+                            <button type="button" class="btn btn-default btn-lg revenue-category" data-toggle="modal" data-target="#myModal-revenue" id="general_revenue" style="background: #8D8F76 no-repeat;">一般收入</button>
+                            <button type="button" class="btn btn-default btn-lg revenue-category" data-toggle="modal" data-target="#myModal-revenue" id="invest_revenue" style="background: #BAB6AF no-repeat;">投資收入</button>
+                            <button type="button" class="btn btn-default btn-lg revenue-category" data-toggle="modal" data-target="#myModal-revenue" id="other_revenue" style="background: #E19F81 no-repeat;">其他</button>
                         </div>
-                        <div id="collapseOne" class="panel-collapse collapse in">
-                            <div class="panel-body">
-                                <table class="table" id="cost-list">
-                                    {% for cost_receipt in cost_list %}
-                                    <tr class="receipt{{ cost_receipt.id  }}">
-                                        <td>
-                                            <span class='glyphicon glyphicon-file text-success'></span>
-                                            {% if cost_receipt.remark %}
-                                                <a class="receipt_info" href='#'>{% if cost_receipt.subclassification.classification.classification_type == "food" %}食{% elif cost_receipt.subclassification.classification.classification_type == "clothing" %}衣{% elif cost_receipt.subclassification.classification.classification_type == "housing" %}住{% elif cost_receipt.subclassification.classification.classification_type == "transportation" %}行{% elif cost_receipt.subclassification.classification.classification_type == "education" %}育{% elif cost_receipt.subclassification.classification.classification_type == "entertainment" %}樂{% else %}其{% endif %}-{{cost_receipt.subclassification.name}}-{{cost_receipt.remark}}: {{cost_receipt.money}}
-												</a>
-                                            {% else %}
-                                                <a class="receipt_info" href='#'>{% if cost_receipt.subclassification.classification.classification_type == "food" %}食{% elif cost_receipt.subclassification.classification.classification_type == "clothing" %}衣{% elif cost_receipt.subclassification.classification.classification_type == "housing" %}住{% elif cost_receipt.subclassification.classification.classification_type == "transportation" %}行{% elif cost_receipt.subclassification.classification.classification_type == "education" %}育{% elif cost_receipt.subclassification.classification.classification_type == "entertainment" %}樂{% else %}其{% endif %}-{{cost_receipt.subclassification.name}}: {{cost_receipt.money}}
-												</a>
-                                            {% endif %}
-                                            <span style='float: right; margin-right: 10px; color: #9D9D9D;'></span>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </table>
-                            </div>
+                		
+                        <div class="row" style="margin-bottom: 20px;">
+                            <label style="font-size: 25px; padding-right: 5px;">分類</label>
+                            <input type="text" id="costCategory" value="食-早餐" readonly>
                         </div>
-                    </div>  <!-- /.panel 支出 -->
-
-                        <!-- start panel 收入 -->
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><span class="glyphicon glyphicon-list-alt">
-                                </span>收入</a>
-                                <span class="total_income">總計：</span>
-                            </h4>
+                        <div class="row">
+                            <label style="font-size: 25px; padding-right: 5px;">備註</label>
+                            <input type="text" id="memo" />
                         </div>
-                        <div id="collapseTwo" class="panel-collapse collapse in">
-                            <div class="panel-body">
-								<table class="table" id="revenue-list">
-                                    {% for revenue_receipt in revenue_list %}
-                                    <tr class="receipt{{ revenue_receipt.id  }}">
-                                        <td>
-                                            <span class='glyphicon glyphicon-file text-success'></span>
-                                            {% if revenue_receipt.remark %}
-                                                <a class="receipt_info" href='#'>{% if revenue_receipt.subclassification.classification.classification_type == "general_revenue" %}收入{% elif revenue_receipt.subclassification.classification.classification_type == "invest_revenue" %}投資{% else %}其他{% endif %}-{{revenue_receipt.subclassification.name}}-{{revenue_receipt.remark}}: {{revenue_receipt.money}}
-												</a>
-                                            {% else %}
-                                                <a class="receipt_info" href='#'>{% if revenue_receipt.subclassification.classification.classification_type == "general_revenue" %}收入{% elif revenue_receipt.subclassification.classification.classification_type == "invest_revenue" %}投資{% else %}其他{% endif %}-{{revenue_receipt.subclassification.name}}: {{revenue_receipt.money}}
-												</a>
-                                            {% endif %}
-                                            <span style='float: right; margin-right: 10px; color: #9D9D9D;'></span>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </table>
-                            </div>
+                        <div class="row" style="margin-top: 30px;margin-bottom: 30px;">
+                            <input type="submit" class="btn-default btn-lg submit determin" id="submit-btn" value="確定" style="border: 2px solid #03aaa0;">
+                            <input type="button" class="btn-default btn-lg submit clear" id="last-btn" value="清空" style="border: 2px solid #03aaa0;">
+                            <input type="submit" class="btn-default btn-lg submit modify_btn hidden" id="modify-btn" value="修改" style="border: 2px solid #03aaa0;">
+                            <input type="button" class="btn-default btn-lg submit clear hidden" id="cancel-btn" value="取消" style="border: 2px solid #03aaa0;">
                         </div>
-                    </div>  <!-- /.panel 收入 -->
-
-                </div>  <!-- /.panel group -->
-            </div>  <!-- /.left-side row -->
-
-            <!-- Main container -->
-            <div id="page-wrapper" class="col-sm-9 col-md-9">
-
-                <div class="container-fluid col-xs-12 col-sm-12">
-
-                    <div class="row">
-                        <div class="col-lg-12" id="center-content">
-                            <div id="titleMenu" class="page-header" style="text-align: center;">
-                                <form method="post" id="formadd">
-                                    <select id="recordType" name="recordType">
-                                        <option value="expense">支出</option>
-                                        <option value="income">收入</option>
-                                    </select>
-                                    <select id="payment" name="payment" >
-                                        <option value="cash">現金</option>
-                                        <option value="credit_card">信用卡</option>
-                                        <option value="other">其他</option>
-                                    </select>
-                                    <input type="text"  data-provide="datepicker" id="datepicker1">
-                                </form>
-                            </div>
-                            <div style="text-align: center;">
-                                <div style="display: inline-block;">
-                                    <label id="dollarSign" style="font-size: 100px;padding-right: 20px;">$</label>
-                                    <input type="number" id="amount">
-                                </div>
-                                <div class="row" id="main-type-choose" style="text-align: center; margin-bottom: 20px;">
-                                    <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="food" style="background: #8D8F76 no-repeat;">食</button>
-                                    <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="clothing" style="background: #BAB6AF no-repeat;">衣</button>
-                                    <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="housing" style="background: #E19F81 no-repeat;">住</button>
-                                    <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="transportation" style="background: #73AFB8 no-repeat;">行</button>
-                                    <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="education" style="background: #BA736A no-repeat;">育</button>
-                                    <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="entertainment" style="background: url('../static/image/yellow.png') no-repeat;">樂</button>
-                                    <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="others" style="background: url('../static/image/brown.png') no-repeat;">其</button>
-                                    <button type="button" class="btn btn-default btn-lg revenue-category" data-toggle="modal" data-target="#myModal-revenue" id="general_revenue" style="background: #8D8F76 no-repeat;">一般收入</button>
-                                    <button type="button" class="btn btn-default btn-lg revenue-category" data-toggle="modal" data-target="#myModal-revenue" id="invest_revenue" style="background: #BAB6AF no-repeat;">投資收入</button>
-                                    <button type="button" class="btn btn-default btn-lg revenue-category" data-toggle="modal" data-target="#myModal-revenue" id="other_revenue" style="background: #E19F81 no-repeat;">其他</button>
-                                </div>
-								
-                                <div class="row" style="margin-bottom: 20px;">
-                                    <label style="font-size: 25px; padding-right: 5px;">分類</label>
-                                    <input type="text" id="costCategory" value="食-早餐" readonly>
-                                </div>
-                                <div class="row">
-                                    <label style="font-size: 25px; padding-right: 5px;">備註</label>
-                                    <input type="text" id="memo" />
-                                </div>
-                                <div class="row" style="margin-top: 30px;margin-bottom: 30px;">
-                                    <input type="submit" class="btn-default btn-lg submit determin" id="submit-btn" value="確定" style="border: 2px solid #03aaa0;">
-                                    <input type="button" class="btn-default btn-lg submit clear" id="last-btn" value="清空" style="border: 2px solid #03aaa0;">
-                                    <input type="submit" class="btn-default btn-lg submit modify_btn hidden" id="modify-btn" value="修改" style="border: 2px solid #03aaa0;">
-                                    <input type="button" class="btn-default btn-lg submit clear hidden" id="cancel-btn" value="取消" style="border: 2px solid #03aaa0;">
-                                </div>
-                                </div>
-                            </form>
                         </div>
-                    </div><!-- /.row -->
-                </div><!-- /.container-fluid -->
+                    </form>
+                </div><!-- /#center-content -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div><!-- /#page-wrapper (main container) -->
+{% endblock %}
 
-            </div><!-- /#page-wrapper (main container) -->
-
-        </div><!-- /.container-fluid (whole div below navbar) -->
-
-    </div><!-- /#wrapper (whole page)-->
-
+{% block other_content %}
 	<!-- Modal -->
 	<div class="modal fade" id="myModal-cost" role="dialog">
 	    <div class="modal-dialog">
@@ -885,6 +688,4 @@ $(document).on("click", "#clear-alert", function(){
         </div>
     </div>
     <!-- /.modal2 -->
-</body>
-
-</html>
+{% endblock %}
