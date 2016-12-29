@@ -6,6 +6,10 @@
 <html lang="en">
 
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MoneyKeeper</title>
+
     <!-- jQuery -->
     <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
     <!-- Bootstrap Core JavaScript -->
@@ -40,12 +44,13 @@
                         {% endfor %}
                         <button type="submit" name="go" class="btn btn-lg btn-primary btn-block">Sign in</button>
                         <div class="register-link">
-                            <a href="/register/">Create account</a> or <a href="#">reset password</a>
+                            <a href="/register/">Create account</a> <!--or <a href="#">reset password</a> -->
                         </div>
                     </form>
                 </section>
             </div>
             <!-- /card-container -->
+            <div class="col-md-4"></div>
         </div>
         <!-- /row -->
     </div>

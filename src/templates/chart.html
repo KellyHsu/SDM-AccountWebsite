@@ -1,0 +1,340 @@
+<!-- 這個頁面是圖表頁 -->
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block local_include %}
+        <!-- bokeh -->
+    <link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.3.min.css" type="text/css" />
+    <script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.3.min.js"></script>
+{% endblock %}
+
+    
+{% block local_css %}
+    <style type="text/css">
+        
+        .divOver{
+            border:solid 2px #ddd;
+        }
+        .now-click{
+            border:solid 4px #ddd;
+        }
+        /*圖片置中*/
+        .bk-root .bk-layout-fixed, .bk-root .bk-layout-scale_width, .bk-root .bk-layout-scale_height{
+            margin: 0 auto;
+        }
+        .pie{
+            width:465px;
+            float:left;
+        }
+        .dropdown-menu-right{
+            height: auto;
+            max-height: 200px;
+            overflow-x: hidden;
+        }
+        .dropdown-menu-right::-webkit-scrollbar {
+            -webkit-appearance: none;
+            width: 4px;        
+        }    
+        .dropdown-menu-right::-webkit-scrollbar-thumb {
+            border-radius: 3px;
+            background-color: lightgray;
+            -webkit-box-shadow: 0 0 1px rgba(255,255,255,.75);        
+        }
+    </style>
+{% endblock %}
+
+{% block local_js %}
+    <script>
+
+    $(document).ready(function(){
+        $('#week-page').addClass("now-click");
+
+        $('div.panel-default').hover(function(){
+            $(this).addClass('divOver');        
+        },function(){
+            $(this).removeClass('divOver'); 
+            
+        });
+
+        $('#week-page').click(function(event) {
+            $('#week-page').addClass("now-click");
+            $('#month-page').removeClass("now-click")
+            $('#year-page').removeClass("now-click")
+            $('#category-page').removeClass("now-click")
+            $.ajax({
+               dataType: 'json',
+               url: "/getWeekChart/",
+                type:"POST",
+                data: {},
+                success: function(result){
+                    $('#title-menu').css("display","");
+                    $('#title-text').css("display","none");
+                    $("#chart").replaceWith("<div id=\"chart\"><div>"+result.script_bar+result.div_bar+"</div>"+result.the_script+result.the_div+"</div></div>");
+                    $('#pageHeader_date').text(result.title);
+
+                },
+                error: function(status){
+                    console.log(status);
+                    alert("周收支讀取失敗")
+                }
+            }); 
+        });
+        $('#month-page').click(function(event) {
+            $('#month-page').addClass("now-click");
+            $('#week-page').removeClass("now-click")
+            $('#year-page').removeClass("now-click")
+            $('category-page').removeClass("now-click")
+            $.ajax({
+               dataType: 'json',
+               url: "/getMonChart/",
+                type:"POST",
+                data: {},
+                success: function(result){
+                    $('#title-menu').css("display","");
+                    $('#title-text').css("display","none");
+                    $("#chart").replaceWith("<div id=\"chart\"><div>"+result.script_bar+result.div_bar+"</div>"+result.the_script+result.the_div+"</div></div>");
+                    $('#pageHeader_date').text(result.title);
+
+                },
+                error: function(status){
+                    console.log(status);
+                    alert("月收支讀取失敗")
+                }
+            });  
+        });
+        $('#year-page').click(function(event) {
+            $('#year-page').addClass("now-click");
+            $('#week-page').removeClass("now-click")
+            $('#month-page').removeClass("now-click")
+            $('#category-page').removeClass("now-click")
+            $.ajax({
+               dataType: 'json',
+               url: "/getYrChart/",
+                type:"POST",
+                data: {},
+                success: function(result){
+                    $('#title-menu').css("display","");
+                    $('#title-text').css("display","none");
+                    $("#chart").replaceWith("<div id=\"chart\"><div>"+result.script_bar+result.div_bar+"</div>"+result.the_script+result.the_div+"</div></div>");
+                    $('#pageHeader_date').text(result.title);
+
+                },
+                error: function(status){
+                    console.log(status);
+                    alert("年收支讀取失敗")
+                }
+            }); 
+        });
+        $('#category-page').click(function(event) {
+            $('#category-page').addClass("now-click");
+            $('#week-page').removeClass("now-click")
+            $('#month-page').removeClass("now-click")
+            $('#year-page').removeClass("now-click")
+            $('#title-text').find( "h3" ).html("總類別分析");
+            $.ajax({
+               dataType: 'json',
+               url: "/getCategoryChart/",
+                type:"POST",
+                data: {},
+                success: function(result){
+                    $('#title-menu').css("display","none");
+                    $('#title-text').css("display","");
+                    //$("#chart").replaceWith("<div id=\"chart\"><div>"+result.script_pie+result.div_pie+"</div>"+result.script_pie_sub+result.div_pie_sub+"</div></div>");
+                    $("#chart").replaceWith("<div id=\"chart\"><div class=\"pie\">"+result.script_pie+result.div_pie+"</div><div class=\"pie\">"+result.script_pie_in+result.div_pie_in+"</div><div class=\"pie\">"+result.script_pie_sub+result.div_pie_sub+"</div><div class=\"pie\">"+result.script_pie_sub_in+result.div_pie_sub_in+"</div></div>");
+
+                },
+                error: function(status){
+                    console.log(status);
+                    alert("類別分析讀取失敗")
+                }
+            }); 
+        });
+
+
+        //左右方向箭號的事件
+        $('#btn_left,#btn_right').click(function(e){
+            var idClick = e.target.id;
+            var pageHeader_date = $('#pageHeader_date').html();
+            var sign;
+            //alert("pageHeader_date"+pageHeader_date);
+            if($('#week-page').hasClass('now-click')){
+                sign = "week";
+            }else if($('#month-page').hasClass('now-click')){
+                sign = "month";
+            }else if($('#year-page').hasClass('now-click')){
+                sign = "year";
+            }
+            $.ajax({
+               dataType: 'json',
+               url: "/backwardChart/",
+                type:"POST",
+                data: {pageHeader_date : pageHeader_date, sign: sign, id: idClick},
+                success: function(result){
+                    $("#chart").replaceWith("<div id=\"chart\"><div>"+result.script_bar+result.div_bar+"</div>"+result.the_script+result.the_div+"</div></div>");
+                    $('#pageHeader_date').text(result.title);
+
+                },
+                error: function(result, status){
+                    console.log(status);
+                    console.log(result);
+                    alert("抓新日期失敗")
+                }
+            });
+        });
+
+        //pie-下拉式選單
+        $('div.dropdown ul.dropdown-menu li a').click(function (e) {
+            var choosen = $(this).text();
+            e.preventDefault();
+            if(choosen == "------------"){
+                choosen="月份";
+                $('#menu1').html(choosen+' <span class=\"caret\"></span>');
+                $('#title-text').find( "h3" ).html("總類別分析");
+                $.ajax({
+                    dataType: 'json',
+                    url: "/getCategoryChart/",
+                    type:"POST",
+                    data: {},
+                    success: function(result){
+                        $('#title-menu').css("display","none");
+                        $('#title-text').css("display","");
+                        //$("#chart").replaceWith("<div id=\"chart\"><div>"+result.script_pie+result.div_pie+"</div>"+result.script_pie_sub+result.div_pie_sub+"</div></div>");
+                        $("#chart").replaceWith("<div id=\"chart\"><div class=\"pie\">"+result.script_pie+result.div_pie+"</div><div class=\"pie\">"+result.script_pie_in+result.div_pie_in+"</div><div class=\"pie\">"+result.script_pie_sub+result.div_pie_sub+"</div><div class=\"pie\">"    +result.script_pie_sub_in+result.div_pie_sub_in+"</div></div>");
+
+                    },
+                    error: function(status){
+                        console.log(status);
+                        alert("類別分析讀取失敗")
+                    }
+                }); 
+            }else{
+                $('#menu1').html(choosen+' <span class=\"caret\"></span>');
+                $('#title-text').find( "h3" ).html(choosen);
+                var timearray = choosen.split(" - ");
+                var time = timearray[0]+"/"+timearray[1];
+                $.ajax({
+                    dataType: 'json',
+                    url: "/getSpecificCategoryChart/",
+                    type:"POST",
+                    data: {pageHeader_date : time},
+                    success: function(result){
+                        $('#title-menu').css("display","none");
+                        $('#title-text').css("display","");
+                        //$("#chart").replaceWith("<div id=\"chart\"><div>"+result.script_pie+result.div_pie+"</div>"+result.script_pie_sub+result.div_pie_sub+"</div></div>");
+                        $("#chart").replaceWith("<div id=\"chart\"><div class=\"pie\">"+result.script_pie+result.div_pie+"</div><div class=\"pie\">"+result.script_pie_in+result.div_pie_in+"</div><div class=\"pie\">"+result.script_pie_sub+result.div_pie_sub+"</div><div class=\"pie\">"+result.script_pie_sub_in+result.div_pie_sub_in+"</div></div>");
+                    },
+                    error: function(status){
+                        console.log(status);
+                        alert("類別分析抓新日期失敗")
+                    }
+                });
+            }
+        });
+
+    }); // end document.ready()
+
+    </script>
+{% endblock %}
+
+{% block left_side_content %}
+
+<div class="container-fluid">
+    <div class="row col-sm-3 col-md-3 left-side">
+        <div class="panel-group collapse in" id="accordion" aria-expanded="true">
+
+            <!-- start panel 本周收支 -->
+            <div class="panel panel-default" id="week-page">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <span class="fa fa-bar-chart" style="padding-right: 10px;">
+                        </span>本周收支
+                    </h4>
+                </div>
+            </div>  <!-- /.panel 本周收支 -->
+
+            <!-- start panel 本月收支 -->
+            <div class="panel panel-default" id="month-page">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <span class="fa fa-bar-chart" style="padding-right: 10px;">
+                        </span>本月收支
+                    </h4>
+                </div>
+            </div>  <!-- /.panel 本月收支 -->
+
+            <!-- start panel 年度收支 -->
+            <div class="panel panel-default" id="year-page">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <span class="fa fa-bar-chart" style="padding-right: 10px;">
+                        </span>年度收支
+                    </h4>
+                </div>
+            </div>  <!-- /.panel 年度收支 -->
+            
+            <!-- start panel 類別分析 -->
+            <div class="panel panel-default" id="category-page">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <span class="fa fa-pie-chart" style="padding-right: 10px;"></span>類別分析
+                    </h4>
+                </div>
+            </div>  <!-- /.panel 類別分析 -->
+
+        </div>  <!-- /.panel group -->
+    </div>  <!-- /.left-side row -->
+{% endblock %}                   
+        
+{% block main_content %}
+<!-- Main container -->
+    <div id="page-wrapper" class="col-sm-9 col-md-9">
+        <div class="container-fluid col-xs-12 col-sm-12">
+            <p style="text-align: center; font-size: 100px;">
+            </p>
+            <div class="row">
+                <div class="col-lg-12" id="center-content">
+                    <div style="text-align: center;">
+                        <div style="margin: 20px 0px 50px 0px;" id="title-menu">
+                            <form>
+                                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true" id="btn_left"></span>
+                                <span class="label label-default" id="pageHeader_date" style="font-size:120%;">{{title}}</span>
+                                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true" id="btn_right"></span>      
+                            </form>
+                            <HR>
+                        </div>
+                        <div style="margin: 20px 0px 50px 0px; display:none;" id="title-text">
+                            <h3><b>總類別分析</b></h3>
+                            <div class="dropdown" style="text-align: right;">
+                                <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">月份
+                                <span class="caret"></span></button>
+                                <ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="menu1">
+                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">------------</a></li>
+                                    {% for month in month_list %}
+                                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">{{ month }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <HR>
+                        </div>
+                        <div id="chart">
+                            <div>
+                                {{ div_bar|safe }}
+                                {{ script_bar|safe }}
+                            </div>
+                            <div>
+                                {{ the_div|safe }}
+                                {{ the_script|safe }}
+                            </div>
+                            <div>
+                                {{ div_pie|safe }}
+                                {{ script_pie|safe }}
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div><!-- /#page-wrapper (main container) -->
+</div><!-- /.container-fluid (whole div below navbar) -->
+
+{% endblock %}

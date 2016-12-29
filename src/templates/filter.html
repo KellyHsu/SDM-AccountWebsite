@@ -1,0 +1,650 @@
+<!-- 這個頁面是篩選頁 -->
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block local_include %}
+        <!--datatables CSS-->
+    <link href="{% static 'datatables/jquery-ui.css' %}" rel="stylesheet">
+    <link href="{% static 'datatables/dataTables.jqueryui.min.css' %}" rel="stylesheet">
+
+        <!--datepicker CSS-->
+    <link href="{% static 'css/bootstrap-datepicker.css' %}" rel="stylesheet">
+    <link href="{% static 'css/datepicker.css' %}" rel="stylesheet">
+
+        <!--datepicker-->
+    <script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
+
+        <!-- datatables JavaScript -->
+    <script src="{% static 'datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'datatables/dataTables.jqueryui.min.js' %}"></script>
+{% endblock %}
+
+{% block local_js %}
+
+<script>
+	$(document).ready(function() {
+        var table = $('#example').DataTable({
+            responsive: true,
+            columnDefs: [
+                { responsivePriority: 1, targets: 0 },
+                { responsivePriority: 1, targets: -2 },
+                { responsivePriority: 2, targets: -1 }
+            ]
+            //"scrollx": true,
+        });
+        var ecatList_ch = ["食", "衣", "住","行","育","樂","其"];
+        var ecatList_en = ["food", "clothing", "housing","transportation","education","entertainment","others"];
+        var icatList_ch = ["一般收入", "投資收入", "其他"];
+        var icatList_en = ["general_revenue", "invest_revenue", "other_revenue"];
+        var row_id;
+        var a,b;
+        var empty_subcat_I=[]
+        var empty_subcat_E=[]
+
+        //取得次類別內容
+        var subcatArray = [[],[],[],[],[],[],[],[],[],[]];
+        {% for sub in subcat %}
+            
+            if("{{sub.classification}}"=="food")
+                subcatArray[0].push("{{sub.name}}")
+            if("{{sub.classification}}"=="clothing")
+                subcatArray[1].push("{{sub.name}}")
+            if("{{sub.classification}}"=="housing")
+                subcatArray[2].push("{{sub.name}}")
+            if("{{sub.classification}}"=="transportation")
+                subcatArray[3].push("{{sub.name}}")
+            if("{{sub.classification}}"=="education")
+                subcatArray[4].push("{{sub.name}}")
+            if("{{sub.classification}}"=="entertainment")
+                subcatArray[5].push("{{sub.name}}")
+            if("{{sub.classification}}"=="others")
+                subcatArray[6].push("{{sub.name}}")
+            if("{{sub.classification}}"=="general_revenue")
+                subcatArray[7].push("{{sub.name}}")
+            if("{{sub.classification}}"=="invest_revenue")
+                subcatArray[8].push("{{sub.name}}")
+            if("{{sub.classification}}"=="other_revenue")
+                subcatArray[9].push("{{sub.name}}")
+
+        {% endfor %}
+        console.log(subcatArray);
+        for( a=0 ;a<7;a++){
+            if(subcatArray[a].length==0){
+                empty_subcat_E.push(a);
+            }
+        }
+        for(b=7;b<10;b++){
+            if(subcatArray[b].length==0){
+                empty_subcat_I.push(b);
+            }    
+        }
+        console.log(empty_subcat_I);
+        console.log(empty_subcat_E);
+        
+        //左右方向箭號的事件
+        $('#btn_left,#btn_right').click(function(e){
+            var idClick = e.target.id;
+            var pathname = window.location.pathname; // Returns path only
+            var pageHeader_date = $('#pageHeader_date').html();
+            var sign;
+            console.log(pathname);
+            console.log(idClick); 
+            if(pathname == "/filter/"){
+                sign = "day";
+            }else if(pathname == "/getReceiptByWeek/"){
+                sign = "week";
+            }else if(pathname == "/getReceiptByMon/"){
+                sign = "month";
+            }else{
+                sign = "year";
+            }
+            console.log(pageHeader_date);
+            $.ajax({
+               dataType: 'json',
+               url: "/backwardTime/",
+                type:"POST",
+                data: {pageHeader_date : pageHeader_date, sign: sign, id: idClick},
+                success: function(result){
+                    $('#example tbody tr').remove();
+                    console.log(result.tableContent);
+                    $('#example tbody').append(result.tableContent);
+                    $('#pageHeader_date').text(result.title);
+                    $('#totalCost').text("總支出"+result.cost);
+                    $('#totalIncome').text("總收入"+result.income);
+                    $('#balance').text("餘額"+result.balance);
+                },
+                error: function(result, status){
+                    console.log(status);
+                    console.log(result);
+                    alert("抓新日期失敗")
+                }
+            });
+        });
+
+        //刪除和修改
+        $('body').on('click', 'button', function (e){
+            // console.log(e.target.value);
+            // console.log(e.target.title);
+            var id = e.target.value;
+            var title = e.target.title;
+            var pathname = window.location.pathname; // Returns path only
+            var pageHeader_date = $('#pageHeader_date').html();
+            var sign;
+            // console.log(pathname);
+            if(pathname == "/filter/"){
+                sign = "day";
+            }else if(pathname == "/getReceiptByWeek/"){
+                sign = "week";
+            }else if(pathname == "/getReceiptByMon/"){
+                sign = "month";
+            }else{
+                sign = "year";
+            }
+            console.log("title"+title);
+            console.log("id"+id);
+            console.log(pageHeader_date);
+            console.log(typeof(pageHeader_date));
+            if(title =="刪除"){
+                $.ajax({
+                    dataType: 'json',
+                    url: "/filterDelRecord/",
+                    type:"POST",
+                    data: {id: id, pageHeader_date: pageHeader_date, sign: sign},
+                    success: function(result){
+                        console.log("jaja");
+                        console.log(result.answer);
+                        $('#example tbody tr').remove();
+                        console.log(result.tableContent);
+                        $('#example tbody').append(result.tableContent);
+                        $('#totalCost').text("總支出"+result.cost);
+                        $('#totalIncome').text("總收入"+result.income);
+                        $('#balance').text("餘額"+result.balance);
+                    },
+                    error: function(result, status){
+                        console.log(status);
+                        alert("刪除失敗")
+                    }
+                });}
+            if(title=="save"){
+                console.log("idddddd"+row_id);
+                console.log($('#amount').val());
+                console.log($('#memo').val());
+                console.log($('#recordType').val());
+                console.log($('#subcat').val());
+                console.log($('#payment').val());
+                console.log($("#datepicker1").val());
+                $.ajax({
+                    dataType: 'json',
+                    url: "/filterDelRecord/",
+                    type:"POST",
+                    data: {id: row_id, amount: $('#amount').val(), memo: $('#memo').val(), recordType: $('#recordType').val(), subcat: $('#subcat').val(), payment: $('#payment').val(), date: $("#datepicker1").val(), pageHeader_date: pageHeader_date, sign: sign, title: title },
+                    success: function(result){
+                        console.log("save successful");
+                        console.log(result.answer);
+                        $('#example tbody tr').remove();
+                        console.log(result.tableContent);
+                        $('#example tbody').append(result.tableContent);
+                        $('#totalCost').text("總支出"+result.cost);
+                        $('#totalIncome').text("總收入"+result.income);
+                        $('#balance').text("餘額"+result.balance);
+                        $('#modal').modal('toggle');
+                    },
+                    error: function(result, status){
+                        console.log(status);
+                        alert("刪除失敗")
+                    }
+                });
+            }
+            if(title="修改"){
+                var count=1;
+                var i;
+                var sub_title;
+                row_id = id;
+                //按鈕的parent的parent，找每個td tag
+                $(this).parent().parent().find('td').each (function() {
+                    //每次找的td tag
+                    console.log($(this).html());
+
+                    switch(count) {
+                        case 1:
+                            selectedCat = $(this).html();
+                            break;
+                        case 2:
+                            selectedSubCat = $(this).html();
+                            console.log("haha"+selectedSubCat);
+                            break;
+                        case 3:
+                            $('#memo').val($(this).html());
+                            break;
+                        case 4:
+                            $('#category').find('option').remove().end();
+                            if($(this).html()=="expense")
+                            {
+                                console.log("我是支出");
+                                $("#recordType").val("expense");
+                                for( i = 0; i < ecatList_ch.length; i++){
+                                    $("#category").append($('<option></option>').val(ecatList_en[i]).text(ecatList_ch[i]));
+                                }
+                                //拿掉次分類為空的類別 disable
+                                for(i=0;i<empty_subcat_E.length;i++){
+                                    console.log(ecatList_en[empty_subcat_E[i]]);
+                                    $('#category option[value='+ecatList_en[empty_subcat_E[i]]+']').attr('disabled','disabled');
+                                }
+                            }else{
+
+                                $("#recordType").val("income");
+                                for( i = 0; i < icatList_ch.length; i++){
+                                    $("#category").append($('<option></option>').val(icatList_en[i]).text(icatList_ch[i]));
+                                }
+                                //disable掉次分類為空的類別
+                                console.log(empty_subcat_I.length);
+                                for(i=0;i<empty_subcat_I.length;i++){
+                                    console.log(icatList_en[empty_subcat_I[i]-7]);
+                                    $('#category option[value='+icatList_en[empty_subcat_I[i]-7]+']').attr('disabled','disabled');
+                                }
+                            }
+                            $('#category').val(selectedCat);
+                            switch(selectedCat){
+                                case "food":
+                                    sub_title = 0;
+                                    break;
+                                case "clothing":
+                                    sub_title = 1;
+                                    break;
+                                case "housing":
+                                    sub_title = 2;
+                                    break;
+                                case "transportation":
+                                    sub_title = 3;
+                                    break;
+                                case "education":
+                                    sub_title = 4;
+                                    break;
+                                case "entertainment":
+                                    sub_title = 5;
+                                    break;
+                                case "others":
+                                    sub_title = 6;
+                                    break;
+                                case "general_revenue":
+                                    sub_title = 7;
+                                    break;
+                                case "invest_revenue":
+                                    sub_title = 8;
+                                    break;
+                                case "other_revenue":
+                                    sub_title = 9;
+                                    break;
+                                default:
+                                    break;
+                            }
+                            console.log("sub_title"+sub_title);
+                            $('#subcat').find('option').remove().end();
+                            for( i = 0; i < subcatArray[sub_title].length; i++){
+                                $("#subcat").append($('<option></option>').val(subcatArray[sub_title][i]).text(subcatArray[sub_title][i]));
+                            }
+                            $('#subcat').val(selectedSubCat);
+                            break;
+                        case 5:
+                            switch($(this).html()) {
+                                case "cash":
+                                    console.log("我是現金");
+                                    $("#payment").val("cash");
+                                    break;
+                                case "credit_card":
+                                    console.log("我是信用卡");
+                                    $("#payment").val("credit_card");
+                                    break;
+                                case "other":
+                                    console.log("我是其他");
+                                    $("#payment").val("other");
+                                    break;
+                                default:
+                                    break;
+                            }    
+                            break;
+                        case 6:
+                            console.log("時間時間");
+                            // var set_date = $(this).html();
+                            var set_date = new Date($(this).html());
+                            console.log($(this).html());
+                            $('#datepicker1').datepicker({
+                                autoclose: true,
+                                todayHighlight: true,
+                                format: "yyyy/mm/dd",
+                                monthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                                 "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+                            });
+                            $("#datepicker1").datepicker("setDate", set_date);
+                            break;
+                        case 7:
+                            $('#amount').val($(this).html());
+                            break;
+                        default:
+                            break;
+                    }
+                    count++;
+                });
+            }//end of switch
+            
+        });//end of button edit and delete
+
+        //modal的 收/支(select)改變，類別、次類別跟著變動
+        $('#recordType').on('change', function() {
+            var i,j;
+            $('#category').find('option').remove().end();
+            $('#subcat').find('option').remove().end();
+            if (this.value=="expense"){
+                for( i = 0; i < ecatList_ch.length; i++){
+                    $("#category").append($('<option></option>').val(ecatList_en[i]).text(ecatList_ch[i]));
+                }
+                //拿掉次分類為空的類別 disable
+                for(i=0;i<empty_subcat_E.length;i++){
+                    console.log(ecatList_en[empty_subcat_E[i]]);
+                    $('#category option[value='+ecatList_en[empty_subcat_E[i]]+']').attr('disabled','disabled');
+                }
+                for( j = 0; j < subcatArray[0].length; j++){
+                    $("#subcat").append($('<option></option>').val(subcatArray[0][j]).text(subcatArray[0][j]));
+                }
+            }else{
+                for( i = 0; i < icatList_ch.length; i++){
+                    $("#category").append($('<option></option>').val(icatList_en[i]).text(icatList_ch[i]));
+                }
+                //disable掉次分類為空的類別
+                for(i=0;i<empty_subcat_I.length;i++){
+                    //console.log(icatList_en[empty_subcat_I[i]-7]);
+                    $('#category option[value='+icatList_en[empty_subcat_I[i]-7]+']').attr('disabled','disabled');
+                }
+                for( j = 0; j < subcatArray[7].length; j++){
+                    $("#subcat").append($('<option></option>').val(subcatArray[7][j]).text(subcatArray[7][j]));
+                }
+            }
+        });
+
+        //類別改變次類別跟著變
+        $('#category').on('change', function() {
+            var j;
+            var sub_title;
+            sub_title = $('#category option:selected').index();
+            //console.log($('#category option:selected').index());
+            $('#subcat').find('option').remove().end();
+            //console.log("zzzzzz"+$('#recordType option:selected').val());
+            if($('#recordType option:selected').val()=="expense"){
+                for( j = 0; j < subcatArray[sub_title].length; j++){
+                    $("#subcat").append($('<option></option>').val(subcatArray[sub_title][j]).text(subcatArray[sub_title][j]));
+                }    
+            }else{
+                sub_title = sub_title + 7;
+                for( j = 0; j < subcatArray[sub_title].length; j++){
+                    $("#subcat").append($('<option></option>').val(subcatArray[sub_title][j]).text(subcatArray[sub_title][j]));
+                }
+            }
+        });
+
+	} ); //end of document.ready
+
+</script>
+{% endblock %}
+
+
+{% block local_css %}
+<style type="text/css">
+    .dataTables_wrapper .ui-toolbar{
+        background: #DCDCDC ;
+    }
+    select{
+        margin: 0px 6px;
+        width: 30%;
+    }
+    .dataTables_length label{
+        margin: 0px;
+        padding: 3px;
+    }
+    .dataTables_filter label{
+        margin: 0px;
+    }
+    
+
+    @media(max-width: 1960px){
+       #recordType, #payment{
+            width: 90px;
+            padding: 2px;
+        }
+        #datepicker1{
+            margin-left: 6px;
+        }
+        #amount{
+            font-size: 20px;
+            border-bottom: 2px solid black;
+            margin: 0px;
+        }
+        #category, #subcat{
+            width: 90px;
+            border: #000000 1px solid;
+            padding: 2px;
+        }
+        #second_level{
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+        #subcat{
+            margin-left: 20px;
+        }
+    }
+
+    @media(max-width: 480px){
+        #recordType, #payment{
+            width: 90px;
+            padding: 0px;
+        }
+        #datepicker1{
+            margin-left: 6px;
+        }
+        #amount{
+            font-size: 20px;
+            border-bottom: 2px solid black;
+            margin: 0px;
+        }
+        #category, #subcat{
+            width: 90px;
+            border: #000000 1px solid;
+        }
+        #second_level{
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+        #subcat{
+            margin-left: 0px;
+        }
+        #category,#recordType,#datepicker1{
+            margin-left: 15px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block left_side_content %}
+<div class="container-fluid">
+	<div class="row col-sm-3 col-md-3 left-side">
+        <div class="panel-group collapse in" id="accordion" aria-expanded="true">
+
+            <!-- start panel 以日瀏覽 -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a href="/filter/"><span class="glyphicon glyphicon-menu-right">
+                        </span>以日瀏覽</a>
+                    </h4>
+                </div>
+            </div>  <!-- /.panel 以日瀏覽 -->
+
+            <!-- start panel 以週瀏覽 -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a href="/getReceiptByWeek/"><span class="glyphicon glyphicon-menu-right">
+                        </span>以週瀏覽</a>
+                    </h4>
+                </div>
+            </div>  <!-- /.panel 以週瀏覽 -->
+
+            <!-- start panel 以月瀏覽 -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a href="/getReceiptByMon/"><span class="glyphicon glyphicon-menu-right">
+                        </span>以月瀏覽</a>
+                    </h4>
+                </div>
+            </div>  <!-- /.panel 以月瀏覽 -->
+
+            <!-- start panel 以年瀏覽 -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a href="/getReceiptByYr/"><span class="glyphicon glyphicon-menu-right">
+                        </span>以年瀏覽</a>
+                    </h4>
+                </div>
+            </div>  <!-- /.panel 以年瀏覽 -->
+
+        </div>  <!-- /.panel group -->
+    </div>  <!-- /.left-side row -->
+{% endblock %}
+
+{% block main_content %}
+   <!-- Main container -->
+    <div id="page-wrapper" class="col-sm-9 col-md-9">
+        <div class="container-fluid col-xs-12 col-sm-12">
+            <div class="row">
+                <div class="col-lg-12" id="center-content">
+                    <div id="titleMenu" class="page-header" style="text-align: center; padding-bottom: 13px; padding-top: 13px; margin: 10px;">
+                        <div style="padding: 8px 12px; margin: 6px;">
+                            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true" id="btn_left"></span>
+                            <span class="label label-default" id="pageHeader_date" style=" margin: 6px; border-radius: 4px; background-color: #FFFF33; color: #000000; font-weight: bold; font-size: medium; padding-top: 7px;">{{title}}</span>
+                            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true" id="btn_right"></span>
+                        </div>
+                        <div style="text-align: center;">
+                            <label id="totalCost" style="font-weight: bold; font-size: medium">總支出：{{totalCost}}元</label>
+                            <label id="totalIncome" style="font-weight: bold; font-size: medium">&nbsp;總收入：{{totalIncome}}元</label>
+                            <label id="balance" style="font-weight: bold; font-size: medium">&nbsp;結餘：{{balance}}元</label>
+                        </div>
+                    </div>
+                    
+                    <div>
+                    	<table id="example" class="display responsive nowrap" cellspacing="0" width="100%">
+                	        <thead>
+                	            <tr>
+                	                <th>分類</th>
+                                    <th>次分類</th>
+                	                <th>備註</th>
+                	                <th>支/收</th>
+                	                <th>付款方式</th>
+                	                <th>日期</th>
+                	                <th>金額</th>
+                                    <th>功能</th>
+                	            </tr>
+                	        </thead>
+                	        <tfoot>
+                	            <tr>
+                	                <th>分類</th>
+                                    <th>次分類</th>
+                	                <th>備註</th>
+                	                <th>支/收</th>
+                	                <th>付款方式</th>
+                	                <th>日期</th>
+                	                <th>金額</th>
+                                    <th>功能</th>
+                	            </tr>
+                	        </tfoot>
+                	        <tbody>
+                                {% for choice in receipts %}
+                	            <tr>
+                	                <td>{{choice.subclassification.classification.classification_type}}</td>
+                                    <td>{{choice.subclassification}}</td>
+                	                <td>{{choice.remark}}</td>
+                	                <td>{{choice.incomeandexpense}}</td>
+                	                <td>{{choice.payment}}</td>
+                	                <td>{{choice.date}}</td>
+                	                <td>{{choice.money}}</td>
+                                    <td style="width: 12%"><button type="button" class="btn btn-danger btn-sm" value="{{choice.id}}" title="刪除">刪除</button>&nbsp;<button type="button" class="btn btn-danger btn-sm" value="{{choice.id}}" title="修改" data-toggle="modal" data-target=".bd-example-modal-lg">修改</button></td>
+                                    <!-- <td style="display: none;">{{choice.id}}</td> -->
+                	            </tr>
+                                {% endfor %}
+                	        </tbody>
+                	    </table>
+                    </div>
+                </div><!-- /#center-content -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div><!-- /#page-wrapper (main container) -->
+</div><!-- /.container-fluid (whole div below navbar) -->
+{% endblock %}
+
+{% block other_content %}
+
+    <!-- modal html -->
+    <div class="modal fade bd-example-modal-lg" id="modal"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">修改紀錄</h4>
+                </div>
+                <div class="modal-body">
+                    <form method="post" id="edit_form" action="/filterSaveEdit/" >
+                        <div class="form-inline">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="for_record_type">收支：</label>
+                                <select id="recordType" name="recordType">
+                                    <option value="expense">支出</option>
+                                    <option value="income">收入</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="for_payment">付款方式：</label>
+                                <select id="payment" name="payment" >
+                                    <option value="cash">現金</option>
+                                    <option value="credit_card">信用卡</option>
+                                    <option value="other">其他</option>
+                                </select>
+                            </div>
+                            <label>日期：</label>
+                            <input type="text" data-provide="datepicker" id="datepicker1">
+                        </div>
+                        <div class="form-inline" id="second_level">
+                            <div class="form-group">
+                                <label for="for_category">類別：</label>
+                                <select id="category" name="category">
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="for_subcat">次類別：</label>
+                                <select id="subcat" name="subcat">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-inline">
+                            <div class="form-group" id="modal_memo">
+                                <label for="for_memo">備註：</label>
+                                <input type="text" class="form-control" id="memo">
+                            </div>
+                            <div class="form-group" id="modal_amount">
+                                <label for="for_amount">金額：</label>
+                                <input type="text" class="form-control" id="amount">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" title="save" >Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+	
+{% endblock %}

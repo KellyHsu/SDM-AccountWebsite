@@ -1,0 +1,1386 @@
+<!-- 這個頁面是設定頁 -->
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block local_include %}
+    	<!-- Animate CSS -->
+    <link href="{% static 'css/animate.css' %}" rel="stylesheet">
+
+    	<!-- bootstrap-toggle CSS -->
+	<link href="{% static 'css/bootstrap-toggle.min.css' %}" rel="stylesheet">
+	    	<!-- bootstrap-toggle JS -->
+    <script src="{% static 'js/bootstrap-toggle.min.js' %}"></script>
+{% endblock %}
+
+{% block local_css %}
+
+    <style type="text/css">
+    	span.item-title {
+			font-size: 20px;
+			font-weight: 600;
+			word-spacing:10px;
+			white-space:nowrap;
+    	}
+        input{
+            padding:0px 10px;
+        }
+    	input[type="text"], input[type="password"] {
+    		width: 25em;
+    		height: 30px;
+    	}
+
+    	input[readonly] {
+    		color: #6C6C6C;
+    		background-color: #d0d0d0;
+    	}
+
+    	.edit-img-btn {
+			border: 0; 
+			background-color: transparent; 
+			width: 32px; 
+			height: 32px;    	
+		}
+
+		.sub-category { 
+		    position: relative; 
+		    margin-right: 2px;
+		}
+		
+		.revenue-sub-category { 
+		    position: relative; 
+		    margin-right: 2px;
+		}
+
+		/* 用來在次分類上增加刪除的叉 */
+		.sub-category span { 
+		    position: absolute; 
+		    top: -18px;  /* position in bottom right & top corner */
+		    right: -8px;
+		    z-index: 100;
+		    width: 16px;
+		    height: 16px;
+		    color: red;
+		    font-size: 23px;
+		}   
+
+		.revenue-sub-category span { 
+		    position: absolute; 
+		    top: -18px;  /* position in bottom right & top corner */
+		    right: -8px;
+		    z-index: 100;
+		    width: 16px;
+		    height: 16px;
+		    color: red;
+		    font-size: 23px;
+		}   
+
+		@media (max-width: 767px) {
+			input[type="text"], input[type="password"] {
+    			width: 100%;
+    			height: 30px;
+    		}
+
+			input[type="number"] {
+				width: 100%;
+			}
+
+			.kind-b, #m-b {
+				width: 100%;
+			}
+		}
+
+
+    </style>
+{% endblock %}
+
+{% block local_js %}
+    <script>
+
+	$(document).ready(function(){
+		defaultHiding();	// 先把要隱藏的欄位隱藏
+
+		// 重設按鈕按下
+		$("#go-passwd-set").click(function(){
+			$(".passwd-set").animate({
+				height: 'toggle'
+			});
+			$(this).hide();
+		});
+		
+		// 密碼設定完成的確認按鈕
+		$("#new-passwd-submit").click(function(){
+			if ($("#password").val() !== null && $("#password").val() !== undefined && $("#password").val() !== '') { 
+			if($("#password").val() == $('#confirmpassword').val()){		
+				var new_password=$("#password").val();
+				$.ajax({
+            	    url: "/changePassword/",
+            	    type:"POST",
+            	    data: {new_password : new_password},
+            	    success: function(rowcontent){
+						$("#password").val('');
+						$('#confirmpassword').val('');
+						$(".passwd-set").animate({
+							height: 'toggle'
+						});
+						$("#go-passwd-set").show(1000);
+{#						alert("修改密碼成功");#}
+            	    },
+            	    error: function(){
+                		alert("修改密碼失敗")
+                	}
+            	});
+			}else{
+				alert("請確認密碼一致")
+			}
+			}else{
+				alert("請輸入密碼")
+			}
+		});
+
+		// 密碼設定取消的確認按鈕
+		$("#not-passwd-submit").click(function(){
+			$("#password").val('');
+			$('#confirmpassword').val('');
+			$(".passwd-set").animate({
+				height: 'toggle'
+			});
+			$("#go-passwd-set").show(1000);
+		});
+
+		// 刪除子分類的按鈕事件
+		$("#btn-sub-category-del").click(function(){
+			$(this).hide();
+			$(".sub-category-del-submit").animate({
+				width:'toggle'
+				}
+			);
+
+			var list_sub_category = $(".sub-category");
+			list_sub_category.removeClass("btn-link");
+			list_sub_category.addClass("btn-default");
+			list_sub_category.addClass("confirm");
+			list_sub_category.addClass("animated");	// 套用animate css
+			list_sub_category.addClass("swing");	// 使用swing 動畫
+			list_sub_category.append("<span>&times;</span>");
+			sub_category_deletionHandler();
+
+		});
+		
+				// 刪除收入子分類的按鈕事件
+		$("#btn-sub-category-del-revenue").click(function(){
+			$(this).hide();
+			$(".sub-category-del-submit-revenue").animate({
+				width:'toggle'
+				}
+			);
+
+			var list_sub_category = $(".revenue-sub-category");
+			list_sub_category.removeClass("btn-link");
+			list_sub_category.addClass("btn-default");
+			list_sub_category.addClass("confirm");
+			list_sub_category.addClass("animated");	// 套用animate css
+			list_sub_category.addClass("swing");	// 使用swing 動畫
+			list_sub_category.append("<span>&times;</span>");
+			sub_revenue_category_deletionHandler();
+
+		});
+
+		// 確定刪除or取消刪除子分類的按鈕
+		$(".sub-category-del-submit").click(function(){
+			$(".sub-category-del-submit").hide();
+			$("#btn-sub-category-del").animate({
+				width:'toggle'
+				},
+				600
+			);
+
+			var list_sub_category = $(".sub-category");
+			list_sub_category.removeClass("btn-default");
+			list_sub_category.removeClass("animated");
+			list_sub_category.removeClass("swing");
+			list_sub_category.addClass("btn-link");
+			$(".sub-category > span").remove();
+		});
+
+		
+				// 確定刪除or取消刪除收入子分類的按鈕
+		$(".sub-category-del-submit-revenue").click(function(){
+			$(".sub-category-del-submit-revenue").hide();
+			$("#btn-sub-category-del-revenue").animate({
+				width:'toggle'
+				},
+				600
+			);
+
+			var list_sub_category = $(".revenue-sub-category");
+			list_sub_category.removeClass("btn-default");
+			list_sub_category.removeClass("animated");
+			list_sub_category.removeClass("swing");
+			list_sub_category.addClass("btn-link");
+			$(".revenue-sub-category > span").remove();
+		});
+
+		// 刪除週期性支出項目
+		$("#btn-periodic-cost-del").click(function(){
+			$(this).hide();
+			$(".table4-del-submit").animate({
+				width: 'toggle'
+			});
+			table4deletionBtnHandler()	// 執行完動畫後做table4 handler().
+		});
+
+		// 按下週期性項目[確定刪除]
+		$("#table4-del-finish").click(function(){
+			var deltArr = [];
+			var commaCounter = 0;	// 用來在alert加逗點用
+			
+			$("#table4 tr td:first-child input:checked").each(function(index){
+				var deltItem = $(this).parent().next().text().trim();
+				deltArr.push( deltItem );	// 把要刪除的筆數加進陣列
+				commaCounter += 1;
+			});
+
+			commaCounter--;	// 逗號要比項目少一
+
+			//post
+			if(deltArr){
+            	$.ajax({
+                	url: "/deleteCyclicalExpenditure/",
+                	type:"POST",
+                	data: {deltArr : deltArr},
+                	success: function(rowcontent){
+                	    var cout = "";
+
+						$.each(deltArr, function(index, value){		// 印出陣列內容
+							cout = cout + value;
+							if( commaCounter > 0){
+								cout += ",";
+								commaCounter--;
+							}
+
+							$("#table4 tr td").filter(function(){
+								return $(this).text() === value;
+
+							}).parent().remove();
+							// $("#table4 tr td:contains('"+value+"')").parent().remove();		// 把蘊含該值的記錄整個列刪除
+						});
+						alert("刪除的項目有：" + cout);
+                	},
+                	error: function(){
+                	    alert("刪除週期性項目失敗")
+                	}
+            	});
+        	}
+		});
+
+		// 確定刪除or取消刪除週期性項目的按鈕
+		$(".table4-del-submit").click(function(){
+			$(".table4-del-submit").hide();
+			$("#table4 tr:first th:first").remove();
+			$("#table4 tr td:first-child").remove();
+			$("#btn-periodic-cost-del").animate({
+				width:'toggle'
+			});
+		});
+
+
+		// periodic modal select element default value
+		periodicTimeFormatToggle($("#periodic-type"));	// 先在loading時放入一次值
+		periodicTimeFormatToggle($("#alert-daytype"));
+
+		// 切換新增週期性項目裡的日期設定
+		$("#periodic-type, #alert-daytype, #periodic-type-edit, #alert-daytype-edit").change(function(){
+			periodicTimeFormatToggle($(this));
+		});
+		
+
+		// setting button on budget table2 & 3
+		$(".amount-setting").click(function(){
+			$(this).prev().removeAttr('readonly');
+			$(this).hide();
+			$(this).next().show();
+		});
+		$(".amount-setting-submit").click(function(){
+			$(this).hide();
+			$(this).prev().show();
+			$(this).prev().prev().attr("readonly", "readonly");
+		});
+
+		//月預算
+		$("#month-budget").click(function(){
+			var month_budget = $("#m-b").val();
+			$.ajax({
+                url: "/updateMonthBudget/",
+                type:"POST",
+                data: {month_budget : month_budget},
+                success: function(rowcontent){
+{#					alert("更新月預算成功");#}
+                },
+                error: function(){
+                	alert("更新月預算失敗")
+                }
+            });
+		});
+
+		//月預算提醒
+		$("#month-budget-reminder").click(function(){
+			var month_reminder = $("#m-b-r").val();
+			console.log(month_reminder);
+			$.ajax({
+                url: "/updateMonthBudgetReminder/",
+                type:"POST",
+                data: {month_reminder : month_reminder},
+                success: function(rowcontent){
+{#					alert("更新月預算提醒成功");#}
+                },
+                error: function(){
+                	alert("更新月預算提醒失敗")
+                }
+            });
+		});
+
+		//開啟 月預算提醒
+		$("#m-b-r-checkbox").change(function(){
+			var isreminded;
+			if($(this).prop("checked") == true){
+				isreminded="True";
+			}else{
+				isreminded="False";
+			}
+			$.ajax({
+                url: "/updateMonthBudgetIsreminded/",
+                type:"POST",
+                data: {isreminded : isreminded},
+                success: function(rowcontent){
+					if(isreminded=="True"){
+{#						alert("開啟月提醒");#}
+					}else{
+{#						alert("關閉月提醒");#}
+					}
+                },
+                error: function(){
+                	alert("失敗")
+                }
+            });
+		});
+
+	});	// end document.ready()
+
+	//category設定預算
+	function category_budget(object,category){
+		var budget = $(object).prev().prev('input').val();
+		$.ajax({
+                url: "/updateBudget/",
+                type:"POST",
+                data: {budget : budget, category : category},
+                success: function(rowcontent){
+{#					alert("更新預算成功")#}
+                },
+                error: function(){
+{#                	alert("失敗")#}
+                }
+            });
+	}
+
+	//category提醒 設定預算
+	function category_reminder(object,category){
+		var reminder = $(object).prev().prev('input').val();
+		$.ajax({
+                url: "/updateBudgetReminder/",
+                type:"POST",
+                data: {reminder : reminder, category : category},
+                success: function(rowcontent){
+{#					alert("更新提醒預算成功")#}
+                },
+                error: function(){
+                	alert("失敗")
+                }
+            });
+	}
+
+	//category提醒 開啟/關閉
+	function category_reminder_checkbox(object,category){
+		var isreminded;
+			if($(object).prop("checked") == true){
+				isreminded="True";
+			}else{
+				isreminded="False";
+			}
+			$.ajax({
+                url: "/updateBudgetIsreminded/",
+                type:"POST",
+                data: {isreminded : isreminded, category : category},
+                success: function(rowcontent){
+					if(isreminded=="True"){
+{#						alert("開啟提醒");#}
+					}else{
+{#						alert("關閉提醒");#}
+					}
+                },
+                error: function(){
+                	alert("失敗")
+                }
+            });
+	}
+
+    // 用來在一開始隱藏不需要的欄位
+    function defaultHiding(){
+		$(".passwd-set").hide();
+		$(".sub-category-del-submit").hide();
+		$(".sub-category-del-submit-revenue").hide();
+		$(".table4-del-submit").hide();
+		$(".amount-setting-submit").hide();
+
+    }	// end function defaultHiding()
+
+	
+	// 處理表格4的刪除項目按鈕按下的事件
+	function table4deletionBtnHandler(){
+		$("#table4 tr").each(function(index){
+			if(index==0){
+				$(this).prepend("<th style='text-align:center;''>刪除記錄</th>");
+			
+			}else{
+				$(this).prepend("<td style='text-align:center;'><input type='checkbox' id='row" + index+ "'/></td>");
+			}
+		});
+
+		$("#table4 tr:first th").each(function(index){
+			switch(index) {
+				case 0:
+					$(this).addClass("col-md-1");
+					break;
+				case 1:
+					break;
+				case 2:
+					$(this).removeClass("col-md-4");
+					$(this).addClass("col-md-3");
+					break;
+				case 3:
+					break;
+				case 4:
+					break;
+				default:
+					alert('內容顯示錯誤，請洽工程師');
+			}
+
+		});
+	}	// end function table4deletionBtnHandler()
+
+
+	// 處理刪除子項目(右上角打叉)的處理
+	function sub_category_deletionHandler(){
+		$(".sub-category").click(function(){
+			if( $(this).hasClass('confirm') ){
+				var delSub = $(this);
+				delSub.children().empty();
+				var btnText = delSub.text().trim();
+
+				var result = confirm("你真的要刪掉次分類：" + btnText + "嗎？");
+				if(result){
+					delSub.remove();	
+					//post
+					$.ajax({
+                		url: "/deleteSubClassificationInSettingPage/",
+                		type:"POST",
+                		data: {name:btnText},
+                		success: function(rowcontent){
+							alert("刪除了" + btnText);
+                		},
+                		error: function(){
+                    		alert("刪除子分類失敗");
+               		 	}
+            		});
+				}else{
+					delSub.children().text("×");
+				}
+			}
+		});
+	}	// end function sub_category_deletionHandler()
+
+
+	
+		// 處理刪除收入子項目(右上角打叉)的處理
+	function sub_revenue_category_deletionHandler(){
+		$(".revenue-sub-category").click(function(){
+			if( $(this).hasClass('confirm') ){
+				var delSub = $(this);
+				delSub.children().empty();
+				var btnText = delSub.text().trim();
+
+				var result = confirm("你真的要刪掉收入次分類：" + btnText + "嗎？");
+				if(result){
+					delSub.remove();	
+					//post
+					$.ajax({
+                		url: "/deleteSubClassificationInSettingPage/",
+                		type:"POST",
+                		data: {name:btnText},
+                		success: function(rowcontent){
+							alert("刪除了" + btnText);
+                		},
+                		error: function(){
+                    		alert("刪除收入子分類失敗");
+               		 	}
+            		});
+				}else{
+					delSub.children().text("×");
+				}
+			}
+		});
+	}	// end function sub_revenue_category_deletionHandler()
+
+
+	
+	// 處理新增週期性項目的繳費日期格式切換
+	function periodicTimeFormatToggle(selector) {
+		var dayOfMonth = [];
+		var i;
+		for(i=1; i<=31; i++){
+			dayOfMonth.push(i + "號");
+		}
+
+		var dayOfWeek = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+
+		var optionItem;
+		if(selector[0] == $("#periodic-type")[0]){
+			// 新增週期性項目表單上的預計日期選項
+			optionItem = $("#pay-date");
+			
+		}else if(selector[0] == $("#alert-daytype")[0]){
+			// 週期性項目表單上的提醒日期選項
+			optionItem = $("#alert-date");
+			
+		}else if(selector[0] == $("#alert-daytype-edit")[0]){
+			// 編輯週期性項目表單上的提醒日期選項
+			optionItem = $("#alert-date-edit");
+
+		}else if(selector[0] == $("#periodic-type-edit")[0]){
+			// 編輯週期性項目表單上的預計日期選項
+			optionItem = $("#pay-date-edit");
+
+		}
+
+
+		optionItem.empty();
+
+		if( selector.val() === "每月" ){
+			$.each(dayOfMonth, function(index, value){
+				optionItem.append("<option>" +value+ "</option>");
+			});
+
+		}else{
+			$.each(dayOfWeek, function(index, value){
+				optionItem.append("<option>" +value+ "</option>");
+			});
+		}
+
+	}	// end function periodicTimeFormatToggle()
+
+	
+	// 送出新增週期性項目的表單 (submit event)
+	function addPeriodicPaymentItemSubmit(){
+		var title = $("#periodic-item-name").val();
+		var paymentDate = $("#periodic-type").val() + ' ' + $("#pay-date").val();
+		var alertDate = $("#alert-daytype").val() + ' ' + $("#alert-date").val();
+		//
+		var expenditure_type;
+		switch ($("#periodic-type").val()){
+			case "每週" :
+				expenditure_type="week";
+				break;
+			default :
+				expenditure_type="month";
+		}
+		var expenditure_date;
+		switch ($("#pay-date").val()){
+			case "星期日" :
+				expenditure_date=7;
+				break;
+			case "星期一" :
+				expenditure_date=1;
+				break;
+			case "星期二" :
+				expenditure_date=2;
+				break;
+			case "星期三" : 
+				expenditure_date=3;
+				break;
+			case "星期四" : 
+				expenditure_date=4;
+				break;
+			case "星期五" : 
+				expenditure_date=5;
+				break;
+			case "星期六" :
+				expenditure_date=6;
+				break;
+			default :
+				var date = $("#pay-date").val().split("號");
+				expenditure_date=date[0];
+		}
+    	var reminder_type;
+		switch ($("#alert-daytype").val()){
+			case "每週" :
+				reminder_type="week";
+				break;
+			default :
+				reminder_type="month";
+		}
+    	var reminder_date;
+		switch ($("#alert-date").val()){
+			case "星期日" :
+				reminder_date=7;
+				break;
+			case "星期一" :
+				reminder_date=1;
+				break;
+			case "星期二" :
+				reminder_date=2;
+				break;
+			case "星期三" : 
+				reminder_date=3;
+				break;
+			case "星期四" : 
+				reminder_date=4;
+				break;
+			case "星期五" : 
+				reminder_date=5;
+				break;
+			case "星期六" :
+				reminder_date=6;
+				break;
+			default :
+				var date = $("#alert-date").val().split("號");
+				reminder_date=date[0];
+		}
+		//post
+		if( title.trim() ){
+            $.ajax({
+            	url: "/createCyclicalExpenditure/",
+            	type:"POST",
+            	data: {name:title, expenditure_type:expenditure_type, expenditure_date:expenditure_date, reminder_type:reminder_type, reminder_date:reminder_date},
+                success: function(repeated_name){
+					$("#table4").append("<tr><td>" + title + "</td><td>" + paymentDate + " </td><td>" + alertDate  
+					+ "</td><td><button type='button' class='btn btn-primary btn-sm periodic-date-setting' data-toggle='modal' data-target='#modal-periodic-edit'>設定</button> "
+					+ "<input type='checkbox' onchange='cyc_checkbox(this)' /></td></tr>");
+						
+					// 在新的欄位上增加toggle button
+					$("#table4 tr:last-child td:last-child input").bootstrapToggle({
+						on: '通知開',
+						off: '通知關',
+						size: 'small',
+						onstyle: 'success',
+						offstyle: 'danger'
+					});
+					alert("新增成功!");
+                },
+                error: function(){
+                	alert("新增週期性項目失敗")
+                }
+            });
+		}else{
+			alert("缺少項目標題");
+		}
+	}
+
+	//週期性項目提醒 開啟/關閉
+	function cyc_checkbox(object){
+		var name=$(object).parent().parent().prev().prev().prev().text();
+		var isreminded;
+			if($(object).prop("checked") == true){
+				isreminded="True";
+			}else{
+				isreminded="False";
+			}
+			$.ajax({
+                url: "/updateCyclicalExpenditureIsreminded/",
+                type:"POST",
+                data: {isreminded : isreminded, name : name},
+                success: function(rowcontent){
+					if(isreminded=="True"){
+						alert("開啟提醒");
+					}else{
+						alert("關閉提醒");
+					}
+                },
+                error: function(){
+                	alert("失敗")
+                }
+            });
+	}
+
+	// 送出新增子分類的表單
+	function addSubCategorySubmit(){
+		var mainType = $("#main-type-choose").val();
+		var newSub = $("#new-sub-type").val();
+		//post
+ 		if(newSub){
+            $.ajax({
+                url: "/createSubClassificationInSettingPage/",
+                type:"POST",
+                dataType: 'json',
+                data: {newSub : newSub, category : mainType},
+                success: function(result){
+                    if(result.created){
+                         $("#table1 tr td:first-child").each(function(){
+                             if($(this).attr('id') === mainType ){
+							 $(this).next().append(result.rowcontent);
+						    }
+					    });
+                    }
+                    else{
+                        alert("子分類名稱重複")
+                    }
+
+                },
+                error: function(){
+                    alert("新增子分類失敗");
+                }
+            });
+        }
+		
+	}
+
+
+		// 送出新增收入子分類的表單
+	function addRevenueSubCategorySubmit(){
+		var mainType = $("#main-revenue-type-choose").val();
+		var newSub = $("#new-revenue-sub-type").val();
+		//post
+ 		if(newSub){
+            $.ajax({
+                url: "/createSubClassificationInSettingPage/",
+                type:"POST",
+                dataType: 'json',
+                data: {newSub : newSub, category : mainType},
+                success: function(result){
+                    if(result.created){
+                        $("#table2 tr td:first-child").each(function(){
+                            if($(this).attr('id') === mainType ){
+                                $(this).next().append(result.rowcontent);
+                            }
+                        });
+                    }else{
+                        alert("子分類名稱重複")
+                    }
+                },
+                error: function(){
+				    alert("您剛剛新增失敗，子類別是: " + subType);
+                }
+            });
+        }
+		
+	}
+
+
+	// 週期性項目的日期設定按鈕事件
+	$(document).on("click", ".periodic-date-setting", function(){
+		$(this).parent().siblings().addClass("editting");
+
+		// 把編輯的那一欄位資料抓進modal中
+		$(".editting").each(function(index){
+
+			switch(index){
+				case 0:
+					$("#periodic-item-edit-name").attr('value',$(this).text());
+					$("#periodic-item-edit-name").attr('disabled', 'disabled');
+					break;
+				case 1:
+					var str = $(this).text().split(' ');	// 用空白把時間切開 ex: ['每月','1號']
+					$("#periodic-type-edit").val(str[0]);	// 設定表單的第一個選單的值
+					periodicTimeFormatToggle($("#periodic-type-edit"));	// 建出第二個選單列表
+					$("#pay-date-edit").val(str[1]);	// 設定第二個選單的值
+					break;
+				case 2:
+					var str = $(this).text().split(' ');	// 用空白把時間切開 ex: ['每月','1號']
+					$("#alert-daytype-edit").val(str[0]);	// 設定表單的第一個選單的值
+					periodicTimeFormatToggle($("#alert-daytype-edit"));	// 建出第二個選單列表
+					$("#alert-date-edit").val(str[1]);	// 設定第二個選單的值
+					break;
+			}
+			
+		});
+	});
+
+
+	// 送出[編輯]週期性項目的表單 (submit event)
+	function editPeriodicPaymentItemSubmit(){
+		//post
+		var name = $("#periodic-item-edit-name").val();
+		var expenditure_type;
+		switch ($("#periodic-type-edit").val()){
+			case "每週" :
+				expenditure_type="week";
+				break;
+			default :
+				expenditure_type="month";
+		}
+		var expenditure_date;
+		switch ($("#pay-date-edit").val()){
+			case "星期日" :
+				expenditure_date=7;
+				break;
+			case "星期一" :
+				expenditure_date=1;
+				break;
+			case "星期二" :
+				expenditure_date=2;
+				break;
+			case "星期三" : 
+				expenditure_date=3;
+				break;
+			case "星期四" : 
+				expenditure_date=4;
+				break;
+			case "星期五" : 
+				expenditure_date=5;
+				break;
+			case "星期六" :
+				expenditure_date=6;
+				break;
+			default :
+				var date = $("#pay-date-edit").val().split("號");
+				expenditure_date=date[0];
+		}
+    	var reminder_type;
+		switch ($("#alert-daytype-edit").val()){
+			case "每週" :
+				reminder_type="week";
+				break;
+			default :
+				reminder_type="month";
+		}
+    	var reminder_date;
+		switch ($("#alert-date-edit").val()){
+			case "星期日" :
+				reminder_date=7;
+				break;
+			case "星期一" :
+				reminder_date=1;
+				break;
+			case "星期二" :
+				reminder_date=2;
+				break;
+			case "星期三" : 
+				reminder_date=3;
+				break;
+			case "星期四" : 
+				reminder_date=4;
+				break;
+			case "星期五" : 
+				reminder_date=5;
+				break;
+			case "星期六" :
+				reminder_date=6;
+				break;
+			default :
+				var date1 = $("#alert-date-edit").val().split("號");
+				reminder_date=date1[0];
+		}
+		$.ajax({
+            url: "/updateCyclicalExpenditure/",
+            type:"POST",
+            data: {name:name, expenditure_type:expenditure_type, expenditure_date:expenditure_date, reminder_type:reminder_type, reminder_date:reminder_date},
+            success: function(content){
+				$(".editting").each(function(index){	
+					if(index == 1){
+						$(this).text($("#periodic-type-edit").val() + ' ' + $("#pay-date-edit").val());
+					}else if(index == 2){
+						$(this).text($("#alert-daytype-edit").val() + ' ' + $("#alert-date-edit").val());
+					}
+				});
+				$(".editting").removeClass("editting");
+				alert("更新成功")
+            },
+            error: function(){
+                alert("更新週期性項目失敗")
+            }
+        });
+	}
+
+    </script>
+{% endblock %}
+
+{% block main_content %}
+                   
+<!-- main container -->
+<div class="container">
+    <div class="row">
+        <div><h1>個人帳戶設定 </h1> </div> 
+
+        <div class="col-md-12 well" style="margin-top: 30px;">
+            <legend id="anch1">個人基本資料設定</legend>
+            <form>
+                <p><span class="item-title">帳 號: </span>
+				    <input type="text" name="userName" placeholder="{{ member }}" readonly>
+				    <button type="button" class="btn btn-primary" id="go-passwd-set">重設密碼</button>
+				</p>
+				<div class="passwd-set">
+				    <span class="item-title">密 碼: </span>
+				    <input type="password" name="userName" placeholder="請輸入新密碼" class="passwd-set" id="password">
+				    <span class="item-title" style="padding-left: 20px;">確認密碼: </span>
+				    <input type="password" name="userName" placeholder="再次輸入密碼" class="" id="confirmpassword">
+				        <button type="button" class="btn btn-default passwd-submit" id="new-passwd-submit">
+				        確認</button>
+				        <button type="button" class="btn btn-default passwd-submit" id="not-passwd-submit">取消修改</button>
+				</div>
+
+            </form>
+        </div>
+
+        <div class="col-md-12 well">
+            <legend id="anch1"><span style="margin-right: 10px;">支出子分類設定</span>
+            	<button type="button" name="btnAddSub" class="edit-img-btn" id="btn-sub-category-add" style="background-image: url(/static/image/add.png);" data-toggle="modal" data-target="#modal-subCategory"></button>
+            	<button type="button" name="btnDelSub" class="edit-img-btn" id="btn-sub-category-del" style="background-image: url(/static/image/delete.png);"></button>
+            	<button type="button" class="btn btn-success btn-md sub-category-del-submit" id="sub-category-del-finish">刪除完畢</button>
+            </legend>
+            <form>
+			    <p>
+				   <table class="table table-bordered table-striped table-responsive" id="table1">
+				      <thead> 
+					     <th class="col-md-3">支出主分類 </th>
+						 <th class="col-md-9">支出子分類 </th>
+					  </thead>
+					  <tbody>
+						  <tr> 
+						     <td id="food">食</td>
+							 <td>
+								{% for food in food_list %}
+							    	<button type="button" class="btn btn-link btn-md sub-category">{{ food.name }}</button>
+								{% endfor %}
+							</td>
+						  </tr>
+						  <tr> 
+						     <td id="clothing">衣</td>
+						     <td>
+								{% for clothing in clothing_list %}
+						     		<button type="button" class="btn btn-link btn-md sub-category">{{ clothing.name }}</button>
+								{% endfor %}
+							 </td>
+						  </tr>
+						  <tr> 
+						     <td id="housing">住</td>
+						     <td>
+								{% for housing in housing_list %}
+					     			<button type="button" class="btn btn-link btn-md sub-category">{{ housing.name }}</button>
+						     	{% endfor %}
+							 </td>
+						  </tr>
+						  <tr> 
+						     <td id="transportation">行</td>
+						     <td>
+								{% for transportation in transportation_list %}
+						    	 	<button type="button" class="btn btn-link btn-md sub-category">{{ transportation.name }}</button>
+								{% endfor %}
+							 </td>
+						  </tr>
+						  <tr> 
+						     <td id="education">育</td>
+						     <td>
+								{% for education in education_list %}
+								 	<button type="button" class="btn btn-link btn-md sub-category">{{ education.name }}</button>
+            					{% endfor %}
+							 </td>
+						  </tr>
+						  <tr> 
+						     <td id="entertainment">樂</td>
+						     <td>
+								{% for entertainment in entertainment_list %}
+								 	<button type="button" class="btn btn-link btn-md sub-category">{{ entertainment.name }}</button>
+            					{% endfor %}
+							 </td>
+						  </tr>
+						  <tr> 
+						     <td id="others">其他</td>
+						     <td>
+								{% for others in others_list %}
+								 	<button type="button" class="btn btn-link btn-md sub-category">{{ others.name }}</button>
+            					{% endfor %}
+							 </td>
+						  </tr>
+					  </tbody>
+				   </table>
+				</p>                        
+            </form>
+        </div>
+
+        <div class="col-md-12 well">
+            <legend id="anch1"><span style="margin-right: 10px;">收入子分類設定</span>
+            	<button type="button" name="btnAddSub" class="edit-img-btn" id="btn-sub-category-add" style="background-image: url(/static/image/add.png);" data-toggle="modal" data-target="#modal-subCategoryofrevenue"></button>
+            	<button type="button" name="btnDelSub" class="edit-img-btn" id="btn-sub-category-del-revenue" style="background-image: url(/static/image/delete.png);"></button>
+            	<button type="button" class="btn btn-success btn-md sub-category-del-submit-revenue" id="sub-category-del-finish">刪除完畢</button>
+            </legend>
+            <form>
+			    <p>
+				   <table class="table table-bordered table-striped table-responsive" id="table2">
+				      <thead> 
+					     <th class="col-md-3">收入主分類 </th>
+						 <th class="col-md-9">收入子分類 </th>
+					  </thead>
+					  <tbody>
+						  <tr> 
+						     <td id="general_revenue">一般收入</td>
+							 <td>
+								{% for general_revenue in general_revenue_list %}
+							    	<button type="button" class="btn btn-link btn-md revenue-sub-category">{{ general_revenue.name }}</button>
+								{% endfor %}
+							</td>
+						  </tr>
+						  <tr> 
+						     <td id="invest_revenue">投資收入</td>
+						     <td>
+								{% for invest_revenue in invest_revenue_list %}
+						     		<button type="button" class="btn btn-link btn-md revenue-sub-category">{{ invest_revenue.name }}</button>
+								{% endfor %}
+							 </td>
+						  </tr>
+						  <tr> 
+						     <td id="other_revenue">其他</td>
+						     <td>
+								{% for other_revenue in other_revenue_list %}
+					     			<button type="button" class="btn btn-link btn-md revenue-sub-category">{{ other_revenue.name }}</button>
+						     	{% endfor %}
+							 </td>
+						  </tr>
+					  </tbody>
+				   </table>
+				</p>                        
+            </form>
+        </div>
+
+		
+		
+		<div class="col-md-12 well">
+            <legend id="anch1"><span style="margin-right: 10px;">單月預算上限設定</span>
+            </legend>
+            <form>
+				   <table class="table table-bordered table-striped table-responsive">
+				      <tr> 
+					     <th class="col-md-2">時間 </th>
+						 <th class="col-md-5">預算上限金額 </th>
+						 <th class="col-md-5">逼近上限金額通知設定 </th>
+					  </tr>
+					  <tr> 
+					     <td>每個月總預算
+                         </td>
+                         <td>
+                         	<input type="number" value="{{ month_budget.budget }}" id="m-b" readonly/>								 
+						    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+						    <button type="button" class="btn btn-success btn-sm amount-setting-submit" id="month-budget">確定</button>
+				         </td>
+						 <td><input type="number" value="{{ month_budget.reminder }}" id="m-b-r" readonly/>
+				            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button> 
+				            <button type="button" class="btn btn-success btn-sm amount-setting-submit" id="month-budget-reminder">確定</button>
+				            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" id="m-b-r-checkbox" {% if month_budget.is_reminded %} checked {% endif %}/>
+				         </td>
+					  </tr>
+				   </table>
+			</form>
+        </div>
+
+        <div class="col-md-12 well">
+            <legend id="anch1"><span style="margin-right: 10px;">分類預算上限設定</span>
+            </legend>
+            <form>
+				   <table class="table table-bordered table-striped table-responsive">
+				      <tr> 
+					     <th class="col-md-2">支出類別 </th>
+						 <th class="col-md-5">預算上限金額 </th>
+						 <th class="col-md-5">逼近上限金額通知設定 </th>
+					  </tr>
+					  <tr> 
+					     <td>食
+                         </td>
+                         <td><input type="number" value="{{ budget_food.budget }}" class="kind-b" readonly/>								 
+						    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+						    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'food')">確定</button>
+				         </td>
+						 <td><input type="number" value="{{ budget_food.reminder }}" class="kind-b-r" readonly/>
+				            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+				            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'food')">確定</button>
+						    <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'food')" {% if budget_food.is_reminded %} checked {% endif %}/>
+				         </td>
+					  </tr>
+					  <tr> 
+					     <td>衣 
+                         </td>
+                         <td><input type="number" value="{{ budget_clothing.budget }}" class="kind-b" readonly/>								 
+						    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+						    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'clothing')">確定</button>
+				         </td>
+						 <td><input type="number" value="{{ budget_clothing.reminder }}" class="kind-b-r" readonly/>
+				            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+				            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'clothing')">確定</button>
+				            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'clothing')" {% if budget_clothing.is_reminded %} checked {% endif %}/>
+				         </td>
+					  </tr>
+					  <tr> 
+					     <td>住 
+                         </td>
+                         <td><input type="number" value="{{ budget_housing.budget }}" class="kind-b" readonly/>								 
+						    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+						    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'housing')">確定</button>
+				         </td>
+						 <td><input type="number" value="{{ budget_housing.reminder }}" class="kind-b-r" readonly/>
+				            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+				            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'housing')">確定</button>
+				            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'housing')" {% if budget_housing.is_reminded %} checked {% endif %}/>
+				         </td>
+					  </tr>
+					  <tr> 
+					     <td>行 
+                         </td>
+                         <td><input type="number" value="{{ budget_transportation.budget }}" class="kind-b" readonly/>								 
+						    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+						    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'transportation')">確定</button>
+				         </td>
+						 <td><input type="number" value="{{ budget_transportation.reminder }}" class="kind-b-r" readonly/>
+				            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+				            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'transportation')">確定</button>
+				            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'transportation')" {% if budget_transportation.is_reminded %} checked {% endif %}/>
+				         </td>
+					  </tr>
+					  <tr> 
+					     <td>育 
+                         </td>
+                         <td><input type="number" value="{{ budget_education.budget }}" class="kind-b" readonly/>								 
+						    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+						    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'education')">確定</button>
+				         </td>
+						 <td><input type="number" value="{{ budget_education.reminder }}" class="kind-b-r" readonly/>
+				            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+				            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'education')">確定</button>
+				            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'education')" {% if budget_education.is_reminded %} checked {% endif %}/>
+				         </td>
+					  </tr>
+					  <tr> 
+					     <td>樂 
+                         </td>
+                         <td><input type="number" value="{{ budget_entertainment.budget }}" class="kind-b" readonly/>								 
+						    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+						    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'entertainment')">確定</button>
+				         </td>
+						 <td><input type="number" value="{{ budget_entertainment.reminder }}" class="kind-b-r" readonly/>
+				            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+				            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'entertainment')">確定</button>
+				            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'entertainment')" {% if budget_entertainment.is_reminded %} checked {% endif %}/>
+				         </td>
+					  </tr>
+					  <tr> 
+					     <td>其他 
+                         </td>
+                         <td><input type="number" value="{{ budget_other.budget }}" class="kind-b" readonly/>								 
+						    <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+						    <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_budget(this,'others')">確定</button>
+				         </td>
+						 <td><input type="number" value="{{ budget_other.reminder }}" class="kind-b-r" readonly/>
+				            <button type='button' class='btn btn-primary btn-sm amount-setting'>設定</button>
+				            <button type="button" class="btn btn-success btn-sm amount-setting-submit" onclick="category_reminder(this,'others')">確定</button>
+				            <input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="category_reminder_checkbox(this,'others')" {% if budget_other.is_reminded %} checked {% endif %}/>
+				         </td>
+					  </tr>
+				   </table>
+			</form>
+        </div>
+
+        <div class="col-md-12 well">
+            <legend id="anch1"><span style="margin-right: 10px;">週期性支出設定</span>
+            	<button type="button" class="edit-img-btn" id="btn-periodic-cost-add" 
+            			style="background-image: url(/static/image/add.png);" data-toggle="modal" data-target="#modal-periodic"></button>
+            	<button type="button" class="edit-img-btn" id="btn-periodic-cost-del" 
+            			style="background-image: url(/static/image/delete.png);"></button>
+         		<button type="button" class="btn btn-success btn-md table4-del-submit" id="table4-del-finish">確定刪除</button>
+            	<button type="button" class="btn btn-danger btn-md table4-del-submit" id="table4-del-cancel">取消刪除</button>
+            </legend>
+
+            <form>
+				   <table class="table table-bordered table-striped table-responsive" id="table4">
+				      <tr> 
+					     <th class="col-md-3">週期性支出項目 </th>
+						 <th class="col-md-4">預定支出日期 </th>
+						 <th class="col-md-3">繳費提醒通知日期 </th>
+						 <th class="col-md-2">通知與日期設定 </th>
+					  </tr>
+					  {% for cyclicalExpenditure in cyclicalExpenditure_list %}
+					  	<tr> 
+					    	<td>{{ cyclicalExpenditure.name }}</td>
+								<td>{% if cyclicalExpenditure.expenditure_type == "month" %}每月 {{cyclicalExpenditure.expenditure_date}}號{% else %}每週 星期{% if cyclicalExpenditure.expenditure_date == 1 %}一{% elif cyclicalExpenditure.expenditure_date == 2 %}二{% elif cyclicalExpenditure.expenditure_date == 3 %}三{% elif cyclicalExpenditure.expenditure_date == 4 %}四{% elif cyclicalExpenditure.expenditure_date == 5 %}五{% elif cyclicalExpenditure.expenditure_date == 6 %}六{% elif cyclicalExpenditure.expenditure_date == 7 %}日{% endif %}{% endif %}</td>
+						 		<td>{% if cyclicalExpenditure.reminder_type == "month" %}每月 {{cyclicalExpenditure.reminder_date}}號{% else %}每週 星期{% if cyclicalExpenditure.reminder_date == 1 %}一{% elif cyclicalExpenditure.reminder_date == 2 %}二{% elif cyclicalExpenditure.reminder_date == 3 %}三{% elif cyclicalExpenditure.reminder_date == 4 %}四{% elif cyclicalExpenditure.reminder_date == 5 %}五{% elif cyclicalExpenditure.reminder_date == 6 %}六{% elif cyclicalExpenditure.reminder_date == 7 %}日{% endif %}{% endif %}</td>
+                         		<!--<td>每週 星期三</td>-->
+						 		<!--<td>每月 3號</td>-->
+				         	<td>
+				         		<button type='button' class='btn btn-primary btn-sm periodic-date-setting' data-toggle='modal' data-target='#modal-periodic-edit'>設定</button>
+				            	<input type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="danger" data-on="通知開" data-off="通知關" onchange="cyc_checkbox(this)" {% if cyclicalExpenditure.is_reminded %} checked {% endif %}/>
+				         	</td>
+					  	</tr>
+					  {% endfor %}
+				   </table>
+	           </form>
+        </div>
+    </div><!-- /.row -->
+</div><!-- /.container -->
+
+{% endblock %}
+
+
+{% block other_content %}
+	<!-- Modal 增加支出子分類 -->
+	<div class="modal fade" id="modal-subCategory" role="dialog">
+	    <div class="modal-dialog">
+	        <!-- Modal content-->
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal">&times;</button>
+	                <h4 class="modal-title">新增子分類</h4>
+	            </div> <!-- /.modal-header -->
+
+	            <div class="modal-body" id="sectest">
+					<div class="form-group">
+						<label for="main-type-choose">主分類選擇</label>
+						<select class="form-control" id="main-type-choose">
+							<option value="food">食</option>
+							<option value="clothing">衣</option>
+							<option value="housing">住</option>
+							<option value="transportation">行</option>
+							<option value="education">育</option>
+							<option value="entertainment">樂</option>
+							<option value="others">其他</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="new-sub-type">子分類</label>
+						<input type="text" class="form-control" id="new-sub-type" placeholder="新子分類">
+					</div>
+				</div> <!-- /.modal-body -->
+
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal" id="modal-subCategory-submit" onclick="addSubCategorySubmit()">確定</button>
+	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal">取消</button>
+	            </div> <!-- /.modal-footer -->
+	        </div>
+	    </div>
+	</div>
+    <!-- /.modal -->	
+
+		<!-- Modal 增加收入子分類 -->
+	<div class="modal fade" id="modal-subCategoryofrevenue" role="dialog">
+	    <div class="modal-dialog">
+	        <!-- Modal content-->
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal">&times;</button>
+	                <h4 class="modal-title">新增子分類</h4>
+	            </div> <!-- /.modal-header -->
+
+	            <div class="modal-body" id="sectest">
+					<div class="form-group">
+						<label for="main-revenue-type-choose">主分類選擇</label>
+						<select class="form-control" id="main-revenue-type-choose">
+							<option value="general_revenue">一般收入</option>
+							<option value="invest_revenue">投資收入</option>
+							<option value="other_revenue">其他</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="new-revenue-sub-type">子分類</label>
+						<input type="text" class="form-control" id="new-revenue-sub-type" placeholder="新子分類">
+					</div>
+				</div> <!-- /.modal-body -->
+
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal" id="modal-revenue-subCategory-submit" onclick="addRevenueSubCategorySubmit()">確定</button>
+	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal">取消</button>
+	            </div> <!-- /.modal-footer -->
+	        </div>
+	    </div>
+	</div>
+    <!-- /.modal -->	
+
+	
+	<!-- Modal [[新增]]週期性支出項目 -->
+	<div class="modal fade" id="modal-periodic" role="dialog">
+	    <div class="modal-dialog">
+	        <!-- Modal content-->
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal">&times;</button>
+	                <h4 class="modal-title">新增週期性支出提醒設定</h4>
+	            </div> <!-- /.modal-header -->
+
+	            <div class="modal-body" id="sectest">
+					<div class="form-group">
+						<label for="periodic-item-name">週期性支出項目</label>
+						<input type="text" class="form-control" id="periodic-item-name" placeholder="新子分類">
+					</div>
+					<div class="form-group">
+						<label for="pay-date">支出日期</label><br>
+						<select class="form-control" id="periodic-type" style="width: 40%; display: inline; margin-right: 20px;">
+							<option>每月</option>
+							<option>每週</option>
+						</select>
+						<select class="form-control" id="pay-date" style="width: 40%; display: inline;"> </select>
+					</div>
+					<div class="form-group">
+						<label for="alert-date">繳費提醒通知日期</label><br>
+						<select class="form-control" id="alert-daytype" style="width: 40%; display: inline; margin-right: 20px;">
+							<option>每月</option>
+							<option>每週</option>
+						</select>
+						<select class="form-control" id="alert-date" style="width: 40%; display: inline;"> </select>
+					</div>
+				</div> <!-- /.modal-body -->
+
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal" id="modal-periodic-submit" onclick="addPeriodicPaymentItemSubmit()">確定</button>
+	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal">取消</button>
+	            </div> <!-- /.modal-footer -->
+	        </div>
+	    </div>
+	</div>
+    <!-- /.modal -->	
+
+
+	<!-- Modal [[編輯]]週期性支出項目 -->
+	<div class="modal fade" id="modal-periodic-edit" role="dialog">
+	    <div class="modal-dialog">
+	        <!-- Modal content-->
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal">&times;</button>
+	                <h4 class="modal-title">編輯週期性支出項目</h4>
+	            </div> <!-- /.modal-header -->
+
+	            <div class="modal-body" id="sectest">
+					<div class="form-group">
+						<label for="periodic-item-edit-name">週期性支出項目</label>
+						<input type="text" class="form-control" id="periodic-item-edit-name" placeholder="新子分類">
+					</div>
+					<div class="form-group">
+						<label for="pay-date-edit">支出日期</label><br>
+						<select class="form-control" id="periodic-type-edit" style="width: 40%; display: inline; margin-right: 20px;">
+							<option>每月</option>
+							<option>每週</option>
+						</select>
+						<select class="form-control" id="pay-date-edit" style="width: 40%; display: inline;"> </select>
+					</div>
+					<div class="form-group">
+						<label for="alert-date-edit">繳費提醒通知日期</label><br>
+						<select class="form-control" id="alert-daytype-edit" style="width: 40%; display: inline; margin-right: 20px;">
+							<option>每月</option>
+							<option>每週</option>
+						</select>
+						<select class="form-control" id="alert-date-edit" style="width: 40%; display: inline;"> </select>
+					</div>
+				</div> <!-- /.modal-body -->
+
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal" id="modal-periodic-edit-submit" onclick="editPeriodicPaymentItemSubmit()">確定</button>
+	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal">取消</button>
+	            </div> <!-- /.modal-footer -->
+	        </div>
+	    </div>
+	</div>
+    <!-- /.modal -->	
+
+{% endblock %}

@@ -25,7 +25,8 @@ body {
 .navbar-light {
   margin-bottom:0 ;
   background-image: url("../../image/fe-bg.jpg");
-  /*background-color: #e3f2fd*/
+  /*background-color: #8B0000;*/
+  /*#e3f2fd #ff0052 #E6005C #dc143c*/
 }
 
 .navbar-light .navbar-toggle{
@@ -36,7 +37,7 @@ body {
   background-color: rgba(0,0,0,.5);
 }
 
-.navbar-light .navbar-toggle:focus,
+/*.navbar-light .navbar-toggle:focus,*/
 .navbar-light .navbar-toggle:hover {
   background-color: rgb(212, 235, 252);
 }
@@ -73,7 +74,7 @@ body {
 }
 .dropdown-toggle:focus,
 .dropdown-toggle:hover {
-    color: rgba(0,0,0,.7);
+    color: rgba(255,255,255,.7);
 }
 .navbar-top-links .dropdown-menu li {
   display: block;
@@ -91,7 +92,7 @@ body {
 .navbar-top-links .dropdown-messages,
 .navbar-top-links .dropdown-tasks,
 .navbar-top-links .dropdown-alerts {
-  width: 310px;
+  width: 200px;
   min-width: 0;
 }
 .navbar-top-links .dropdown-messages {
@@ -139,10 +140,12 @@ body {
     background: #eee;
     box-shadow: none;
 }
-.btn-default#category{
+.btn-default.cost-category, .btn-default.revenue-category {
   margin: 0px 10px 10px 0px;
   color: #fff;
 }
+
+
 
 /***********************
   END CUSTOM BTN
@@ -164,6 +167,11 @@ input#costCategory, input#memo {
     border-bottom: 2px solid black;
     width:65%;
     font-size: 25px;
+}
+
+input {
+    border: #BEBEBE 1px solid;
+    border-radius: 4px;
 }
 
 .btn-outline {
@@ -486,20 +494,40 @@ table.dataTable thead .sorting:after {
     border-left-width: 0;
   }
   select {
-    width: 100%;
-    margin: 5px 0px 5px 0px;
+    width: 30%;
+    /*margin: -20px 10px 5px 0px;*/
     border: none;
     border-radius: 4px;
     background-color: #f1f1f1;
+    font-size: 14px;
+    height: 25px;
   }
 
   .left-side {
     padding-right: 0 !important;
+    margin-bottom: -10px;
+  }
+
+  .row{
+    margin-left: -5px !important;
+  }
+
+  #main-type-choose > .btn-lg {
+    font-size: 16px;
   }
 
   .btn-default#category{
     margin: 5px 5px;
   }
 
+    .btn-default#category2{
+    margin: 5px 5px;
+  }
+
+  #datepicker1 {
+    margin-left: 0px;
+    width: 30%;
+    max-height: 25px;
+  }
 
 }

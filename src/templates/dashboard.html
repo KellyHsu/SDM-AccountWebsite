@@ -1,75 +1,82 @@
 ﻿<!-- 這個頁面是首頁 -->
-
+{% extends 'base.html' %}
 {% load staticfiles %}
 
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>Dashboard</title>
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    <link href="{% static 'css/base.css' %}" rel="stylesheet">
-    	<!-- Bootstrap Core CSS -->
-    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
-
-		<!-- Custom CSS -->
-    <link href="{% static 'dist/css/metisMenu.min.css' %}" rel="stylesheet">
-    <link href="{% static 'dist/css/sb-admin-2.css' %}" rel="stylesheet">
+{% block local_include %}
 
         <!--datepicker CSS-->
-    <link href="{% static 'css/bootstrap-responsive.css' %}" rel="stylesheet">
     <link href="{% static 'css/bootstrap-datepicker.css' %}" rel="stylesheet">
     <link href="{% static 'css/datepicker.css' %}" rel="stylesheet">
 
-
-    	<!-- Custom Fonts -->
-    <link href="{% static 'font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
-
-		<!-- jQuery -->
-    <script src="{% static 'js/jquery.js' %}"></script>
-    <!-- <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script> -->
-
-    	<!-- Bootstrap Core JavaScript -->
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-
-		<!-- Custom Theme JavaScript -->
-    <script src="{% static 'dist/js/metisMenu.min.js' %}"></script>
-    <script src="{% static 'dist/js/sb-admin-2.js' %}"></script>
-
         <!--datepicker-->
     <script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
-    
-    
+{% endblock %}
+
+
+{% block local_js %}
 
 <script>
 $(document).ready(function() {
     $( ".btn-link" ).click(function(){
         $(".btn-link").removeClass("selected");
         $(this).addClass("selected");
+        $.ajaxSetup({  
+                 data: {csrfmiddlewaretoken: '{{ csrf_token }}' },  
+            });  
     });
 
-    $( '#category' ).click(function() {
-        var mainCate = $(this).text();
-        $('#main-cate').text(mainCate);
+    defaultHiding();
+
+    
+    subCategorySelected();	// 增加次分類的selected屬性
+
+	// 支出主分類被點擊的時候跳出的子分類視窗呈現
+    $(".cost-category").click(function(){
+        var categoryType = $(this).attr('id');
+        var categoryName = $(this).text();
+        var mainCate = $("#myModal-cost").find("div.modal-header").children("#main-cate");
+        mainCate.text(categoryName);    // 主分類被點擊的時候會在modal裡面放入主分類的名稱
+        mainCate.removeClass();
+        mainCate.addClass(categoryType);
+
+        var allButtonList = $("#myModal-cost").find("div.modal-body").children();
+        allButtonList.addClass('hidden');
+        var selectedList = "." + categoryType + "_list";
+        $(selectedList).removeClass('hidden');
+
     });
 
-    $( '#modal-submit' ).click(function(){
-        var lv1 = $( '#main-cate' ).text();
+    // 收入主分類被點擊的時候跳出的子分類視窗呈現
+    $(".revenue-category").click(function(){
+        var categoryType = $(this).attr('id');
+        var categoryName = $(this).text();
+        var mainCate = $("#myModal-revenue").find("div.modal-header").children("#main-cate");
+        mainCate.text(categoryName);
+        mainCate.removeClass();
+        mainCate.addClass(categoryType);
+
+        var allButtonList = $("#myModal-revenue").find("div.modal-body").children();
+        allButtonList.addClass('hidden');
+        var selectedList = "." + categoryType + "_list";
+        $(selectedList).removeClass('hidden');
+
+    });
+	
+
+	// 當modal的確認被按下後，會提交給分類欄位
+    $( '.modal-btn.modal-submit' ).click(function(){
+        var mainCate = $(this).parents(".modal-content").children(".modal-header").children("h1#main-cate");
+        var lv1 = mainCate.text();
         var lv2 = $( '.btn-link.selected').text();
-        $('#costCategory').attr("value", lv1+'-'+lv2);
+        if(lv2===''){
+           // $('#costCategory').attr("value", lv1);
+        }else{
+            $('#costCategory').attr("value", lv1+'-'+lv2);
+            $('#costCategory').val(lv1+'-'+lv2); // display value
+        }
+
+        mainCate.text("");
     });
 
     $('#datepicker1').datepicker({
@@ -80,411 +87,606 @@ $(document).ready(function() {
 
     $("#datepicker1").datepicker("setDate", new Date());
 
-    $( '.submit' ).click(function(){
+
+    // 日期改變要切換左方收支清單
+    $("#datepicker1").change(function(){
+
+        var newDate = $('#datepicker1').val();
+        if(newDate){
+            $.ajax({
+                dataType: 'json',
+                url: "/getNewDate/",
+                type:"POST",
+                data: {date : newDate},
+                success: function(rowcontent){
+                    $("#cost-list tbody tr").remove();
+                    $('#cost-list').append(rowcontent.cost);
+                    $("#revenue-list tbody tr").remove();
+                    $("#revenue-list").append(rowcontent.revenue);
+                    $(".total_expense").text("總計："+ rowcontent.total_expense)
+                    $(".total_income").text("總計："+ rowcontent.total_income)
+                },
+                error: function(rowcontent, status){
+                    console.log(status);
+                    alert("抓新日期失敗")
+                }
+            });
+        }
+    });
+
+	// 復原與清空表單
+    $('#last-btn').click(function(){
+        var record_type = $('#recordType').val();
+        $('#amount').val('');
+        if(record_type === 'expense') {
+            $('#costCategory').attr("value", "食-早餐");
+        }
+        else{
+            $('#costCategory').attr("value", "一般收入-薪資");
+        }
+        $('#memo').val('');
+    })
+
+    // 修改取消
+    $('#cancel-btn').click(function(){
+        var record_type = $('#recordType').val();
+        var record_class = $("#modify-btn").attr("class").split(" ").pop();
+        $("#modify-btn").addClass("hidden");
+        $("#cancel-btn").addClass("hidden");
+        $("#modify-btn").removeClass(record_class);
+        $("#submit-btn").removeClass("hidden");
+        $("#last-btn").removeClass("hidden");
+
+        $('#amount').val('');
+        if(record_type === 'expense') {
+            $('#costCategory').attr("value", "食-早餐");
+        }
+        else{
+            $('#costCategory').attr("value", "一般收入-薪資");
+        }
+        $('#memo').val('');
+    })
+
+
+
+    // 新增支出or收入明細
+    // 
+    // 我先把收入的地方寫死，之後把if(record_type === 'expense') 這層的判斷式拿掉
+    // 用success裡面的判斷式就好
+    // 
+    // 
+    $('#submit-btn').click(function(){
         var amount = $('#amount').val();
-        var cate = $('#costCategory').attr("value");
+        var category = $('#costCategory').attr("value");
         var memo = $('#memo').val();
-        var rowcontent;
+        var record_type = $('#recordType').val();
         if(amount){
-            if(cate==='預設類別'){
-                rowcontent = "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>未分類紀錄: "
-                            + amount + "</a></td></tr>";
-            }else{
-                rowcontent = "<tr><td><span class='glyphicon glyphicon-file text-success'></span><a href='#'>"
-                            + cate + "-" + memo + ": "+ amount + "</a></td></tr>";
-            }
+                $.ajax({
+                    dataType: 'json',
+                    url: "/createReceipt/",
+                    type:"POST",
+                    data: {amount : amount, category : category,
+                        memo: memo, record_type: record_type, payment: $('#payment').val(),
+                        date: $('#datepicker1').val()},
+                    success: function(result){
+                        var rowcontent = result.rowcontent;
+                        var notificationMessage = result.budget_check;
 
-            $('#cost-list').append(rowcontent);
-            $('#amount').val('');
-            $('#costCategory').attr("value", "預設類別");
-            $('#memo').val('');
+                        if(record_type === 'expense'){
+                            rowcontent = rowcontent.replace("food-", "食-").replace("clothing-", "衣-").replace("housing-", "住-").replace("transportation-", "行-").replace("education-", "育-").replace("entertainment-", "樂-").replace("others-", "其-");
+                            $('#cost-list').append(rowcontent);
+                            $('#costCategory').attr("value", "食-早餐");
+                            $(".total_expense").text("總計："+ result.total_value)
+                        }else if(record_type === 'income'){
+                            rowcontent = rowcontent.replace("general_revenue-", "收入-").replace("invest_revenue-", "投資-").replace("other_revenue-", "其他-");
+                            $('#revenue-list').append(rowcontent);
+                            $('#costCategory').attr("value", "一般收入-薪資");
+                            $(".total_income").text("總計："+ result.total_value)
+                        }
+                        $('#amount').val('');
+                        $('#memo').val('');
 
+                        checkNotificationBellMessage(notificationMessage.monthly);
+                        checkNotificationBellMessage(notificationMessage.class);
+
+                    },
+                    error: function(){
+                        if(record_type === 'expense'){
+                            $('#costCategory').attr("value", "食-早餐");
+                        }else{
+                            $('#costCategory').attr("value", "一般收入-薪資");
+                        }
+                        $('#amount').val('');
+                        $('#memo').val('');
+                        alert("記帳失敗");
+                    }
+                });
         }else{
             alert("支出金額為必填");
 
         }
     });
 
-}); 
+
+	// 實作新增次分類的動畫效果
+    $('.subCategoryAdder').click(function(){
+        $(".subCategoryAdder").hide();
+        $('.new-sub-handler').animate({
+            width: 'toggle'
+        });
+
+        $(".modal-btn").prop('disabled', true);
+    });
+
+    $('.btn.new-sub-handler').click(function(){
+        $('.new-sub-handler').hide();
+        $(".subCategoryAdder").show();
+        $(".modal-btn").prop('disabled', false);
+
+    });
+
+	// 填完新次分類要增加到選單列表中
+    $('.new-sub-handler.new-sub-submit').click(function(){
+        var modalPopupID = $(this).parents(".modal.fade").attr("id");
+
+        var newSub;
+        var classname;
+        if(modalPopupID === 'myModal-cost'){
+            newSub = $('#new-expense-sub-text');
+            classname = $("#myModal-cost").find("div.modal-header").children("#main-cate").attr('class');
+        }else if(modalPopupID === 'myModal-revenue'){
+            newSub = $('#new-income-sub-text');       
+            classname = $("#myModal-revenue").find("div.modal-header").children("#main-cate").attr('class');     
+        }
+
+        var newSubText = newSub.val();
+        if(newSub){
+            $.ajax({
+                url: "/createSubCategory/",
+                type:"POST",
+                dataType: 'json',
+                data: {newSub : newSubText, category : classname},
+                success: function(result){
+                    if(result.created){
+                        $(".modal-body").append(result.rowcontent)
+                        subCategorySelected();
+                        newSub.val('');
+                    }
+                    else{
+                        alert("子分類名稱重複")
+                        newSub.val('');
+                    }
+
+                },
+                error: function(){
+                    alert("新增子分類失敗");
+                }
+            });
+        }
+    });
+
+    // 選擇支出或收入項目，會切換主分類顯示
+    $('#recordType').change(function(){
+        var type = $("#recordType").val();
+
+        if(type === "expense"){
+            $('.revenue-category').hide();
+            $('.cost-category').show();
+            $("#costCategory").attr('value', '食-早餐');
+        }else{
+            $('.revenue-category').show();
+            $('.cost-category').hide();
+            $("#costCategory").attr('value', '一般收入-薪資');
+        }
+    });
+
+
+    // 如果在選擇次分類的畫面時，按到背景的其他地方要做的事情
+    $('.modal.fade').on('hidden.bs.modal', function () {
+        $('.new-sub-handler').hide();   // 新增子分類的確定按鈕要隱藏
+        $(".subCategoryAdder").show();
+        $(".modal-btn").prop('disabled', false);    // 如果在新增子分類時按了背景，要把被鎖定的按鈕解鎖
+    });
+
+
+    $(".total_expense").text("總計："+ {{ total_expense }})
+    $(".total_income").text("總計："+ {{ total_income }})
+
+}); // end document ready
+
+// 用來讓每個次分類被點擊的時候都會多一個class-selected
+// 且移除其他item 的selected class
+function subCategorySelected(){
+    $( ".btn-link" ).click(function(){
+        $(".btn-link").removeClass("selected");
+        $(this).addClass("selected");
+    });
+}
+
+
+// 頁面一loading進來預設會隱藏的元件
+function defaultHiding(){
+    $(".new-sub-handler").hide();   // new-sub-handler的物件預設隱藏
+    $('.revenue-category').hide();  // 初始隱藏收入分類
+}
+
+// 左方記錄如果刪除的listenser
+// 會先把叉叉標記class="deletedRecord"
+// 這邊是click 事件
+$(document).on("click", ".deletedRecord", function(){
+    var recordValue = $(this).prev().text().trim();
+    var record = $(this).parents("tr");
+    var result = confirm("你真的要刪掉：" + recordValue + "嗎？");
+    if(result){
+        $.ajax({
+            url: "/deleteReceipt/",
+            type:"POST",
+            dataType: 'json',
+            data: {whick_receipt: record.attr("class")},
+            success: function(result){
+                record.remove();
+                // change total
+                if(result.receipt_type === 'expense'){
+                    $(".total_expense").text("總計："+ result.total_value)
+                }else if(result.receipt_type === 'income'){
+                    $(".total_income").text("總計："+ result.total_value)
+                }
+            },
+            error: function(){
+                alert("刪除" + recordValue + "失敗");
+            }
+        });
+    }
+}); // end document on click class='deletedRecord'
+
+$(document).on("click", ".receipt_info", function(){
+    var recordValue = $(this).prev().text().trim();
+    var record = $(this).parents("tr")
+
+    $("#submit-btn").addClass("hidden");
+    $("#last-btn").addClass("hidden");
+    $("#modify-btn").removeClass("hidden");
+    $("#cancel-btn").removeClass("hidden");
+
+    $.ajax({
+        url: "/modifyReceipt/",
+        type:"POST",
+        dataType: 'json',
+        data: {whick_receipt: record.attr("class")},
+        success: function(result){
+            $("#recordType").val(result.incomeandexpense);
+            $("#payment").val(result.payment);
+            $("#amount").val(result.money);
+            $("#memo").val(result.remark);
+            $("#costCategory").val(result.classification_detail);
+            $("#modify-btn").addClass(result.receipt_id);
+
+        },
+        error: function(){
+            alert("修改" + recordValue + "失敗");
+        }
+    });
+}); // end document on click class='deletedRecord'
+
+$(document).on("click", "#modify-btn", function(){
+        var amount = $('#amount').val();
+        var category = $('#costCategory').attr("value");
+        var memo = $('#memo').val();
+        var record_type = $('#recordType').val();
+        var record_class = $("#modify-btn").attr("class").split(" ").pop();
+
+        if(amount){
+            $.ajax({
+                dataType: 'json',
+                url: "/createReceipt/",
+                type:"POST",
+                data: {whick_receipt: $("#modify-btn").attr("class"), amount : amount, category : category,
+                    memo: memo, record_type: record_type, payment: $('#payment').val(),
+                    date: $('#datepicker1').val()},
+                success: function(result){
+                    $("#modify-btn").addClass("hidden");
+                    $("#cancel-btn").addClass("hidden");
+                    $("#modify-btn").removeClass(record_class);
+                    $("#submit-btn").removeClass("hidden");
+                    $("#last-btn").removeClass("hidden");
+
+                    $("." +　record_class).remove();
+                    var rowcontent = result.rowcontent;
+                    var notificationMessage = result.budget_check;
+
+                    if(record_type === 'expense'){
+                        rowcontent = rowcontent.replace("food-", "食-").replace("clothing-", "衣-").replace("housing-", "住-").replace("transportation-", "行-").replace("education-", "育-").replace("entertainment-", "樂-").replace("others-", "其-");
+                        $('#cost-list').append(rowcontent);
+                        $('#costCategory').attr("value", "食-早餐");
+                        $(".total_expense").text("總計："+ result.total_value)
+                    }else if(record_type === 'income'){
+                        rowcontent = rowcontent.replace("general_revenue-", "收入-").replace("invest_revenue-", "投資-").replace("other_revenue-", "其他-");
+                        $('#revenue-list').append(rowcontent);
+                        $('#costCategory').attr("value", "一般收入-薪資");
+                        $(".total_income").text("總計："+ result.total_value)
+                    }
+                    $('#amount').val('');
+                    $('#memo').val('');
+
+                    checkNotificationBellMessage(notificationMessage.monthly);
+                    checkNotificationBellMessage(notificationMessage.class);
+
+                },
+                error: function(){
+                    if(record_type === 'expense'){
+                        $('#costCategory').attr("value", "食-早餐");
+                    }else{
+                        $('#costCategory').attr("value", "一般收入-薪資");
+                    }
+                    $('#amount').val('');
+                    $('#memo').val('');
+                    alert("記帳失敗");
+                }
+            });
+        }else{
+            alert("支出金額為必填");
+
+        }
+    });
+
+// 左方支出與收入清單的滑鼠事件 （把滑入進入和離開事件一起寫）
+$(document).on({
+    mouseenter: function(){
+        //stuff
+        $(this).children("span:last-child").text("×");
+        $(this).children("span:last-child").addClass("deletedRecord");
+    },
+    mouseleave: function(){
+        //stuff
+        $(this).children("span:last-child").empty();
+        $(this).children("span:last-child").removeClass("deletedRecord");
+    }
+}, "#cost-list tr td, #revenue-list tr td");    // end document on mouse event.
+
 
 </script>
 
-</head>
-
-<body>
-
-    <!-- whole page wrapper -->
-    <div id="wrapper cotainer">
-
-        <!-- Navigation -->
-        <nav class="navbar navbar-light navbar-static-top" role="navigation">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand glyphicon glyphicon-book" href="../dashboard.html"></a>
-                <a  href="../dashboard.html"><img src="../static/image/logo.png" alt="logo" class="navbar-brand glyphicon glyphicon-book" href="../dashboard.html" height="30px" width="200px" border="0"></a>
-            </div><!-- /.navbar-header -->
-            <ul class="nav navbar-top-links navbar-right">
-                {% comment %}
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" >
-                        <i class="fa fa-envelope fa-fw"></i> <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-messages">
-                        <!--<li>-->
-                            <!--<a href="#">-->
-                                <!--<div>-->
-                                    <!--<strong>John Smith</strong>-->
-                                    <!--<span class="pull-right text-muted">-->
-                                        <!--<em>Yesterday</em>-->
-                                    <!--</span>-->
-                                <!--</div>-->
-                                <!--<div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>-->
-                            <!--</a>-->
-                        <!--</li>-->
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <strong>John Smith</strong>
-                                    <span class="pull-right text-muted">
-                                        <em>Yesterday</em>
-                                    </span>
-                                </div>
-                                <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <strong>John Smith</strong>
-                                    <span class="pull-right text-muted">
-                                        <em>Yesterday</em>
-                                    </span>
-                                </div>
-                                <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a class="text-center" href="#">
-                                <strong>Read All Messages</strong>
-                                <i class="fa fa-angle-right"></i>
-                            </a>
-                        </li>
-                    </ul><!-- /.dropdown-messages -->
-                    
-                </li><!-- /.dropdown -->
-                
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="fa fa-tasks fa-fw"></i> <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-tasks">
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <p>
-                                        <strong>Task 1</strong>
-                                        <span class="pull-right text-muted">40% Complete</span>
-                                    </p>
-                                    <div class="progress progress-striped active">
-                                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
-                                            <span class="sr-only">40% Complete (success)</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <p>
-                                        <strong>Task 2</strong>
-                                        <span class="pull-right text-muted">20% Complete</span>
-                                    </p>
-                                    <div class="progress progress-striped active">
-                                        <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%">
-                                            <span class="sr-only">20% Complete</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <p>
-                                        <strong>Task 3</strong>
-                                        <span class="pull-right text-muted">60% Complete</span>
-                                    </p>
-                                    <div class="progress progress-striped active">
-                                        <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
-                                            <span class="sr-only">60% Complete (warning)</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <p>
-                                        <strong>Task 4</strong>
-                                        <span class="pull-right text-muted">80% Complete</span>
-                                    </p>
-                                    <div class="progress progress-striped active">
-                                        <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%">
-                                            <span class="sr-only">80% Complete (danger)</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a class="text-center" href="#">
-                                <strong>See All Tasks</strong>
-                                <i class="fa fa-angle-right"></i>
-                            </a>
-                        </li>
-                    </ul><!-- /.dropdown-tasks -->
-                    
-                </li><!-- /.dropdown -->
-                
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="fa fa-bell fa-fw"></i> <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-alerts">
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-comment fa-fw"></i> New Comment
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-twitter fa-fw"></i> 3 New Followers
-                                    <span class="pull-right text-muted small">12 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-envelope fa-fw"></i> Message Sent
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-tasks fa-fw"></i> New Task
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-upload fa-fw"></i> Server Rebooted
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a class="text-center" href="#">
-                                <strong>See All Alerts</strong>
-                                <i class="fa fa-angle-right"></i>
-                            </a>
-                        </li>
-                    </ul><!-- /.dropdown-alerts -->
-                    
-                </li><!-- /.dropdown -->
-                {% endcomment %}
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="color: white;">
-                        <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-user">
-                        <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
-                        </li>
-                        <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li><a href="/logout/"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
-                        </li>
-                    </ul>
-                    
-                </li><!-- /.dropdown-user -->
-                
-            </ul><!-- /.dropdown -->
-            
-        </nav><!-- /.navbar-top-links -->
+{% endblock %}
 
 
-        <!-- Below the navbar starting -->
-        <div class="container-fluid" style="background-color: rgb(229, 228, 219);">
+{% block left_side_content %}
 
-            <div class="row col-sm-3 col-md-3 left-side">
-                <div class="panel-group" id="accordion">
+<!-- Below the navbar starting -->
+<div class="container-fluid">
 
-                    <!-- start panel 支出 -->
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><span class="glyphicon glyphicon-list-alt">
-                                </span>支出</a>
-                            </h4>
+    <div class="row col-sm-3 col-md-3 left-side">
+        <div class="panel-group collapse in" id="accordion" aria-expanded="true">
+
+            <!-- start panel 支出 -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a href="/filter/"><span class="glyphicon glyphicon-list-alt">
+                        </span>查看帳本</a>
+                    </h4>
+                </div>
+            </div>  <!-- /.panel 支出 -->
+
+            <!-- start panel 支出 -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                            <span class="glyphicon glyphicon-list-alt"></span>支出
+                        </a>
+                        <span class="total_expense">總計：</span>
+                    </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <table class="table" id="cost-list">
+                            {% for cost_receipt in cost_list %}
+                            <tr class="receipt{{ cost_receipt.id  }}">
+                                <td>
+                                    <span class='glyphicon glyphicon-file text-success'></span>
+                                    {% if cost_receipt.remark %}
+                                        <a class="receipt_info" href='#'>{% if cost_receipt.subclassification.classification.classification_type == "food" %}食{% elif cost_receipt.subclassification.classification.classification_type == "clothing" %}衣{% elif cost_receipt.subclassification.classification.classification_type == "housing" %}住{% elif cost_receipt.subclassification.classification.classification_type == "transportation" %}行{% elif cost_receipt.subclassification.classification.classification_type == "education" %}育{% elif cost_receipt.subclassification.classification.classification_type == "entertainment" %}樂{% else %}其{% endif %}-{{cost_receipt.subclassification.name}}-{{cost_receipt.remark}}: {{cost_receipt.money}}
+                                        </a>
+                                    {% else %}
+                                        <a class="receipt_info" href='#'>{% if cost_receipt.subclassification.classification.classification_type == "food" %}食{% elif cost_receipt.subclassification.classification.classification_type == "clothing" %}衣{% elif cost_receipt.subclassification.classification.classification_type == "housing" %}住{% elif cost_receipt.subclassification.classification.classification_type == "transportation" %}行{% elif cost_receipt.subclassification.classification.classification_type == "education" %}育{% elif cost_receipt.subclassification.classification.classification_type == "entertainment" %}樂{% else %}其{% endif %}-{{cost_receipt.subclassification.name}}: {{cost_receipt.money}}
+                                        </a>
+                                    {% endif %}
+                                    <span style='float: right; margin-right: 10px; color: #9D9D9D;'></span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>  <!-- /.panel 支出 -->
+
+                <!-- start panel 收入 -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><span class="glyphicon glyphicon-list-alt">
+                        </span>收入</a>
+                        <span class="total_income">總計：</span>
+                    </h4>
+                </div>
+                <div id="collapseTwo" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <table class="table" id="revenue-list">
+                            {% for revenue_receipt in revenue_list %}
+                            <tr class="receipt{{ revenue_receipt.id  }}">
+                                <td>
+                                    <span class='glyphicon glyphicon-file text-success'></span>
+                                    {% if revenue_receipt.remark %}
+                                        <a class="receipt_info" href='#'>{% if revenue_receipt.subclassification.classification.classification_type == "general_revenue" %}收入{% elif revenue_receipt.subclassification.classification.classification_type == "invest_revenue" %}投資{% else %}其他{% endif %}-{{revenue_receipt.subclassification.name}}-{{revenue_receipt.remark}}: {{revenue_receipt.money}}
+                                        </a>
+                                    {% else %}
+                                        <a class="receipt_info" href='#'>{% if revenue_receipt.subclassification.classification.classification_type == "general_revenue" %}收入{% elif revenue_receipt.subclassification.classification.classification_type == "invest_revenue" %}投資{% else %}其他{% endif %}-{{revenue_receipt.subclassification.name}}: {{revenue_receipt.money}}
+                                        </a>
+                                    {% endif %}
+                                    <span style='float: right; margin-right: 10px; color: #9D9D9D;'></span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>  <!-- /.panel 收入 -->
+
+        </div>  <!-- /.panel group -->
+    </div>  <!-- /.left-side row -->
+
+{% endblock %}
+
+
+{% block main_content %}
+   <!-- Main container -->
+    <div id="page-wrapper" class="col-sm-9 col-md-9">
+        <div class="container-fluid col-xs-12 col-sm-12">
+            <div class="row">
+                <div class="col-lg-12" id="center-content">
+                    <div id="titleMenu" class="page-header" style="text-align: center;">
+                        <form method="post" id="formadd">
+                            <select id="recordType" name="recordType">
+                                <option value="expense">支出</option>
+                                <option value="income">收入</option>
+                            </select>
+                            <select id="payment" name="payment" >
+                                <option value="cash">現金</option>
+                                <option value="credit_card">信用卡</option>
+                                <option value="other">其他</option>
+                            </select>
+                            <input type="text"  data-provide="datepicker" id="datepicker1">
+                        </form>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="display: inline-block;">
+                            <label id="dollarSign" style="font-size: 100px;padding-right: 20px;">$</label>
+                            <input type="number" id="amount">
                         </div>
-                        <div id="collapseOne" class="panel-collapse collapse in">
-                            <div class="panel-body">
-                                <table class="table" id="cost-list">
-                                    <tr>
-                                        <td>
-                                            <span class="glyphicon glyphicon-file text-success"></span><a href="#">食-早餐:50</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <span class="glyphicon glyphicon-file text-success"></span><a href="#">食-午餐-便當:80</a>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
+                        <div class="row" id="main-type-choose" style="text-align: center; margin-bottom: 20px;">
+                            <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="food" style="background: #8D8F76 no-repeat;">食</button>
+                            <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="clothing" style="background: #BAB6AF no-repeat;">衣</button>
+                            <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="housing" style="background: #E19F81 no-repeat;">住</button>
+                            <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="transportation" style="background: #73AFB8 no-repeat;">行</button>
+                            <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="education" style="background: #BA736A no-repeat;">育</button>
+                            <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="entertainment" style="background: url('../static/image/yellow.png') no-repeat;">樂</button>
+                            <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="others" style="background: url('../static/image/brown.png') no-repeat;">其</button>
+                            <button type="button" class="btn btn-default btn-lg revenue-category" data-toggle="modal" data-target="#myModal-revenue" id="general_revenue" style="background: #8D8F76 no-repeat;">一般收入</button>
+                            <button type="button" class="btn btn-default btn-lg revenue-category" data-toggle="modal" data-target="#myModal-revenue" id="invest_revenue" style="background: #BAB6AF no-repeat;">投資收入</button>
+                            <button type="button" class="btn btn-default btn-lg revenue-category" data-toggle="modal" data-target="#myModal-revenue" id="other_revenue" style="background: #E19F81 no-repeat;">其他</button>
                         </div>
-                    </div>  <!-- /.panel 支出 -->
-
-                        <!-- start panel 收入 -->
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><span class="glyphicon glyphicon-list-alt">
-                                </span>收入</a>
-                            </h4>
+                		
+                        <div class="row" style="margin-bottom: 20px;">
+                            <label style="font-size: 25px; padding-right: 5px;">分類</label>
+                            <input type="text" id="costCategory" value="食-早餐" readonly>
                         </div>
-                        <div id="collapseTwo" class="panel-collapse collapse in">
-                            <div class="panel-body">
-                                <table class="table">
-                                    <tr>
-                                        <td>
-                                            <span class="glyphicon glyphicon-file text-success"></span><a href="#">店租:40000</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <span class="glyphicon glyphicon-file text-success"></span><a href="#">利息:5000</a>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
+                        <div class="row">
+                            <label style="font-size: 25px; padding-right: 5px;">備註</label>
+                            <input type="text" id="memo" />
                         </div>
-                    </div>  <!-- /.panel 支出 -->
-
-                </div>  <!-- /.panel group -->
-            </div>  <!-- /.left-side row -->
-
-            <!-- Main container -->
-            <div id="page-wrapper" class="col-sm-9 col-md-9" style="min-height: 167px; background-color: rgb(229, 228, 219);">
-
-                <div class="container-fluid col-xs-12 col-sm-12">
-                    
-                    <div class="row">
-                        <div class="col-lg-12" style="background-color: #fff; margin-top: 20px;">
-                            <div id="titleMenu" class="page-header" style="text-align: center;">
-                                <form>
-                                    <select id="recordType" name="recordType">
-                                        <option value="cost">支出</option>
-                                        <option value="revenue">收入</option>
-                                    </select>
-                                    <select id="payment" name="payment" >
-                                        <option value="cash">現金</option>
-                                        <option value="credit-card">信用卡</option>
-                                        <option value="other">其他</option>
-                                    </select>
-                                    <input type="text"  data-provide="datepicker" id="datepicker1">
-                                </form>
-                            </div>
-                            <form style="text-align: center;">
-                                <label style="font-size: 100px;padding-right: 20px;">$</label>
-                                <input type="number" id="amount">
-                                <br />
-                                <div class="row" style="text-align: center; margin-bottom: 20px;">
-                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category" style="background: #8D8F76 no-repeat;">食</button>
-                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category" style="background: #BAB6AF no-repeat;">衣</button>
-                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category" style="background: #E19F81 no-repeat;">住</button>
-                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category" style="background: #73AFB8 no-repeat;">行</button>
-                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category" style="background: #BA736A no-repeat;">育</button>
-                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category" style="background: url('../static/image/yellow.png') no-repeat;">樂</button>
-                                    <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" id="category" style="background: url('../static/image/brown.png') no-repeat;">其</button>
-                                </div>
-                                <div class="row" style="margin-bottom: 20px;">
-                                    <label style="font-size: 25px; padding-right: 5px;">分類</label>
-                                    <input type="text" id="costCategory" value="預設類別" readonly>
-                                </div>
-                                <div class="row">
-                                    <label style="font-size: 25px; padding-right: 5px;">備註</label>
-                                    <input type="text" id="memo" />
-                                </div>
-                                <div class="row" style="margin-top: 30px;margin-bottom: 30px;">
-                                    <input type="button" class="btn-default btn-lg submit" id="last-btn" value="確定" style="border: 2px solid #03aaa0;">
-                                    <input type="button" class="btn-default btn-lg submit" id="last-btn" value="清空" style="border: 2px solid #03aaa0;">
-                                </div>
-                            </form>
+                        <div class="row" style="margin-top: 30px;margin-bottom: 30px;">
+                            <input type="submit" class="btn-default btn-lg submit determin" id="submit-btn" value="確定" style="border: 2px solid #03aaa0;">
+                            <input type="button" class="btn-default btn-lg submit clear" id="last-btn" value="清空" style="border: 2px solid #03aaa0;">
+                            <input type="submit" class="btn-default btn-lg submit modify_btn hidden" id="modify-btn" value="修改" style="border: 2px solid #03aaa0;">
+                            <input type="button" class="btn-default btn-lg submit clear hidden" id="cancel-btn" value="取消" style="border: 2px solid #03aaa0;">
                         </div>
-                    </div><!-- /.row -->
-                </div><!-- /.container-fluid -->
+                        </div>
+                    </form>
+                </div><!-- /#center-content -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div><!-- /#page-wrapper (main container) -->
+</div><!-- /.container-fluid (whole div below navbar) -->
+{% endblock %}
 
-            </div><!-- /#page-wrapper (main container) -->
-        
-        </div><!-- /.container-fluid (whole div below navbar) -->
-
-    </div><!-- /#wrapper (whole page)-->
-
+{% block other_content %}
 	<!-- Modal -->
-	<div class="modal fade" id="myModal" role="dialog">
+	<div class="modal fade" id="myModal-cost" role="dialog">
 	    <div class="modal-dialog">
 	        <!-- Modal content-->
 	        <div class="modal-content">
 	            <div class="modal-header">
                     <h1 id="main-cate" style="display: none;"></h1>
 	                <button type="button" class="close" data-dismiss="modal">&times;</button>
-	                <h4 class="modal-title">請選擇次分類</h4>
-	            </div>
-	            <div class="modal-body" id="sectest">
-		            <button type="button" class="btn btn-link" id="sec-category">早餐</button> 
-		            <button type="button" class="btn btn-link" id="sec-category">午餐</button>
-		            <button type="button" class="btn btn-link" id="sec-category">晚餐</button>
-		            <button type="button" class="btn btn-link" id="add-category">新增</button>   
-		            <button type="button" class="btn btn-link" id="del-category">刪除</button>
-				</div>
+	                <h4 class="modal-title">請選擇子分類</h4>
+	            </div> <!-- /.modal-header -->
+
+	            <div class="modal-body">
+                    {% for food in food_list %}
+                        <button type="button" class="btn btn-link food_list hidden sec-category">{{ food.name }}</button>
+                    {% endfor %}
+                    {% for clothing in clothing_list %}
+                        <button type="button" class="btn btn-link clothing_list hidden sec-category">{{ clothing.name }}</button>
+                    {% endfor %}
+                    {% for housing in housing_list %}
+                        <button type="button" class="btn btn-link housing_list hidden sec-category">{{ housing.name }}</button>
+                    {% endfor %}
+                    {% for transportation in transportation_list %}
+                        <button type="button" class="btn btn-link transportation_list hidden sec-category">{{ transportation.name }}</button>
+                    {% endfor %}
+                    {% for education in education_list %}
+                        <button type="button" class="btn btn-link education_list hidden sec-category">{{ education.name }}</button>
+                    {% endfor %}
+                    {% for entertainment in entertainment_list %}
+                        <button type="button" class="btn btn-link entertainment_list hidden sec-category">{{ entertainment.name }}</button>
+                    {% endfor %}
+                    {% for others in others_list %}
+                        <button type="button" class="btn btn-link others_list hidden sec-category">{{ others.name }}</button>
+                    {% endfor %}
+					
+				</div> <!-- /.modal-body -->
+                
 	            <div class="modal-footer">
-	                <button type="button" class="btn btn-default" data-dismiss="modal" id="modal-submit">確定</button>
-	                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-	            </div>
+                    <div style="float: left;">
+                        <button type="button" class="btn btn-default subCategoryAdder">新增子分類</button>
+                        <input type="text" id="new-expense-sub-text" class="new-sub-handler" placeholder="請輸入次分類名稱" maxlength="10" />
+                        <button type="button" class="btn btn-success btn-sm new-sub-handler new-sub-submit">新增</button>
+                        <button type="button" class="btn btn-danger btn-sm new-sub-handler">取消</button>
+                    </div>
+	                <button type="button" class="btn btn-default modal-btn modal-submit" data-dismiss="modal">確定</button>
+	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal">取消</button>
+	            </div> <!-- /.modal-footer -->
 	        </div>
 	    </div>
 	</div>
+    <!-- /.modal -->
 
 
-</body>
+    <!-- Modal2 -->
+    <div class="modal fade" id="myModal-revenue" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 id="main-cate" style="display: none;"></h1>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">請選擇子分類</h4>
+                </div> <!-- /.modal-header -->
 
-</html>
+                <div class="modal-body">
+                    {% for general_revenue in general_revenue_list %}
+                        <button type="button" class="btn btn-link general_revenue_list hidden sec-category">{{ general_revenue.name }}</button>
+                    {% endfor %}
+                    {% for invest_revenue in invest_revenue_list %}
+                        <button type="button" class="btn btn-link invest_revenue_list hidden sec-category">{{ invest_revenue.name }}</button>
+                    {% endfor %}
+                    {% for other_revenue in other_revenue_list %}
+                        <button type="button" class="btn btn-link other_revenue_list hidden sec-category">{{ other_revenue.name }}</button>
+                    {% endfor %}
+                </div> <!-- /.modal-body -->
+                
+                <div class="modal-footer">
+                    <div style="float: left;">
+                        <button type="button" class="btn btn-default subCategoryAdder">新增子分類</button>
+                        <input type="text" id="new-income-sub-text" class="new-sub-handler" placeholder="請輸入次分類名稱" maxlength="10" />
+                        <button type="button" class="btn btn-success btn-sm new-sub-handler new-sub-submit">新增</button>
+                        <button type="button" class="btn btn-danger btn-sm new-sub-handler">取消</button>
+                    </div>
+                    <button type="button" class="btn btn-default modal-btn modal-submit" data-dismiss="modal">確定</button>
+                    <button type="button" class="btn btn-default modal-btn" data-dismiss="modal">取消</button>
+                </div> <!-- /.modal-footer -->
+            </div>
+        </div>
+    </div>
+    <!-- /.modal2 -->
+{% endblock %}
