@@ -109,3 +109,10 @@ class MonthBudget(models.Model):
     reminder = models.IntegerField()
     member = models.ForeignKey('member.Member', on_delete=models.CASCADE)
     is_reminded = models.BooleanField(default=False)
+
+class Notification(models.Model):
+    member = models.ForeignKey('member.Member', on_delete=models.CASCADE)
+    message = models.CharField(max_length=100)
+    is_read = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
+
