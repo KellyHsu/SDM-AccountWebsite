@@ -660,20 +660,25 @@
             	url: "/createCyclicalExpenditure/",
             	type:"POST",
             	data: {name:title, expenditure_type:expenditure_type, expenditure_date:expenditure_date, reminder_type:reminder_type, reminder_date:reminder_date},
-                success: function(repeated_name){
-					$("#table4").append("<tr><td>" + title + "</td><td>" + paymentDate + " </td><td>" + alertDate  
-					+ "</td><td><button type='button' class='btn btn-primary btn-sm periodic-date-setting' data-toggle='modal' data-target='#modal-periodic-edit'>設定</button> "
-					+ "<input type='checkbox' onchange='cyc_checkbox(this)' /></td></tr>");
-						
-					// 在新的欄位上增加toggle button
-					$("#table4 tr:last-child td:last-child input").bootstrapToggle({
-						on: '通知開',
-						off: '通知關',
-						size: 'small',
-						onstyle: 'success',
-						offstyle: 'danger'
-					});
-					alert("新增成功!");
+                success: function(result){
+                	if(result === "nameRepeated"){
+						alert("週期項目名稱重複，請重新命名!");
+
+                	}else{
+						$("#table4").append("<tr><td>" + title + "</td><td>" + paymentDate + " </td><td>" + alertDate  
+						+ "</td><td><button type='button' class='btn btn-primary btn-sm periodic-date-setting' data-toggle='modal' data-target='#modal-periodic-edit'>設定</button> "
+						+ "<input type='checkbox' onchange='cyc_checkbox(this)' /></td></tr>");
+							
+						// 在新的欄位上增加toggle button
+						$("#table4 tr:last-child td:last-child input").bootstrapToggle({
+							on: '通知開',
+							off: '通知關',
+							size: 'small',
+							onstyle: 'success',
+							offstyle: 'danger'
+						});
+						alert("新增成功!");
+					}
                 },
                 error: function(){
                 	alert("新增週期性項目失敗")
