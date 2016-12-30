@@ -320,6 +320,8 @@ def chart(request):
             while oldest_y != today_y+1:
                 m=1
                 if oldest_y == today_y:
+                    if first == 1:
+                        m=oldest_m
                     while m != today_m+1:
                         month_list.append(str(oldest_y)+" - "+str(m).zfill(2))
                         m = m + 1
@@ -1987,8 +1989,9 @@ def get_specific_category_chart(request):
         # pie_chart_sub_in.sizing_mode="scale_width"
         script6, div6 = components(pie_chart_sub_in)
 
-
         jsonResult = { "script_pie": script3, "div_pie": div3, "script_pie_in": script4, "div_pie_in": div4, "script_pie_sub": script5, "div_pie_sub": div5, "script_pie_sub_in": script6, "div_pie_sub_in": div6}
+    return HttpResponse(json.JSONEncoder().encode(jsonResult))
+
 
 class MemberList(generics.ListCreateAPIView):
     permission_classes = (IsAdminUser,)
