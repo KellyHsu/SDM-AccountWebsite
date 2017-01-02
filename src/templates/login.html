@@ -1,6 +1,6 @@
-<!-- 登入做在這頁 -->
 
-{% load staticfiles %}
+{% load staticfiles i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -23,28 +23,39 @@
 <body>
     <!-- main container -->
     <div class="container">
+        <form id="lang-form" class="" action="{% url 'set_language' %}" method="post">{% csrf_token %}
+            <select id="language-select" name="language" class="form-control">
+                {% get_current_language as LANGUAGE_CODE %}
+                {% get_language_info_list for LANGUAGES as languages %}
+                {% for language in languages %}
+                    <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected="selected"{% endif %}>
+                        {{ language.name_local }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
         <div class="row" id="pwd-container">
             <div class="col-md-4"></div>
             <div class="col-md-4 card card-container">
                 <section class="login-form">
-                    <h1 class="welcome text-center">Welcome to <br> Money Keeper</h1>
+                    <h1 class="welcome text-center">{% trans "Welcome to" %}<br> Money Keeper</h1>
                     <form method="post" action="/login/" role="login">
                         {% csrf_token %}
-                        <h2 class='login_title text-center'>Login</h2>
+                        <h2 class='login_title text-center'>{% trans "Login" %}</h2>
                         <hr>
                         {% for field in form %}
                             {% if field.label|lower == 'username' %}
-                                <input id="{{ field.id_for_label }}" type="email" class="form-control input-lg login_box" name="{{ field.html_name }}" placeholder="Email Address" required autofocus>
+                                <input id="{{ field.id_for_label }}" type="email" class="form-control input-lg login_box" name="{{ field.html_name }}" placeholder={% blocktrans %}'Email Address'{% endblocktrans %} required autofocus>
                                 {{ form.username.errors }}
                             {% else %}
-                                <input id="{{ field.id_for_label }}" type="password" class="form-control input-lg login_box" name="{{ field.html_name }}" placeholder="Password" required>
+                                <input id="{{ field.id_for_label }}" type="password" class="form-control input-lg login_box" name="{{ field.html_name }}" placeholder={% blocktrans %}'Password'{% endblocktrans %} required>
                                 {{ form.password.errors }}
                                 {{ form.non_field_errors }}
                             {% endif %}
                         {% endfor %}
-                        <button type="submit" name="go" class="btn btn-lg btn-primary btn-block">Sign in</button>
+                        <button type="submit" name="go" class="btn btn-lg btn-primary btn-block">{% trans "Sign in" %}</button>
                         <div class="register-link">
-                            <a href="/register/">Create account</a> <!--or <a href="#">reset password</a> -->
+                            <a href="/register/">{% trans "Create account" %}</a> <!--or <a href="#">reset password</a> -->
                         </div>
                     </form>
                 </section>
@@ -56,5 +67,9 @@
     </div>
     <!-- /container -->
 </body>
-
+    <script>
+        $('#language-select').on('change', function() {
+            window.location.href="/set_language/?lang=" + this.value
+        });
+    </script>
 </html>
