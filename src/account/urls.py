@@ -42,6 +42,8 @@ urlpatterns = [
     url(r'^api/$', views.MemberList.as_view()),
     url(r'^api/(?P<pk>[0-9]+)/$', views.MemberDetail.as_view()),
     url(r'^api/getReceipt/$', views.getReceipt.as_view()),
+    url(r'^readNotification/$', views.read_notification, name='read_notification'),
+    url(r'^deleteNotification/$', views.delete_notification, name='delete_notification')
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
