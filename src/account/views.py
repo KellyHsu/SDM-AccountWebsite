@@ -1989,6 +1989,8 @@ def get_specific_category_chart(request):
 
 
         jsonResult = { "script_pie": script3, "div_pie": div3, "script_pie_in": script4, "div_pie_in": div4, "script_pie_sub": script5, "div_pie_sub": div5, "script_pie_sub_in": script6, "div_pie_sub_in": div6}
+    return HttpResponse(json.JSONEncoder().encode(jsonResult))
+
 
 class MemberList(generics.ListCreateAPIView):
     permission_classes = (IsAdminUser,)
@@ -2008,6 +2010,7 @@ class DateFilter(django_filters.rest_framework.FilterSet):
     date = django_filters.DateFilter(name="date",lookup_expr="exact")
     
     print(start_date)
+
     class Meta:
         model = Receipt
         fields = ['date']
