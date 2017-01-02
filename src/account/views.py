@@ -63,7 +63,8 @@ def dashboard(request):
                    "general_revenue_list": general_revenue_list, "invest_revenue_list": invest_revenue_list,
                    "other_revenue_list": other_revenue_list,
                    "total_expense": total_expense, "total_income": total_income,
-                   "notification_list_unread": notification_list_unread, 
+                   "notification_list_unread": notification_list_unread,
+                   "notification_unread_count": len(notification_list_unread), 
                    "notification_list_isread": notification_list_isread})
 
 
@@ -124,6 +125,7 @@ def setting(request):
                                             "general_revenue_list": general_revenue_list, "invest_revenue_list": invest_revenue_list,
                                             "other_revenue_list": other_revenue_list,
                                             "notification_list_unread": notification_list_unread,
+                                            "notification_unread_count": len(notification_list_unread), 
                                             "notification_list_isread": notification_list_isread})
 
 
@@ -165,6 +167,7 @@ def filter(request):
                   {"member": member, "receipts": receipts, "title": currentDate, "totalCost": cost,
                    "totalIncome": income, "balance": balance, "subcat": subCat,
                    "notification_list_unread": notification_list_unread,
+                   "notification_unread_count": len(notification_list_unread), 
                    "notification_list_isread": notification_list_isread})
 
 
@@ -364,6 +367,7 @@ def chart(request):
                                         "div_bar": div2, 
                                         "month_list": month_list,
                                         "notification_list_unread": notification_list_unread,
+                                        "notification_unread_count": len(notification_list_unread), 
                                         "notification_list_isread": notification_list_isread})
 
 
