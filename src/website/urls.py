@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from member.views import register
+from member.views import register, set_language
 from django.contrib.auth.views import login, logout
 from django.conf.urls.i18n import i18n_patterns
 from rest_framework.authtoken import views
@@ -24,6 +24,7 @@ from rest_framework.authtoken import views
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^i18n/', include('django.conf.urls.i18n')),
+    url(r'^set_language/$', set_language),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api-token-auth/', views.obtain_auth_token),
 ]

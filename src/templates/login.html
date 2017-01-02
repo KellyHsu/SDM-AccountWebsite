@@ -19,11 +19,24 @@
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/login-template.css' %}" rel="stylesheet">
     <!-- <script src="{% static 'js/login-template.js' %}"></script> -->
+
 </head>
 
 <body>
     <!-- main container -->
     <div class="container">
+        <form id="lang-form" class="" action="{% url 'set_language' %}" method="post">{% csrf_token %}
+{#            <input id="lang" name="next" type="hidden" value="{{ redirect_to }}" />#}
+            <select id="language-select" name="language" class="form-control">
+                {% get_current_language as LANGUAGE_CODE %}
+                {% get_language_info_list for LANGUAGES as languages %}
+                {% for language in languages %}
+                    <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected="selected"{% endif %}>
+                        {{ language.name_local }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
         <div class="row" id="pwd-container">
             <div class="col-md-4"></div>
             <div class="col-md-4 card card-container">
@@ -57,5 +70,9 @@
     </div>
     <!-- /container -->
 </body>
-
+    <script>
+        $('#language-select').on('change', function() {
+            window.location.href="/set_language/?lang=" + this.value
+        });
+    </script>
 </html>

@@ -46,3 +46,13 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'register.html', locals())
+
+
+def set_language(request):
+    from django.utils import translation
+
+    user_language = request.GET['lang']
+    translation.activate(user_language)
+    request.session[translation.LANGUAGE_SESSION_KEY] = user_language
+
+    return HttpResponseRedirect('/login/')

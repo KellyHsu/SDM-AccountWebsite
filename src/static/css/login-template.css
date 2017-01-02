@@ -143,5 +143,15 @@ form[role=login] > div {
 
 }
 
+#language-select{
+    width: 125px;
+    height: 35px;
+    padding: 5px;
+}
+
+#lang-form{
+    float: right;
+}
+
 
 
