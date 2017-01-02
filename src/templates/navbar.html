@@ -81,7 +81,7 @@ $(document).ready(function() {
 $(document).on("click", "#notification-bell", function(){
     if( $(".dropdown-alerts").children().length > 0 ){
         $.ajax({
-            url: "/readNotification/",
+            url: "../readNotification/",
             type:"POST",
             dataType: 'json',
             success: function(result){
@@ -120,7 +120,7 @@ $(document).on("click", "#notification-bell", function(){
 
 $(document).on("click", "#clear-alert", function(){
     $.ajax({
-            url: "/deleteNotification/",
+            url: "../deleteNotification/",
             type:"POST",
             dataType: 'json',
             success: function(result){
