@@ -116,3 +116,10 @@ class Notification(models.Model):
     is_read = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
 
+    NOTIFICATION_TYPE = (
+        ('budget', 'budget'),
+        ('periodic', 'periodic')
+    )
+    type = models.CharField(max_length=10, choices=NOTIFICATION_TYPE, default='budget')
+    item_name = models.CharField(max_length=100, default='item')
+    create_date = models.DateField(auto_now_add=True)

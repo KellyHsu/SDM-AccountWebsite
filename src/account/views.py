@@ -2,7 +2,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from account.models import Receipt, SubClassification, Payment, IncomeAndExpense, Classification, CyclicalExpenditure, \
-    Budget, MonthBudget
+    Budget, MonthBudget, Notification
 from member.models import Member
 from datetime import datetime, date, timedelta
 from django.contrib.auth.models import User
@@ -45,7 +45,12 @@ def dashboard(request):
         invest_revenue_list = SubClassification.objects.filter(member=member, classification=c9, exist=True)
         other_revenue_list = SubClassification.objects.filter(member=member, classification=c10, exist=True)
 
-        periodic_notification_list = periodicItemDateCheck(member)
+        # 檢查有無週期項目需提醒
+        periodicItemDateCheck(member)
+
+        # 輸出通知清單
+        notification_list_unread = Notification.objects.filter(member=member, is_deleted=False, is_read=False)
+        notification_list_isread = Notification.objects.filter(member=member, is_deleted=False, is_read=True)
 
         total_expense = get_total(cost_list)
         total_income = get_total(revenue_list)
@@ -56,9 +61,10 @@ def dashboard(request):
                    "transportation_list": transportation_list, "education_list": education_list,
                    "entertainment_list": entertainment_list, "others_list": others_list,
                    "general_revenue_list": general_revenue_list, "invest_revenue_list": invest_revenue_list,
-                   "other_revenue_list": other_revenue_list, "periodic_notification_list": periodic_notification_list,
-                   "periodic_notification_count": len(periodic_notification_list),
-                   "total_expense": total_expense, "total_income": total_income})
+                   "other_revenue_list": other_revenue_list,
+                   "total_expense": total_expense, "total_income": total_income,
+                   "notification_list_unread": notification_list_unread, 
+                   "notification_list_isread": notification_list_isread})
 
 
 def setting(request):
@@ -100,6 +106,10 @@ def setting(request):
 
         cyclicalExpenditure_list = CyclicalExpenditure.objects.filter(member=member)
 
+        # 輸出通知清單
+        notification_list_unread = Notification.objects.filter(member=member, is_deleted=False, is_read=False)
+        notification_list_isread = Notification.objects.filter(member=member, is_deleted=False, is_read=True)
+
     return render(request, 'setting.html', {"member": member, "cyclicalExpenditure_list": cyclicalExpenditure_list,
                                             "budget_food": budget_food, "budget_clothing": budget_clothing,
                                             "budget_housing": budget_housing,
@@ -112,7 +122,9 @@ def setting(request):
                                             "education_list": education_list,
                                             "entertainment_list": entertainment_list, "others_list": others_list,
                                             "general_revenue_list": general_revenue_list, "invest_revenue_list": invest_revenue_list,
-                                            "other_revenue_list": other_revenue_list})
+                                            "other_revenue_list": other_revenue_list,
+                                            "notification_list_unread": notification_list_unread,
+                                            "notification_list_isread": notification_list_isread})
 
 
 def filter(request):
@@ -144,10 +156,16 @@ def filter(request):
             cost = int(totalCost['money__sum'])
         balance = income - cost
         print balance, type(balance)
- 
+
+        # 輸出通知清單
+        notification_list_unread = Notification.objects.filter(member=member, is_deleted=False, is_read=False)
+        notification_list_isread = Notification.objects.filter(member=member, is_deleted=False, is_read=True)
+
     return render(request, 'filter.html',
                   {"member": member, "receipts": receipts, "title": currentDate, "totalCost": cost,
-                   "totalIncome": income, "balance": balance, "subcat": subCat})
+                   "totalIncome": income, "balance": balance, "subcat": subCat,
+                   "notification_list_unread": notification_list_unread,
+                   "notification_list_isread": notification_list_isread})
 
 
 def chart(request):
@@ -335,7 +353,18 @@ def chart(request):
         else:
             month_list=[]
 
-    return render(request, 'chart.html',{"title": week, "the_script": script, "the_div": div, "script_bar": script2, "div_bar": div2, "month_list": month_list})
+        # 輸出通知清單
+        notification_list_unread = Notification.objects.filter(member=member, is_deleted=False, is_read=False)
+        notification_list_isread = Notification.objects.filter(member=member, is_deleted=False, is_read=True)
+
+    return render(request, 'chart.html',{"title": week, 
+                                        "the_script": script, 
+                                        "the_div": div, 
+                                        "script_bar": script2, 
+                                        "div_bar": div2, 
+                                        "month_list": month_list,
+                                        "notification_list_unread": notification_list_unread,
+                                        "notification_list_isread": notification_list_isread})
 
 
 def create_receipt(request):
@@ -762,8 +791,12 @@ def budget_calculate(member):
     # 如果有設定預算且超過
     if (monthlyBudget > 0 and sumOfExpense > monthlyBudget):
         alertMessage = "警告：本月總花費已超過當月預算"
+        new_message = Notification.objects.create(member=member, message=alertMessage, type='budget')
+
     elif (alertThreshold > 0 and sumOfExpense > alertThreshold):
         alertMessage = "警告：本月總花費已超過 {0}".format(alertThreshold)
+        new_message = Notification.objects.create(member=member, message=alertMessage, type='budget')
+
     else:
         alertMessage = "正常"
 
@@ -805,8 +838,12 @@ def classification_budget_calculate(member, classification):
     print(classification)
     if (classBudget > 0 and sumOfExpense > classBudget):
         alertMessage = "警告：本月{0}分類花費已超過當月預算".format(classification)
+        new_message = Notification.objects.create(member=member, message=alertMessage, type='budget')
+
     elif (classBudgetThreshold > 0 and sumOfExpense > classBudgetThreshold):
         alertMessage = "警告：本月{0}分類花費已超過 {1}".format(classification, classBudgetThreshold)
+        new_message = Notification.objects.create(member=member, message=alertMessage, type='budget')
+
     else:
         alertMessage = "正常"
 
@@ -1021,6 +1058,7 @@ def backwardtime(request):
 
 # 檢查是否有週期性項目的日期到了要提醒使用者
 def periodicItemDateCheck(member):
+    oldNotification = Notification.objects.filter(member=member, is_deleted=False, type='periodic')
     periodicItemList = CyclicalExpenditure.objects.all().filter(member=member)
     notification_list = []
 
@@ -1048,7 +1086,8 @@ def periodicItemDateCheck(member):
 
                     message = "繳費提醒：{0}須於{1}{2}進行繳費".format(entry.name.encode('utf-8'), payingTimeTitle,
                                                             payingTimeContent)
-                    notification_list.append(message)
+                    # notification_list.append(message)
+                    new_message = Notification.objects.create(member=member, message=message, type='periodic')
 
             else:
                 if entry.reminder_date == date.today().day:
@@ -1062,12 +1101,13 @@ def periodicItemDateCheck(member):
 
                     message = "繳費提醒：{0}須於{1}{2}進行繳費".format(entry.name.encode('utf-8'), payingTimeTitle,
                                                             payingTimeContent)
-                    notification_list.append(message)
+                    # notification_list.append(message)
+                    new_message = Notification.objects.create(member=member, message=message, type='periodic')
 
                     # end if-else 'week'
                     # end if is_reminded
 
-    return notification_list
+    # return notification_list
 
 def get_total(receipt_list):
     total = 0
