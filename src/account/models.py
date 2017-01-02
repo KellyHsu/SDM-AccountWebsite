@@ -121,5 +121,5 @@ class Notification(models.Model):
         ('periodic', 'periodic')
     )
     type = models.CharField(max_length=10, choices=NOTIFICATION_TYPE, default='budget')
-    item_name = models.CharField(max_length=100, default='item')
+    item_name = models.CharField(max_length=100, default='')
     create_date = models.DateField(auto_now_add=True)

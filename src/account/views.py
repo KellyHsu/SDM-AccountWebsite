@@ -1067,52 +1067,65 @@ def periodicItemDateCheck(member):
     periodicItemList = CyclicalExpenditure.objects.all().filter(member=member)
     notification_list = []
 
-    for entry in periodicItemList:
-        if entry.is_reminded:
-            if entry.reminder_type == 'week':
-                if entry.reminder_date == date.today().isoweekday():
-                    payingTimeTitle = ""
-                    payingTimeContent = ""
 
-                    if entry.expenditure_date >= entry.reminder_date:
-                        payingTimeTitle = "本週"
-                    else:
-                        payingTimeTitle = "下週"
-                    weekday = {
-                        1: "星期一",
-                        2: "星期二",
-                        3: "星期三",
-                        4: "星期四",
-                        5: "星期五",
-                        6: "星期六",
-                        7: "星期日"
-                    }
-                    payingTimeContent = weekday.get(entry.expenditure_date, "星期天")
+    if periodicItemList:
+        for entry in periodicItemList:
+            if entry.is_reminded:
+                breakFlag = False
 
-                    message = "繳費提醒：{0}須於{1}{2}進行繳費".format(entry.name.encode('utf-8'), payingTimeTitle,
-                                                            payingTimeContent)
-                    # notification_list.append(message)
-                    new_message = Notification.objects.create(member=member, message=message, type='periodic')
+                # 在輸出訊息前先檢查是否有舊的訊息存在，若有一樣的提醒就不再提醒了，會直接略過此項目
+                for old in oldNotification:
+                    # 以七天來判斷是否是上次提醒或是這週提醒
+                    if (old.item_name == entry.name)and ( old.create_date >= (date.today() - timedelta(7)) ) :
+                        breakFlag = True
 
-            else:
-                if entry.reminder_date == date.today().day:
-                    payingTimeTitle = ""
-                    payingTimeContent = ""
-                    if entry.expenditure_date >= entry.reminder_date:
-                        payingTimeTitle = "本月"
-                    else:
-                        payingTimeTitle = "下個月"
-                    payingTimeContent = str(entry.expenditure_date) + "號"
+                if breakFlag is True:
+                    continue
 
-                    message = "繳費提醒：{0}須於{1}{2}進行繳費".format(entry.name.encode('utf-8'), payingTimeTitle,
-                                                            payingTimeContent)
-                    # notification_list.append(message)
-                    new_message = Notification.objects.create(member=member, message=message, type='periodic')
+                if entry.reminder_type == 'week':
+                    if entry.reminder_date == date.today().isoweekday():
+                        payingTimeTitle = ""
+                        payingTimeContent = ""
 
-                    # end if-else 'week'
-                    # end if is_reminded
+                        if entry.expenditure_date >= entry.reminder_date:
+                            payingTimeTitle = "本週"
+                        else:
+                            payingTimeTitle = "下週"
+                        weekday = {
+                            1: "星期一",
+                            2: "星期二",
+                            3: "星期三",
+                            4: "星期四",
+                            5: "星期五",
+                            6: "星期六",
+                            7: "星期日"
+                        }
+                        payingTimeContent = weekday.get(entry.expenditure_date, "星期天")
 
-    # return notification_list
+                        message = "繳費提醒：{0}須於{1}{2}進行繳費".format(entry.name.encode('utf-8'), payingTimeTitle,
+                                                                payingTimeContent)
+                        # notification_list.append(message)
+                        new_message = Notification.objects.create(member=member, message=message, type='periodic', item_name=entry.name)
+
+                else:
+                    if entry.reminder_date == date.today().day:
+                        payingTimeTitle = ""
+                        payingTimeContent = ""
+                        if entry.expenditure_date >= entry.reminder_date:
+                            payingTimeTitle = "本月"
+                        else:
+                            payingTimeTitle = "下個月"
+                        payingTimeContent = str(entry.expenditure_date) + "號"
+
+                        message = "繳費提醒：{0}須於{1}{2}進行繳費".format(entry.name.encode('utf-8'), payingTimeTitle,
+                                                                payingTimeContent)
+                        # notification_list.append(message)
+                        new_message = Notification.objects.create(member=member, message=message, type='periodic', item_name=entry.name)
+
+                        # end if-else 'week'
+                        # end if is_reminded
+
+        # return notification_list
 
 def get_total(receipt_list):
     total = 0
