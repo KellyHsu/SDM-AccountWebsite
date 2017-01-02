@@ -113,7 +113,7 @@
 			if($("#password").val() == $('#confirmpassword').val()){		
 				var new_password=$("#password").val();
 				$.ajax({
-            	    url: "/changePassword/",
+            	    url: "../changePassword/",
             	    type:"POST",
             	    data: {new_password : new_password},
             	    success: function(rowcontent){
@@ -245,7 +245,7 @@
 			//post
 			if(deltArr){
             	$.ajax({
-                	url: "/deleteCyclicalExpenditure/",
+                	url: "../deleteCyclicalExpenditure/",
                 	type:"POST",
                 	data: {deltArr : deltArr},
                 	success: function(rowcontent){
@@ -310,7 +310,7 @@
 		$("#month-budget").click(function(){
 			var month_budget = $("#m-b").val();
 			$.ajax({
-                url: "/updateMonthBudget/",
+                url: "../updateMonthBudget/",
                 type:"POST",
                 data: {month_budget : month_budget},
                 success: function(rowcontent){
@@ -327,7 +327,7 @@
 			var month_reminder = $("#m-b-r").val();
 			console.log(month_reminder);
 			$.ajax({
-                url: "/updateMonthBudgetReminder/",
+                url: "../updateMonthBudgetReminder/",
                 type:"POST",
                 data: {month_reminder : month_reminder},
                 success: function(rowcontent){
@@ -348,7 +348,7 @@
 				isreminded="False";
 			}
 			$.ajax({
-                url: "/updateMonthBudgetIsreminded/",
+                url: "../updateMonthBudgetIsreminded/",
                 type:"POST",
                 data: {isreminded : isreminded},
                 success: function(rowcontent){
@@ -370,7 +370,7 @@
 	function category_budget(object,category){
 		var budget = $(object).prev().prev('input').val();
 		$.ajax({
-                url: "/updateBudget/",
+                url: "../updateBudget/",
                 type:"POST",
                 data: {budget : budget, category : category},
                 success: function(rowcontent){
@@ -386,7 +386,7 @@
 	function category_reminder(object,category){
 		var reminder = $(object).prev().prev('input').val();
 		$.ajax({
-                url: "/updateBudgetReminder/",
+                url: "../updateBudgetReminder/",
                 type:"POST",
                 data: {reminder : reminder, category : category},
                 success: function(rowcontent){
@@ -407,7 +407,7 @@
 				isreminded="False";
 			}
 			$.ajax({
-                url: "/updateBudgetIsreminded/",
+                url: "../updateBudgetIsreminded/",
                 type:"POST",
                 data: {isreminded : isreminded, category : category},
                 success: function(rowcontent){
@@ -481,7 +481,7 @@
 					delSub.remove();	
 					//post
 					$.ajax({
-                		url: "/deleteSubClassificationInSettingPage/",
+                		url: "../deleteSubClassificationInSettingPage/",
                 		type:"POST",
                 		data: {name:btnText},
                 		success: function(rowcontent){
@@ -513,7 +513,7 @@
 					delSub.remove();	
 					//post
 					$.ajax({
-                		url: "/deleteSubClassificationInSettingPage/",
+                		url: "../deleteSubClassificationInSettingPage/",
                 		type:"POST",
                 		data: {name:btnText},
                 		success: function(rowcontent){
@@ -657,7 +657,7 @@
 		//post
 		if( title.trim() ){
             $.ajax({
-            	url: "/createCyclicalExpenditure/",
+            	url: "../createCyclicalExpenditure/",
             	type:"POST",
             	data: {name:title, expenditure_type:expenditure_type, expenditure_date:expenditure_date, reminder_type:reminder_type, reminder_date:reminder_date},
                 success: function(repeated_name){
@@ -694,7 +694,7 @@
 				isreminded="False";
 			}
 			$.ajax({
-                url: "/updateCyclicalExpenditureIsreminded/",
+                url: "../updateCyclicalExpenditureIsreminded/",
                 type:"POST",
                 data: {isreminded : isreminded, name : name},
                 success: function(rowcontent){
@@ -717,7 +717,7 @@
 		//post
  		if(newSub){
             $.ajax({
-                url: "/createSubClassificationInSettingPage/",
+                url: "../createSubClassificationInSettingPage/",
                 type:"POST",
                 dataType: 'json',
                 data: {newSub : newSub, category : mainType},
@@ -750,7 +750,7 @@
 		//post
  		if(newSub){
             $.ajax({
-                url: "/createSubClassificationInSettingPage/",
+                url: "../createSubClassificationInSettingPage/",
                 type:"POST",
                 dataType: 'json',
                 data: {newSub : newSub, category : mainType},
@@ -879,7 +879,7 @@
 				reminder_date=date1[0];
 		}
 		$.ajax({
-            url: "/updateCyclicalExpenditure/",
+            url: "../updateCyclicalExpenditure/",
             type:"POST",
             data: {name:name, expenditure_type:expenditure_type, expenditure_date:expenditure_date, reminder_type:reminder_type, reminder_date:reminder_date},
             success: function(content){

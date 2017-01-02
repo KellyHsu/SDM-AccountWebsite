@@ -95,7 +95,7 @@ $(document).ready(function() {
         if(newDate){
             $.ajax({
                 dataType: 'json',
-                url: "/getNewDate/",
+                url: "../getNewDate/",
                 type:"POST",
                 data: {date : newDate},
                 success: function(rowcontent){
@@ -163,7 +163,7 @@ $(document).ready(function() {
         if(amount){
                 $.ajax({
                     dataType: 'json',
-                    url: "/createReceipt/",
+                    url: "../createReceipt/",
                     type:"POST",
                     data: {amount : amount, category : category,
                         memo: memo, record_type: record_type, payment: $('#payment').val(),
@@ -242,7 +242,7 @@ $(document).ready(function() {
         var newSubText = newSub.val();
         if(newSub){
             $.ajax({
-                url: "/createSubCategory/",
+                url: "../createSubCategory/",
                 type:"POST",
                 dataType: 'json',
                 data: {newSub : newSubText, category : classname},
@@ -319,7 +319,7 @@ $(document).on("click", ".deletedRecord", function(){
     var result = confirm("你真的要刪掉：" + recordValue + "嗎？");
     if(result){
         $.ajax({
-            url: "/deleteReceipt/",
+            url: "../deleteReceipt/",
             type:"POST",
             dataType: 'json',
             data: {whick_receipt: record.attr("class")},
@@ -349,7 +349,7 @@ $(document).on("click", ".receipt_info", function(){
     $("#cancel-btn").removeClass("hidden");
 
     $.ajax({
-        url: "/modifyReceipt/",
+        url: "../modifyReceipt/",
         type:"POST",
         dataType: 'json',
         data: {whick_receipt: record.attr("class")},
@@ -378,7 +378,7 @@ $(document).on("click", "#modify-btn", function(){
         if(amount){
             $.ajax({
                 dataType: 'json',
-                url: "/createReceipt/",
+                url: "../createReceipt/",
                 type:"POST",
                 data: {whick_receipt: $("#modify-btn").attr("class"), amount : amount, category : category,
                     memo: memo, record_type: record_type, payment: $('#payment').val(),
@@ -569,8 +569,8 @@ $(document).on({
                             <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="housing" style="background: #E19F81 no-repeat;">住</button>
                             <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="transportation" style="background: #73AFB8 no-repeat;">行</button>
                             <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="education" style="background: #BA736A no-repeat;">育</button>
-                            <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="entertainment" style="background: url('../static/image/yellow.png') no-repeat;">樂</button>
-                            <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="others" style="background: url('../static/image/brown.png') no-repeat;">其</button>
+                            <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="entertainment" style="background: url('../../static/image/yellow.png') no-repeat;">樂</button>
+                            <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="others" style="background: url('../../static/image/brown.png') no-repeat;">其</button>
                             <button type="button" class="btn btn-default btn-lg revenue-category" data-toggle="modal" data-target="#myModal-revenue" id="general_revenue" style="background: #8D8F76 no-repeat;">一般收入</button>
                             <button type="button" class="btn btn-default btn-lg revenue-category" data-toggle="modal" data-target="#myModal-revenue" id="invest_revenue" style="background: #BAB6AF no-repeat;">投資收入</button>
                             <button type="button" class="btn btn-default btn-lg revenue-category" data-toggle="modal" data-target="#myModal-revenue" id="other_revenue" style="background: #E19F81 no-repeat;">其他</button>

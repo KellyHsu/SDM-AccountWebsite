@@ -63,7 +63,7 @@
             $('#category-page').removeClass("now-click")
             $.ajax({
                dataType: 'json',
-               url: "/getWeekChart/",
+               url: "../getWeekChart/",
                 type:"POST",
                 data: {},
                 success: function(result){
@@ -86,7 +86,7 @@
             $('category-page').removeClass("now-click")
             $.ajax({
                dataType: 'json',
-               url: "/getMonChart/",
+               url: "../getMonChart/",
                 type:"POST",
                 data: {},
                 success: function(result){
@@ -109,7 +109,7 @@
             $('#category-page').removeClass("now-click")
             $.ajax({
                dataType: 'json',
-               url: "/getYrChart/",
+               url: "../getYrChart/",
                 type:"POST",
                 data: {},
                 success: function(result){
@@ -133,7 +133,7 @@
             $('#title-text').find( "h3" ).html("總類別分析");
             $.ajax({
                dataType: 'json',
-               url: "/getCategoryChart/",
+               url: "../getCategoryChart/",
                 type:"POST",
                 data: {},
                 success: function(result){
@@ -166,7 +166,7 @@
             }
             $.ajax({
                dataType: 'json',
-               url: "/backwardChart/",
+               url: "../backwardChart/",
                 type:"POST",
                 data: {pageHeader_date : pageHeader_date, sign: sign, id: idClick},
                 success: function(result){
@@ -192,7 +192,7 @@
                 $('#title-text').find( "h3" ).html("總類別分析");
                 $.ajax({
                     dataType: 'json',
-                    url: "/getCategoryChart/",
+                    url: "../getCategoryChart/",
                     type:"POST",
                     data: {},
                     success: function(result){
@@ -214,7 +214,7 @@
                 var time = timearray[0]+"/"+timearray[1];
                 $.ajax({
                     dataType: 'json',
-                    url: "/getSpecificCategoryChart/",
+                    url: "../getSpecificCategoryChart/",
                     type:"POST",
                     data: {pageHeader_date : time},
                     success: function(result){

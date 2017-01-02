@@ -1,6 +1,8 @@
 <!-- 這個頁面是篩選頁 -->
 {% extends 'base.html' %}
-{% load staticfiles %}
+{% load staticfiles i18n%}
+{% get_current_language as LANGUAGE_CODE %}
+
 
 {% block local_include %}
         <!--datatables CSS-->
@@ -89,11 +91,11 @@
             var sign;
             console.log(pathname);
             console.log(idClick); 
-            if(pathname == "/filter/"){
+            if(pathname == "/{{ LANGUAGE_CODE }}/filter/"){
                 sign = "day";
-            }else if(pathname == "/getReceiptByWeek/"){
+            }else if(pathname == "/{{ LANGUAGE_CODE }}/getReceiptByWeek/"){
                 sign = "week";
-            }else if(pathname == "/getReceiptByMon/"){
+            }else if(pathname == "/{{ LANGUAGE_CODE }}/getReceiptByMon/"){
                 sign = "month";
             }else{
                 sign = "year";
@@ -101,7 +103,7 @@
             console.log(pageHeader_date);
             $.ajax({
                dataType: 'json',
-               url: "/backwardTime/",
+               url: "../backwardTime/",
                 type:"POST",
                 data: {pageHeader_date : pageHeader_date, sign: sign, id: idClick},
                 success: function(result){
@@ -131,11 +133,11 @@
             var pageHeader_date = $('#pageHeader_date').html();
             var sign;
             // console.log(pathname);
-            if(pathname == "/filter/"){
+            if(pathname == "/{{ LANGUAGE_CODE }}/filter/"){
                 sign = "day";
-            }else if(pathname == "/getReceiptByWeek/"){
+            }else if(pathname == "/{{ LANGUAGE_CODE }}/getReceiptByWeek/"){
                 sign = "week";
-            }else if(pathname == "/getReceiptByMon/"){
+            }else if(pathname == "/{{ LANGUAGE_CODE }}/getReceiptByMon/"){
                 sign = "month";
             }else{
                 sign = "year";
@@ -147,7 +149,7 @@
             if(title =="刪除"){
                 $.ajax({
                     dataType: 'json',
-                    url: "/filterDelRecord/",
+                    url: "../filterDelRecord/",
                     type:"POST",
                     data: {id: id, pageHeader_date: pageHeader_date, sign: sign},
                     success: function(result){
@@ -175,7 +177,7 @@
                 console.log($("#datepicker1").val());
                 $.ajax({
                     dataType: 'json',
-                    url: "/filterDelRecord/",
+                    url: "../filterDelRecord/",
                     type:"POST",
                     data: {id: row_id, amount: $('#amount').val(), memo: $('#memo').val(), recordType: $('#recordType').val(), subcat: $('#subcat').val(), payment: $('#payment').val(), date: $("#datepicker1").val(), pageHeader_date: pageHeader_date, sign: sign, title: title },
                     success: function(result){
