@@ -39,12 +39,12 @@
             <div class="col-md-4 card card-container">
                 <section class="login-form">
                     <h1 class="welcome text-center">{% trans "Welcome to" %}<br> Money Keeper</h1>
-                    <form method="post" action="/login/" role="login">
+                    <form method="post" action="/{{ LANGUAGE_CODE }}/login/" role="login">
                         {% csrf_token %}
                         <h2 class='login_title text-center'>{% trans "Login" %}</h2>
                         <hr>
                         {% for field in form %}
-                            {% if field.label|lower == 'username' %}
+                            {% if field.id_for_label|lower == 'id_username' %}
                                 <input id="{{ field.id_for_label }}" type="email" class="form-control input-lg login_box" name="{{ field.html_name }}" placeholder={% blocktrans %}'Email Address'{% endblocktrans %} required autofocus>
                                 {{ form.username.errors }}
                             {% else %}
