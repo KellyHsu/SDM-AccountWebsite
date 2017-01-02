@@ -423,13 +423,14 @@ def create_receipt(request):
         # 只有支出才要計算預算
         monthly_budget_check_result = ""
         class_budget_check_result = ""
-        if incomeandexpense.income_type == 'expense':
-            # check month budget setting
-            if month_budget_instance and month_budget_instance.is_reminded:
-                monthly_budget_check_result = budget_calculate(member)
-            # check category budget setting
-            if category_budget_instance and category_budget_instance.is_reminded:
-                class_budget_check_result = classification_budget_calculate(member, classification)
+        if receipt_id == None:
+            if incomeandexpense.income_type == 'expense':
+                # check month budget setting
+                if month_budget_instance and month_budget_instance.is_reminded:
+                    monthly_budget_check_result = budget_calculate(member)
+                # check category budget setting
+                if category_budget_instance and category_budget_instance.is_reminded:
+                    class_budget_check_result = classification_budget_calculate(member, classification)
 
         message = {"rowcontent": cost_rowcontent, "total_value": total_value,
                    "budget_check": {"monthly": monthly_budget_check_result, "class": class_budget_check_result}}
@@ -794,11 +795,11 @@ def budget_calculate(member):
 
     # 如果有設定預算且超過
     if (monthlyBudget > 0 and sumOfExpense > monthlyBudget):
-        alertMessage = "警告：本月總花費已超過當月預算"
+        alertMessage = " 警告：本月總花費已超過當月預算"
         new_message = Notification.objects.create(member=member, message=alertMessage, type='budget')
 
     elif (alertThreshold > 0 and sumOfExpense > alertThreshold):
-        alertMessage = "警告：本月總花費已超過 {0}".format(alertThreshold)
+        alertMessage = " 警告：本月總花費已超過 {0}".format(alertThreshold)
         new_message = Notification.objects.create(member=member, message=alertMessage, type='budget')
 
     else:
