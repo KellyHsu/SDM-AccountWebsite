@@ -80,18 +80,30 @@ $(document).ready(function() {
 // 處理按下通知鈴鐺後的改變
 $(document).on("click", "#notification-bell", function(){
     if( $(".dropdown-alerts").children().length > 0 ){
-        $(".fa-bell").removeClass("notification-icon");
-        $(".fa-bell").removeAttr("data-count");
+        $.ajax({
+            url: "/readNotification/",
+            type:"POST",
+            dataType: 'json',
+            success: function(result){
+                $(".fa-bell").removeClass("notification-icon");
+                $(".fa-bell").removeAttr("data-count");
 
-        var last_li_content = $(".dropdown-alerts li:last-child a strong").text();
+                var last_li_content = $(".dropdown-alerts li:last-child a strong").text();
 
-        if(last_li_content !== "目前沒有通知" && last_li_content !== "清除所有通知"){
-            if( !$(".dropdown-alerts li:last-child").hasClass("divider") ){
-                $(".dropdown-alerts").append("<li class='divider'></li>");
+                if(last_li_content !== "目前沒有通知" && last_li_content !== "清除所有通知"){
+                    if( !$(".dropdown-alerts li:last-child").hasClass("divider") ){
+                        $(".dropdown-alerts").append("<li class='divider'></li>");
+                    }
+
+                    $(".dropdown-alerts").append("<li id='clear-alert'><a href='#'><strong>清除所有通知</strong></a></li>");
+                }
+            },
+            error: function(){
+                alert("讀取通知失敗");
             }
+        });
 
-            $(".dropdown-alerts").append("<li id='clear-alert'><a href='#'><strong>清除所有通知</strong></a></li>");
-        }
+        
 
 
     }else{
@@ -107,7 +119,19 @@ $(document).on("click", "#notification-bell", function(){
 });
 
 $(document).on("click", "#clear-alert", function(){
-    $(".dropdown-alerts").empty();
+    $.ajax({
+            url: "/deleteNotification/",
+            type:"POST",
+            dataType: 'json',
+            success: function(result){
+                $(".dropdown-alerts").empty();
+                alert("清除通知成功");
+
+            },
+            error: function(){
+                alert("清除通知失敗");
+            }
+        });
 });
 
 // 檢查是否有通知訊息需要發出

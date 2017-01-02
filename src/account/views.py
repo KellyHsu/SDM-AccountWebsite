@@ -2034,6 +2034,22 @@ def get_specific_category_chart(request):
 
         jsonResult = { "script_pie": script3, "div_pie": div3, "script_pie_in": script4, "div_pie_in": div4, "script_pie_sub": script5, "div_pie_sub": div5, "script_pie_sub_in": script6, "div_pie_sub_in": div6}
 
+
+def read_notification(request):
+    if request.method == 'POST':
+        print(request.POST)
+        member = Member.objects.filter(user__username=request.user).first()
+        updateResult = Notification.objects.filter(member=member, is_read=False).update(is_read=True)
+    return HttpResponse(updateResult)
+
+def delete_notification(request):
+    if request.method == 'POST':
+        print(request.POST)
+        member = Member.objects.filter(user__username=request.user).first()
+        updateResult = Notification.objects.filter(member=member, is_deleted=False).update(is_deleted=True)
+    return HttpResponse(updateResult)
+
+
 class MemberList(generics.ListCreateAPIView):
     permission_classes = (IsAdminUser,)
     queryset = Member.objects.all()
