@@ -2,7 +2,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from account.models import Receipt, SubClassification, Payment, IncomeAndExpense, Classification, CyclicalExpenditure, \
-    Budget, MonthBudget
+    Budget, MonthBudget, Notification
 from member.models import Member
 from datetime import datetime, date, timedelta
 from django.contrib.auth.models import User
@@ -45,7 +45,12 @@ def dashboard(request):
         invest_revenue_list = SubClassification.objects.filter(member=member, classification=c9, exist=True)
         other_revenue_list = SubClassification.objects.filter(member=member, classification=c10, exist=True)
 
-        periodic_notification_list = periodicItemDateCheck(member)
+        # 檢查有無週期項目需提醒
+        periodicItemDateCheck(member)
+
+        # 輸出通知清單
+        notification_list_unread = Notification.objects.filter(member=member, is_deleted=False, is_read=False)
+        notification_list_isread = Notification.objects.filter(member=member, is_deleted=False, is_read=True)
 
         total_expense = get_total(cost_list)
         total_income = get_total(revenue_list)
@@ -56,9 +61,11 @@ def dashboard(request):
                    "transportation_list": transportation_list, "education_list": education_list,
                    "entertainment_list": entertainment_list, "others_list": others_list,
                    "general_revenue_list": general_revenue_list, "invest_revenue_list": invest_revenue_list,
-                   "other_revenue_list": other_revenue_list, "periodic_notification_list": periodic_notification_list,
-                   "periodic_notification_count": len(periodic_notification_list),
-                   "total_expense": total_expense, "total_income": total_income})
+                   "other_revenue_list": other_revenue_list,
+                   "total_expense": total_expense, "total_income": total_income,
+                   "notification_list_unread": notification_list_unread,
+                   "notification_unread_count": len(notification_list_unread), 
+                   "notification_list_isread": notification_list_isread})
 
 
 def setting(request):
@@ -100,6 +107,10 @@ def setting(request):
 
         cyclicalExpenditure_list = CyclicalExpenditure.objects.filter(member=member)
 
+        # 輸出通知清單
+        notification_list_unread = Notification.objects.filter(member=member, is_deleted=False, is_read=False)
+        notification_list_isread = Notification.objects.filter(member=member, is_deleted=False, is_read=True)
+
     return render(request, 'setting.html', {"member": member, "cyclicalExpenditure_list": cyclicalExpenditure_list,
                                             "budget_food": budget_food, "budget_clothing": budget_clothing,
                                             "budget_housing": budget_housing,
@@ -112,7 +123,10 @@ def setting(request):
                                             "education_list": education_list,
                                             "entertainment_list": entertainment_list, "others_list": others_list,
                                             "general_revenue_list": general_revenue_list, "invest_revenue_list": invest_revenue_list,
-                                            "other_revenue_list": other_revenue_list})
+                                            "other_revenue_list": other_revenue_list,
+                                            "notification_list_unread": notification_list_unread,
+                                            "notification_unread_count": len(notification_list_unread), 
+                                            "notification_list_isread": notification_list_isread})
 
 
 def filter(request):
@@ -144,10 +158,17 @@ def filter(request):
             cost = int(totalCost['money__sum'])
         balance = income - cost
         print balance, type(balance)
- 
+
+        # 輸出通知清單
+        notification_list_unread = Notification.objects.filter(member=member, is_deleted=False, is_read=False)
+        notification_list_isread = Notification.objects.filter(member=member, is_deleted=False, is_read=True)
+
     return render(request, 'filter.html',
                   {"member": member, "receipts": receipts, "title": currentDate, "totalCost": cost,
-                   "totalIncome": income, "balance": balance, "subcat": subCat})
+                   "totalIncome": income, "balance": balance, "subcat": subCat,
+                   "notification_list_unread": notification_list_unread,
+                   "notification_unread_count": len(notification_list_unread), 
+                   "notification_list_isread": notification_list_isread})
 
 
 def chart(request):
@@ -337,7 +358,19 @@ def chart(request):
         else:
             month_list=[]
 
-    return render(request, 'chart.html',{"title": week, "the_script": script, "the_div": div, "script_bar": script2, "div_bar": div2, "month_list": month_list})
+        # 輸出通知清單
+        notification_list_unread = Notification.objects.filter(member=member, is_deleted=False, is_read=False)
+        notification_list_isread = Notification.objects.filter(member=member, is_deleted=False, is_read=True)
+
+    return render(request, 'chart.html',{"title": week, 
+                                        "the_script": script, 
+                                        "the_div": div, 
+                                        "script_bar": script2, 
+                                        "div_bar": div2, 
+                                        "month_list": month_list,
+                                        "notification_list_unread": notification_list_unread,
+                                        "notification_unread_count": len(notification_list_unread), 
+                                        "notification_list_isread": notification_list_isread})
 
 
 def create_receipt(request):
@@ -392,13 +425,14 @@ def create_receipt(request):
         # 只有支出才要計算預算
         monthly_budget_check_result = ""
         class_budget_check_result = ""
-        if incomeandexpense.income_type == 'expense':
-            # check month budget setting
-            if month_budget_instance and month_budget_instance.is_reminded:
-                monthly_budget_check_result = budget_calculate(member)
-            # check category budget setting
-            if category_budget_instance and category_budget_instance.is_reminded:
-                class_budget_check_result = classification_budget_calculate(member, classification)
+        if receipt_id == None:
+            if incomeandexpense.income_type == 'expense':
+                # check month budget setting
+                if month_budget_instance and month_budget_instance.is_reminded:
+                    monthly_budget_check_result = budget_calculate(member)
+                # check category budget setting
+                if category_budget_instance and category_budget_instance.is_reminded:
+                    class_budget_check_result = classification_budget_calculate(member, classification)
 
         message = {"rowcontent": cost_rowcontent, "total_value": total_value,
                    "budget_check": {"monthly": monthly_budget_check_result, "class": class_budget_check_result}}
@@ -763,9 +797,13 @@ def budget_calculate(member):
 
     # 如果有設定預算且超過
     if (monthlyBudget > 0 and sumOfExpense > monthlyBudget):
-        alertMessage = "警告：本月總花費已超過當月預算"
+        alertMessage = " 警告：本月總花費已超過當月預算"
+        new_message = Notification.objects.create(member=member, message=alertMessage, type='budget')
+
     elif (alertThreshold > 0 and sumOfExpense > alertThreshold):
-        alertMessage = "警告：本月總花費已超過 {0}".format(alertThreshold)
+        alertMessage = " 警告：本月總花費已超過 {0}".format(alertThreshold)
+        new_message = Notification.objects.create(member=member, message=alertMessage, type='budget')
+
     else:
         alertMessage = "正常"
 
@@ -807,8 +845,12 @@ def classification_budget_calculate(member, classification):
     print(classification)
     if (classBudget > 0 and sumOfExpense > classBudget):
         alertMessage = "警告：本月{0}分類花費已超過當月預算".format(classification)
+        new_message = Notification.objects.create(member=member, message=alertMessage, type='budget')
+
     elif (classBudgetThreshold > 0 and sumOfExpense > classBudgetThreshold):
         alertMessage = "警告：本月{0}分類花費已超過 {1}".format(classification, classBudgetThreshold)
+        new_message = Notification.objects.create(member=member, message=alertMessage, type='budget')
+
     else:
         alertMessage = "正常"
 
@@ -1023,53 +1065,69 @@ def backwardtime(request):
 
 # 檢查是否有週期性項目的日期到了要提醒使用者
 def periodicItemDateCheck(member):
+    oldNotification = Notification.objects.filter(member=member, is_deleted=False, type='periodic')
     periodicItemList = CyclicalExpenditure.objects.all().filter(member=member)
     notification_list = []
 
-    for entry in periodicItemList:
-        if entry.is_reminded:
-            if entry.reminder_type == 'week':
-                if entry.reminder_date == date.today().isoweekday():
-                    payingTimeTitle = ""
-                    payingTimeContent = ""
 
-                    if entry.expenditure_date >= entry.reminder_date:
-                        payingTimeTitle = "本週"
-                    else:
-                        payingTimeTitle = "下週"
-                    weekday = {
-                        1: "星期一",
-                        2: "星期二",
-                        3: "星期三",
-                        4: "星期四",
-                        5: "星期五",
-                        6: "星期六",
-                        7: "星期日"
-                    }
-                    payingTimeContent = weekday.get(entry.expenditure_date, "星期天")
+    if periodicItemList:
+        for entry in periodicItemList:
+            if entry.is_reminded:
+                breakFlag = False
 
-                    message = "繳費提醒：{0}須於{1}{2}進行繳費".format(entry.name.encode('utf-8'), payingTimeTitle,
-                                                            payingTimeContent)
-                    notification_list.append(message)
+                # 在輸出訊息前先檢查是否有舊的訊息存在，若有一樣的提醒就不再提醒了，會直接略過此項目
+                for old in oldNotification:
+                    # 以七天來判斷是否是上次提醒或是這週提醒
+                    if (old.item_name == entry.name)and ( old.create_date >= (date.today() - timedelta(7)) ) :
+                        breakFlag = True
 
-            else:
-                if entry.reminder_date == date.today().day:
-                    payingTimeTitle = ""
-                    payingTimeContent = ""
-                    if entry.expenditure_date >= entry.reminder_date:
-                        payingTimeTitle = "本月"
-                    else:
-                        payingTimeTitle = "下個月"
-                    payingTimeContent = str(entry.expenditure_date) + "號"
+                if breakFlag is True:
+                    continue
 
-                    message = "繳費提醒：{0}須於{1}{2}進行繳費".format(entry.name.encode('utf-8'), payingTimeTitle,
-                                                            payingTimeContent)
-                    notification_list.append(message)
+                if entry.reminder_type == 'week':
+                    if entry.reminder_date == date.today().isoweekday():
+                        payingTimeTitle = ""
+                        payingTimeContent = ""
 
-                    # end if-else 'week'
-                    # end if is_reminded
+                        if entry.expenditure_date >= entry.reminder_date:
+                            payingTimeTitle = "本週"
+                        else:
+                            payingTimeTitle = "下週"
+                        weekday = {
+                            1: "星期一",
+                            2: "星期二",
+                            3: "星期三",
+                            4: "星期四",
+                            5: "星期五",
+                            6: "星期六",
+                            7: "星期日"
+                        }
+                        payingTimeContent = weekday.get(entry.expenditure_date, "星期天")
 
-    return notification_list
+                        message = "繳費提醒：{0}須於{1}{2}進行繳費".format(entry.name.encode('utf-8'), payingTimeTitle,
+                                                                payingTimeContent)
+                        # notification_list.append(message)
+                        new_message = Notification.objects.create(member=member, message=message, type='periodic', item_name=entry.name)
+
+                else:
+                    if entry.reminder_date == date.today().day:
+                        payingTimeTitle = ""
+                        payingTimeContent = ""
+                        if entry.expenditure_date >= entry.reminder_date:
+                            payingTimeTitle = "本月"
+                        else:
+                            payingTimeTitle = "下個月"
+                        payingTimeContent = str(entry.expenditure_date) + "號"
+
+                        message = "繳費提醒：{0}須於{1}{2}進行繳費".format(entry.name.encode('utf-8'), payingTimeTitle,
+                                                                payingTimeContent)
+                        # notification_list.append(message)
+                        new_message = Notification.objects.create(member=member, message=message, type='periodic', item_name=entry.name)
+
+                        # end if-else 'week'
+                        # end if is_reminded
+
+        # return notification_list
 
 def get_total(receipt_list):
     total = 0
@@ -1991,6 +2049,22 @@ def get_specific_category_chart(request):
 
         jsonResult = { "script_pie": script3, "div_pie": div3, "script_pie_in": script4, "div_pie_in": div4, "script_pie_sub": script5, "div_pie_sub": div5, "script_pie_sub_in": script6, "div_pie_sub_in": div6}
     return HttpResponse(json.JSONEncoder().encode(jsonResult))
+
+
+
+def read_notification(request):
+    if request.method == 'POST':
+        print(request.POST)
+        member = Member.objects.filter(user__username=request.user).first()
+        updateResult = Notification.objects.filter(member=member, is_read=False).update(is_read=True)
+    return HttpResponse(updateResult)
+
+def delete_notification(request):
+    if request.method == 'POST':
+        print(request.POST)
+        member = Member.objects.filter(user__username=request.user).first()
+        updateResult = Notification.objects.filter(member=member, is_deleted=False).update(is_deleted=True)
+    return HttpResponse(updateResult)
 
 
 class MemberList(generics.ListCreateAPIView):

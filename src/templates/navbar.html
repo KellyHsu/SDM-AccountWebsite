@@ -18,11 +18,22 @@
                 <i class="fa fa-bell fa-fw"></i> <i class="fa fa-caret-down"></i>
             </a>
             <ul class="dropdown-menu dropdown-alerts">
-                {% for notification in periodic_notification_list %}
+                {% for notification in notification_list_unread %}
                 <li>
                     <a href='#'>
                         <div>
-                            <i class='fa fa-comment fa-fw'></i> {{notification}}
+                            <i class='fa fa-comment fa-fw'></i> {{notification.message}}
+                        </div>
+                    </a>
+                </li>
+                {% if not forloop.last or notification_unread_count%}
+                <li class='divider'></li>
+                {% endif %} {% endfor %}
+                {% for notification in notification_list_isread %}
+                <li>
+                    <a href='#'>
+                        <div>
+                            <i class='fa fa-comment fa-fw'></i> {{notification.message}}
                         </div>
                     </a>
                 </li>
@@ -54,3 +65,110 @@
     <!-- /.dropdown -->
 </nav>
 <!-- /.navbar-top-links -->
+
+<script>
+$(document).ready(function() {
+    // notification handling
+    var notification_new_len = {{ notification_unread_count }};
+    if(notification_new_len > 0){
+        $(".fa-bell").addClass('notification-icon');
+        $(".fa-bell").attr("data-count", notification_new_len);
+    }
+});
+
+
+// 處理按下通知鈴鐺後的改變
+$(document).on("click", "#notification-bell", function(){
+    if( $(".dropdown-alerts").children().length > 0 ){
+        $.ajax({
+            url: "/readNotification/",
+            type:"POST",
+            dataType: 'json',
+            success: function(result){
+                $(".fa-bell").removeClass("notification-icon");
+                $(".fa-bell").removeAttr("data-count");
+
+                var last_li_content = $(".dropdown-alerts li:last-child a strong").text();
+
+                if(last_li_content !== "目前沒有通知" && last_li_content !== "清除所有通知"){
+                    if( !$(".dropdown-alerts li:last-child").hasClass("divider") ){
+                        $(".dropdown-alerts").append("<li class='divider'></li>");
+                    }
+
+                    $(".dropdown-alerts").append("<li id='clear-alert'><a href='#'><strong>清除所有通知</strong></a></li>");
+                }
+            },
+            error: function(){
+                alert("讀取通知失敗");
+            }
+        });
+
+        
+
+
+    }else{
+        // 如果沒通知卻按下鈴鐺要有相對應文字
+        var expandedAttr = $("#notification-bell").attr("aria-expanded");
+
+        if( expandedAttr === "true" ){
+            $(".dropdown-alerts").append("<li><a href='#'><strong>目前沒有通知</strong></a></li>");
+        }else{
+            $(".dropdown-alerts").empty();  // 關閉視窗
+        }
+    }
+});
+
+$(document).on("click", "#clear-alert", function(){
+    $.ajax({
+            url: "/deleteNotification/",
+            type:"POST",
+            dataType: 'json',
+            success: function(result){
+                $(".dropdown-alerts").empty();
+                alert("清除通知成功");
+
+            },
+            error: function(){
+                alert("清除通知失敗");
+            }
+        });
+});
+
+// 檢查是否有通知訊息需要發出
+function checkNotificationBellMessage(message){
+    console.log("訊息" + message);
+    if(message === "正常")    // 如果檢查正常不用警告
+        return;
+    else if(message === null || message === "") // 如果沒訊息
+        return;
+    else{
+        if( $(".dropdown-alerts").children().length > 0 ){
+
+            var content = $(".dropdown-alerts strong").text();
+            if(content === "目前沒有通知"){
+                $(".dropdown-alerts").empty();
+            }
+
+            if( $(".fa-bell").hasClass("notification-icon") ){
+               var count = parseInt( $(".fa-bell").attr("data-count") );
+                count = count + 1;
+                $(".fa-bell").attr("data-count", count);
+            }else{
+                $(".fa-bell").addClass("notification-icon");
+                $(".fa-bell").attr("data-count","1");
+            }
+
+            $(".dropdown-alerts").prepend("<li><a href='#'><div><i class='fa fa-comment fa-fw'></i> " 
+                                + message + "</div></a></li><li class='divider'></li>");
+        }else{
+            $(".fa-bell").addClass("notification-icon");
+            $(".fa-bell").attr("data-count","1");
+
+            $(".dropdown-alerts").append("<li><a href='#'><div><i class='fa fa-comment fa-fw'></i>" 
+                                    + message + "</div></a></li><li class='divider'></li>");
+            $(".dropdown-alerts").append("<li id='clear-alert'><a href='#'><strong>清除所有通知</strong></a></li>");
+        }   
+    }
+}
+</script>
+    

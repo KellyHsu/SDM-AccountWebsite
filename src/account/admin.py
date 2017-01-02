@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Receipt, Classification, SubClassification, Payment,IncomeAndExpense,CyclicalExpenditure,Budget,MonthBudget
+from .models import Receipt, Classification, SubClassification, Payment,IncomeAndExpense,CyclicalExpenditure,Budget,MonthBudget,Notification
 
 
 class ReceiptAdmin(admin.ModelAdmin):
@@ -37,6 +37,8 @@ class BudgetAdmin(admin.ModelAdmin):
 class MonthBudgetAdmin(admin.ModelAdmin):
     list_display = ('member', 'budget', 'reminder', 'is_reminded')
 
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = ('member', 'message', 'is_read', 'is_deleted', 'type', 'item_name', 'create_date')
 
 admin.site.register(Receipt, ReceiptAdmin)
 admin.site.register(Classification, ClassificationAdmin)
@@ -46,3 +48,4 @@ admin.site.register(IncomeAndExpense, IncomeAndExpenseAdmin)
 admin.site.register(CyclicalExpenditure, CyclicalExpenditureAdmin)
 admin.site.register(Budget, BudgetAdmin)
 admin.site.register(MonthBudget, MonthBudgetAdmin)
+admin.site.register(Notification, NotificationAdmin)
