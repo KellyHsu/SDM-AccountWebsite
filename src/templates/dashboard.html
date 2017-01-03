@@ -370,7 +370,7 @@ $(document).on("click", ".receipt_info", function(){
 
 $(document).on("click", "#modify-btn", function(){
         var amount = $('#amount').val();
-        var category = $('#costCategory').attr("value");
+        var category = $('#costCategory').val();
         var memo = $('#memo').val();
         var record_type = $('#recordType').val();
         var record_class = $("#modify-btn").attr("class").split(" ").pop();
