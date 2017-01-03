@@ -146,7 +146,7 @@
             console.log("id"+id);
             console.log(pageHeader_date);
             console.log(typeof(pageHeader_date));
-            if(title =="刪除"){
+            if(title =="刪除" || title =="Delete"){
                 $.ajax({
                     dataType: 'json',
                     url: "../filterDelRecord/",
@@ -197,7 +197,7 @@
                     }
                 });
             }
-            if(title="修改"){
+            if(title="修改" || title =="Modify"){
                 var count=1;
                 var i;
                 var sub_title;
@@ -568,7 +568,7 @@
 							                <td>{{choice.payment}}</td>
 							                <td>{{choice.date}}</td>
 							                <td>{{choice.money}}</td>
-                                            <td style="width: 12%"><button type="button" class="btn btn-danger btn-sm" value="{{choice.id}}" title={% blocktrans %}"Delete"{% endblocktrans %}>{% trans "Delete" %}</button>&nbsp;<button type="button" class="btn btn-danger btn-sm" value="{{choice.id}}" title={% blocktrans %}'Modify'{% endblocktrans %}>{% trans "Modify" %}</button></td>
+                                            <td style="width: 12%"><button type="button" class="btn btn-danger btn-sm" value="{{choice.id}}" title="刪除">{% trans "Delete" %}</button>&nbsp;<button type="button" class="btn btn-danger btn-sm" value="{{choice.id}}" title="修改"  data-toggle="modal" data-target=".bd-example-modal-lg">{% trans "Modify" %}</button></td>
                                             <!-- <td style="display: none;">{{choice.id}}</td> -->
 							            </tr>
                                         {% endfor %}
