@@ -80,7 +80,7 @@ $(document).ready(function() {
         if(newDate){
             $.ajax({
                 dataType: 'json',
-                url: "/getNewDate/",
+                url: "../getNewDate/",
                 type:"POST",
                 data: {date : newDate},
                 success: function(rowcontent){
@@ -142,7 +142,7 @@ $(document).ready(function() {
         if(amount){
                 $.ajax({
                     dataType: 'json',
-                    url: "/createReceipt/",
+                    url: "../createReceipt/",
                     type:"POST",
                     data: {amount : amount, category : category,
                         memo: memo, record_type: record_type, payment: $('#payment').val(),
@@ -209,7 +209,7 @@ $(document).ready(function() {
         var newSubText = newSub.val();
         if(newSub){
             $.ajax({
-                url: "/createSubCategory/",
+                url: "../createSubCategory/",
                 type:"POST",
                 dataType: 'json',
                 data: {newSub : newSubText, category : classname},
@@ -280,7 +280,7 @@ $(document).on("click", ".deletedRecord", function(){
     var result = confirm("{% trans 'You wanna delete: ' %}" + recordValue + "嗎？");
     if(result){
         $.ajax({
-            url: "/deleteReceipt/",
+            url: "../deleteReceipt/",
             type:"POST",
             dataType: 'json',
             data: {whick_receipt: record.attr("class")},
@@ -307,7 +307,7 @@ $(document).on("click", ".receipt_info", function(){
     $("#modify-btn").removeClass("hidden");
     $("#cancel-btn").removeClass("hidden");
     $.ajax({
-        url: "/modifyReceipt/",
+        url: "../modifyReceipt/",
         type:"POST",
         dataType: 'json',
         data: {whick_receipt: record.attr("class")},
@@ -333,7 +333,7 @@ $(document).on("click", "#modify-btn", function(){
         if(amount){
             $.ajax({
                 dataType: 'json',
-                url: "/createReceipt/",
+                url: "../createReceipt/",
                 type:"POST",
                 data: {whick_receipt: $("#modify-btn").attr("class"), amount : amount, category : category,
                     memo: memo, record_type: record_type, payment: $('#payment').val(),
