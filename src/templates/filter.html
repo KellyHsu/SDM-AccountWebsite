@@ -146,7 +146,7 @@
             console.log("id"+id);
             console.log(pageHeader_date);
             console.log(typeof(pageHeader_date));
-            if(title =="刪除"){
+            if(title =="刪除" || title =="Delete"){
                 $.ajax({
                     dataType: 'json',
                     url: "../filterDelRecord/",
@@ -197,7 +197,7 @@
                     }
                 });
             }
-            if(title="修改"){
+            if(title=="修改" || title =="Modify"){
                 var count=1;
                 var i;
                 var sub_title;
@@ -467,119 +467,120 @@
 
 {% block left_side_content %}
 <div class="container-fluid">
-	<div class="row col-sm-3 col-md-3 left-side">
+    <div class="row col-sm-2 col-md-2 left-side">
         <div class="panel-group collapse in" id="accordion" aria-expanded="true">
-
             <!-- start panel 以日瀏覽 -->
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         <a href="/filter/"><span class="glyphicon glyphicon-menu-right">
-                        </span>以日瀏覽</a>
+                        </span>{% trans "View by day" %}</a>
                     </h4>
                 </div>
             </div>  <!-- /.panel 以日瀏覽 -->
-
             <!-- start panel 以週瀏覽 -->
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         <a href="/getReceiptByWeek/"><span class="glyphicon glyphicon-menu-right">
-                        </span>以週瀏覽</a>
+                        </span>{% trans "View by week" %}</a>
                     </h4>
                 </div>
             </div>  <!-- /.panel 以週瀏覽 -->
-
             <!-- start panel 以月瀏覽 -->
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         <a href="/getReceiptByMon/"><span class="glyphicon glyphicon-menu-right">
-                        </span>以月瀏覽</a>
+                        </span>{% trans "View by month" %}</a>
                     </h4>
                 </div>
             </div>  <!-- /.panel 以月瀏覽 -->
-
             <!-- start panel 以年瀏覽 -->
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         <a href="/getReceiptByYr/"><span class="glyphicon glyphicon-menu-right">
-                        </span>以年瀏覽</a>
+                        </span>{% trans "View by year" %}</a>
                     </h4>
                 </div>
             </div>  <!-- /.panel 以年瀏覽 -->
-
         </div>  <!-- /.panel group -->
     </div>  <!-- /.left-side row -->
 {% endblock %}
 
 {% block main_content %}
    <!-- Main container -->
-    <div id="page-wrapper" class="col-sm-9 col-md-9">
-        <div class="container-fluid col-xs-12 col-sm-12">
-            <div class="row">
-                <div class="col-lg-12" id="center-content">
-                    <div id="titleMenu" class="page-header" style="text-align: center; padding-bottom: 13px; padding-top: 13px; margin: 10px;">
-                        <div style="padding: 8px 12px; margin: 6px;">
-                            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true" id="btn_left"></span>
-                            <span class="label label-default" id="pageHeader_date" style=" margin: 6px; border-radius: 4px; background-color: #FFFF33; color: #000000; font-weight: bold; font-size: medium; padding-top: 7px;">{{title}}</span>
-                            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true" id="btn_right"></span>
+    <div id="page-wrapper" class="col-sm-10 col-md-10">
+	        	<div class="container-fluid col-xs-12 col-sm-12">
+			    	<div class="row">
+                        <div class="col-lg-12" id="center-content">
+                            <div id="titleMenu" class="page-header" style="text-align: center; padding-bottom: 13px; padding-top: 13px; margin: 10px;">
+                                <div style="padding: 8px 12px; margin: 6px;">
+                                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true" id="btn_left"></span>
+                                    <span class="label label-default" id="pageHeader_date" style=" margin: 6px; border-radius: 4px; background-color: #FFFF33; color: #000000; font-weight: bold; font-size: medium; padding-top: 7px;">{{title}}</span>
+                                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true" id="btn_right"></span>
+                                </div>
+                                <div style="text-align: center;">
+                                    <label id="totalCost" style="font-weight: bold; font-size: medium">{% blocktrans %}Total expense: {{totalCost}}{% endblocktrans %}</label>
+                                    <label id="totalIncome" style="font-weight: bold; font-size: medium">&nbsp;{% blocktrans %}Total income: {{totalIncome}}{% endblocktrans %}</label>
+                                    <label id="balance" style="font-weight: bold; font-size: medium">&nbsp;{% blocktrans %}Balance: {{balance}}{% endblocktrans %}</label>
+                                </div>
+                            </div>
+                            <div style="margin: 5px 0px 10px 0px;">
+                                <button id="btn_del" class="">{% trans "Delete" %}</button>
+                                <button style="display: none">{% trans "Modify" %}</button>
+                            </div>
+
+                            <div>
+                            	<table id="example" class="display" cellspacing="0" width="100%">
+							        <thead>
+							            <tr>
+							                <th>{% trans "Class" %}</th>
+                                            <th>{% trans "Subclass" %}</th>
+							                <th>{% trans "Remark" %}</th>
+							                <th>{% trans "Income/Expense" %}</th>
+							                <th>{% trans "Payment" %}</th>
+							                <th>{% trans "Date" %}</th>
+							                <th>{% trans "Amount" %}</th>
+                                            <th>{% trans "Function" %}</th>
+							            </tr>
+							        </thead>
+							        <tfoot>
+							            <tr>
+							                <th>{% trans "Class" %}</th>
+                                            <th>{% trans "Subclass" %}</th>
+							                <th>{% trans "Remark" %}</th>
+							                <th>{% trans "Income/Expense" %}</th>
+							                <th>{% trans "Payment" %}</th>
+							                <th>{% trans "Date" %}</th>
+							                <th>{% trans "Amount" %}</th>
+                                            <th>{% trans "Function" %}</th>
+							            </tr>
+							        </tfoot>
+							        <tbody>
+                                        {% for choice in receipts %}
+							            <tr>
+							                <td>{{choice.subclassification.classification.classification_type}}</td>
+                                            <td>{{choice.subclassification}}</td>
+							                <td>{{choice.remark}}</td>
+							                <td>{{choice.incomeandexpense}}</td>
+							                <td>{{choice.payment}}</td>
+							                <td>{{choice.date}}</td>
+							                <td>{{choice.money}}</td>
+                                            <td style="width: 12%"><button type="button" class="btn btn-danger btn-sm" value="{{choice.id}}" title="刪除">{% trans "Delete" %}</button>&nbsp;<button type="button" class="btn btn-danger btn-sm" value="{{choice.id}}" title="修改"  data-toggle="modal" data-target=".bd-example-modal-lg">{% trans "Modify" %}</button></td>
+                                            <!-- <td style="display: none;">{{choice.id}}</td> -->
+							            </tr>
+                                        {% endfor %}
+							        </tbody>
+							    </table>
+                            </div>
                         </div>
-                        <div style="text-align: center;">
-                            <label id="totalCost" style="font-weight: bold; font-size: medium">總支出：{{totalCost}}元</label>
-                            <label id="totalIncome" style="font-weight: bold; font-size: medium">&nbsp;總收入：{{totalIncome}}元</label>
-                            <label id="balance" style="font-weight: bold; font-size: medium">&nbsp;結餘：{{balance}}元</label>
-                        </div>
-                    </div>
-                    
-                    <div>
-                    	<table id="example" class="display responsive nowrap" cellspacing="0" width="100%">
-                	        <thead>
-                	            <tr>
-                	                <th>分類</th>
-                                    <th>次分類</th>
-                	                <th>備註</th>
-                	                <th>支/收</th>
-                	                <th>付款方式</th>
-                	                <th>日期</th>
-                	                <th>金額</th>
-                                    <th>功能</th>
-                	            </tr>
-                	        </thead>
-                	        <tfoot>
-                	            <tr>
-                	                <th>分類</th>
-                                    <th>次分類</th>
-                	                <th>備註</th>
-                	                <th>支/收</th>
-                	                <th>付款方式</th>
-                	                <th>日期</th>
-                	                <th>金額</th>
-                                    <th>功能</th>
-                	            </tr>
-                	        </tfoot>
-                	        <tbody>
-                                {% for choice in receipts %}
-                	            <tr>
-                	                <td>{{choice.subclassification.classification.classification_type}}</td>
-                                    <td>{{choice.subclassification}}</td>
-                	                <td>{{choice.remark}}</td>
-                	                <td>{{choice.incomeandexpense}}</td>
-                	                <td>{{choice.payment}}</td>
-                	                <td>{{choice.date}}</td>
-                	                <td>{{choice.money}}</td>
-                                    <td style="width: 12%"><button type="button" class="btn btn-danger btn-sm" value="{{choice.id}}" title="刪除">刪除</button>&nbsp;<button type="button" class="btn btn-danger btn-sm" value="{{choice.id}}" title="修改" data-toggle="modal" data-target=".bd-example-modal-lg">修改</button></td>
-                                    <!-- <td style="display: none;">{{choice.id}}</td> -->
-                	            </tr>
-                                {% endfor %}
-                	        </tbody>
-                	    </table>
-                    </div>
-                </div><!-- /#center-content -->
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </div><!-- /#page-wrapper (main container) -->
+                    </div><!-- /.row -->
+		    	</div><!-- /.container-fluid -->
+	    	</div><!-- /#page-wrapper (main container) -->
+        </div><!-- /.container-fluid (whole div below navbar) -->
+    </div><!-- /#wrapper (whole page)-->
 </div><!-- /.container-fluid (whole div below navbar) -->
 {% endblock %}
 
@@ -593,25 +594,25 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title">修改紀錄</h4>
+                    <h4 class="modal-title">{% trans "修改紀錄" %}</h4>
                 </div>
                 <div class="modal-body">
                     <form method="post" id="edit_form" action="/filterSaveEdit/" >
                         <div class="form-inline">
                             {% csrf_token %}
                             <div class="form-group">
-                                <label for="for_record_type">收支：</label>
+                                <label for="for_record_type">{% trans "收支" %}</label>
                                 <select id="recordType" name="recordType">
-                                    <option value="expense">支出</option>
-                                    <option value="income">收入</option>
+                                    <option value="expense">{% trans "支出" %}</option>
+                                    <option value="income">{% trans "收入" %}</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="for_payment">付款方式：</label>
+                                <label for="for_payment">{% trans "付款方式" %}</label>
                                 <select id="payment" name="payment" >
-                                    <option value="cash">現金</option>
-                                    <option value="credit_card">信用卡</option>
-                                    <option value="other">其他</option>
+                                    <option value="cash">{% trans "現金" %}</option>
+                                    <option value="credit_card">{% trans "信用卡" %}</option>
+                                    <option value="other">{% trans "其他" %}</option>
                                 </select>
                             </div>
                             <label>日期：</label>
@@ -619,23 +620,23 @@
                         </div>
                         <div class="form-inline" id="second_level">
                             <div class="form-group">
-                                <label for="for_category">類別：</label>
+                                <label for="for_category">{% trans "類別" %}</label>
                                 <select id="category" name="category">
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="for_subcat">次類別：</label>
+                                <label for="for_subcat">{% trans "次類別" %}</label>
                                 <select id="subcat" name="subcat">
                                 </select>
                             </div>
                         </div>
                         <div class="form-inline">
                             <div class="form-group" id="modal_memo">
-                                <label for="for_memo">備註：</label>
+                                <label for="for_memo">{% trans "備註" %}</label>
                                 <input type="text" class="form-control" id="memo">
                             </div>
                             <div class="form-group" id="modal_amount">
-                                <label for="for_amount">金額：</label>
+                                <label for="for_amount">{% trans "金額" %}</label>
                                 <input type="text" class="form-control" id="amount">
                             </div>
                         </div>
@@ -648,5 +649,5 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
-	
+
 {% endblock %}

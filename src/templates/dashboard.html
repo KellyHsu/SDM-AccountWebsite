@@ -1,6 +1,6 @@
 ﻿<!-- 這個頁面是首頁 -->
 {% extends 'base.html' %}
-{% load staticfiles %}
+{% load staticfiles i18n%}
 
 
 {% block local_include %}
@@ -25,12 +25,9 @@ $(document).ready(function() {
                  data: {csrfmiddlewaretoken: '{{ csrf_token }}' },  
             });  
     });
-
     defaultHiding();
 
-    
     subCategorySelected();	// 增加次分類的selected屬性
-
 	// 支出主分類被點擊的時候跳出的子分類視窗呈現
     $(".cost-category").click(function(){
         var categoryType = $(this).attr('id');
@@ -39,14 +36,11 @@ $(document).ready(function() {
         mainCate.text(categoryName);    // 主分類被點擊的時候會在modal裡面放入主分類的名稱
         mainCate.removeClass();
         mainCate.addClass(categoryType);
-
         var allButtonList = $("#myModal-cost").find("div.modal-body").children();
         allButtonList.addClass('hidden');
         var selectedList = "." + categoryType + "_list";
         $(selectedList).removeClass('hidden');
-
     });
-
     // 收入主分類被點擊的時候跳出的子分類視窗呈現
     $(".revenue-category").click(function(){
         var categoryType = $(this).attr('id');
@@ -55,14 +49,11 @@ $(document).ready(function() {
         mainCate.text(categoryName);
         mainCate.removeClass();
         mainCate.addClass(categoryType);
-
         var allButtonList = $("#myModal-revenue").find("div.modal-body").children();
         allButtonList.addClass('hidden');
         var selectedList = "." + categoryType + "_list";
         $(selectedList).removeClass('hidden');
-
     });
-	
 
 	// 當modal的確認被按下後，會提交給分類欄位
     $( '.modal-btn.modal-submit' ).click(function(){
@@ -75,22 +66,16 @@ $(document).ready(function() {
             $('#costCategory').attr("value", lv1+'-'+lv2);
             $('#costCategory').val(lv1+'-'+lv2); // display value
         }
-
         mainCate.text("");
     });
-
     $('#datepicker1').datepicker({
         autoclose: true,
         todayHighlight: true,
         format: "yyyy/mm/dd"
     });
-
     $("#datepicker1").datepicker("setDate", new Date());
-
-
     // 日期改變要切換左方收支清單
     $("#datepicker1").change(function(){
-
         var newDate = $('#datepicker1').val();
         if(newDate){
             $.ajax({
@@ -103,30 +88,28 @@ $(document).ready(function() {
                     $('#cost-list').append(rowcontent.cost);
                     $("#revenue-list tbody tr").remove();
                     $("#revenue-list").append(rowcontent.revenue);
-                    $(".total_expense").text("總計："+ rowcontent.total_expense)
-                    $(".total_income").text("總計："+ rowcontent.total_income)
+                    $(".total_expense").text("{% trans "Total: " %}"+ rowcontent.total_expense)
+                    $(".total_income").text("{% trans "Total: " %}"+ rowcontent.total_income)
                 },
                 error: function(rowcontent, status){
                     console.log(status);
-                    alert("抓新日期失敗")
+                    alert("{% trans "Get date fail" %}")
                 }
             });
         }
     });
-
 	// 復原與清空表單
     $('#last-btn').click(function(){
         var record_type = $('#recordType').val();
         $('#amount').val('');
         if(record_type === 'expense') {
-            $('#costCategory').attr("value", "食-早餐");
+            $('#costCategory').attr("value", "{% trans 'E' %}-早餐");
         }
         else{
-            $('#costCategory').attr("value", "一般收入-薪資");
+            $('#costCategory').attr("value", "{% trans 'GI' %}-薪資");
         }
         $('#memo').val('');
     })
-
     // 修改取消
     $('#cancel-btn').click(function(){
         var record_type = $('#recordType').val();
@@ -136,25 +119,21 @@ $(document).ready(function() {
         $("#modify-btn").removeClass(record_class);
         $("#submit-btn").removeClass("hidden");
         $("#last-btn").removeClass("hidden");
-
         $('#amount').val('');
         if(record_type === 'expense') {
-            $('#costCategory').attr("value", "食-早餐");
+            $('#costCategory').attr("value", "{% trans 'E' %}-早餐");
         }
         else{
-            $('#costCategory').attr("value", "一般收入-薪資");
+            $('#costCategory').attr("value", "{% trans 'GI' %}-薪資");
         }
         $('#memo').val('');
     })
-
-
-
     // 新增支出or收入明細
-    // 
+    //
     // 我先把收入的地方寫死，之後把if(record_type === 'expense') 這層的判斷式拿掉
     // 用success裡面的判斷式就好
-    // 
-    // 
+    //
+    //
     $('#submit-btn').click(function(){
         var amount = $('#amount').val();
         var category = $('#costCategory').attr("value");
@@ -171,74 +150,62 @@ $(document).ready(function() {
                     success: function(result){
                         var rowcontent = result.rowcontent;
                         var notificationMessage = result.budget_check;
-
                         if(record_type === 'expense'){
-                            rowcontent = rowcontent.replace("food-", "食-").replace("clothing-", "衣-").replace("housing-", "住-").replace("transportation-", "行-").replace("education-", "育-").replace("entertainment-", "樂-").replace("others-", "其-");
+                            rowcontent = rowcontent.replace("food-", "{% trans 'E' %}-").replace("clothing-", "{% trans 'C' %}-").replace("housing-", "{% trans 'H' %}-").replace("transportation-", "{% trans 'T' %}-").replace("education-", "{% trans 'Ed' %}-").replace("entertainment-", "{% trans 'En' %}-").replace("others-", "{% trans 'O' %}-");
                             $('#cost-list').append(rowcontent);
-                            $('#costCategory').attr("value", "食-早餐");
-                            $(".total_expense").text("總計："+ result.total_value)
+                            $('#costCategory').attr("value", "{% trans 'E' %}-早餐");
+                            $(".total_expense").text("{% trans 'Total ' %}  "+ result.total_value)
                         }else if(record_type === 'income'){
-                            rowcontent = rowcontent.replace("general_revenue-", "收入-").replace("invest_revenue-", "投資-").replace("other_revenue-", "其他-");
+                            rowcontent = rowcontent.replace("general_revenue-", "{% trans 'Income' %}-").replace("invest_revenue-", "{% trans 'Investment' %}-").replace("other_revenue-", "{% trans 'Other' %}-");
                             $('#revenue-list').append(rowcontent);
-                            $('#costCategory').attr("value", "一般收入-薪資");
-                            $(".total_income").text("總計："+ result.total_value)
+                            $('#costCategory').attr("value", "{% trans 'GI' %}-薪資");
+                            $(".total_income").text("{% trans 'Total ' %}  "+ result.total_value)
                         }
                         $('#amount').val('');
                         $('#memo').val('');
-
                         checkNotificationBellMessage(notificationMessage.monthly);
                         checkNotificationBellMessage(notificationMessage.class);
-
                     },
                     error: function(){
                         if(record_type === 'expense'){
-                            $('#costCategory').attr("value", "食-早餐");
+                            $('#costCategory').attr("value", "{% trans 'E' %}-早餐");
                         }else{
-                            $('#costCategory').attr("value", "一般收入-薪資");
+                            $('#costCategory').attr("value", "{% trans 'GI' %}-薪資");
                         }
                         $('#amount').val('');
                         $('#memo').val('');
-                        alert("記帳失敗");
+                        alert("{% trans 'Add record fail' %}");
                     }
                 });
         }else{
-            alert("支出金額為必填");
-
+            alert("{% trans 'Must inpu amount' %}");
         }
     });
-
-
 	// 實作新增次分類的動畫效果
     $('.subCategoryAdder').click(function(){
         $(".subCategoryAdder").hide();
         $('.new-sub-handler').animate({
             width: 'toggle'
         });
-
         $(".modal-btn").prop('disabled', true);
     });
-
     $('.btn.new-sub-handler').click(function(){
         $('.new-sub-handler').hide();
         $(".subCategoryAdder").show();
         $(".modal-btn").prop('disabled', false);
-
     });
-
 	// 填完新次分類要增加到選單列表中
     $('.new-sub-handler.new-sub-submit').click(function(){
         var modalPopupID = $(this).parents(".modal.fade").attr("id");
-
         var newSub;
         var classname;
         if(modalPopupID === 'myModal-cost'){
             newSub = $('#new-expense-sub-text');
             classname = $("#myModal-cost").find("div.modal-header").children("#main-cate").attr('class');
         }else if(modalPopupID === 'myModal-revenue'){
-            newSub = $('#new-income-sub-text');       
-            classname = $("#myModal-revenue").find("div.modal-header").children("#main-cate").attr('class');     
+            newSub = $('#new-income-sub-text');
+            classname = $("#myModal-revenue").find("div.modal-header").children("#main-cate").attr('class');
         }
-
         var newSubText = newSub.val();
         if(newSub){
             $.ajax({
@@ -253,47 +220,44 @@ $(document).ready(function() {
                         newSub.val('');
                     }
                     else{
-                        alert("子分類名稱重複")
+                        alert("{% trans "Subclass name repeat " %}")
                         newSub.val('');
                     }
-
                 },
                 error: function(){
-                    alert("新增子分類失敗");
+                    alert("{% trans "Add new class fail" %}");
                 }
             });
         }
     });
-
     // 選擇支出或收入項目，會切換主分類顯示
     $('#recordType').change(function(){
         var type = $("#recordType").val();
-
         if(type === "expense"){
             $('.revenue-category').hide();
             $('.cost-category').show();
-            $("#costCategory").attr('value', '食-早餐');
+            $("#costCategory").attr('value', '{% trans 'E' %}-早餐');
         }else{
             $('.revenue-category').show();
             $('.cost-category').hide();
-            $("#costCategory").attr('value', '一般收入-薪資');
+            $("#costCategory").attr('value', '{% trans 'GI' %}-薪資');
         }
     });
-
-
     // 如果在選擇次分類的畫面時，按到背景的其他地方要做的事情
     $('.modal.fade').on('hidden.bs.modal', function () {
         $('.new-sub-handler').hide();   // 新增子分類的確定按鈕要隱藏
         $(".subCategoryAdder").show();
         $(".modal-btn").prop('disabled', false);    // 如果在新增子分類時按了背景，要把被鎖定的按鈕解鎖
     });
-
-
-    $(".total_expense").text("總計："+ {{ total_expense }})
-    $(".total_income").text("總計："+ {{ total_income }})
-
+    // notification handling
+    var notification_len = {{ periodic_notification_count}};
+    if(notification_len > 0){
+        $(".fa-bell").addClass('notification-icon');
+        $(".fa-bell").attr("data-count", notification_len);
+    }
+    $(".total_expense").text("{% trans "Total: " %}"+ {{ total_expense }})
+    $(".total_income").text("{% trans "Total: " %}"+ {{ total_income }})
 }); // end document ready
-
 // 用來讓每個次分類被點擊的時候都會多一個class-selected
 // 且移除其他item 的selected class
 function subCategorySelected(){
@@ -302,21 +266,18 @@ function subCategorySelected(){
         $(this).addClass("selected");
     });
 }
-
-
 // 頁面一loading進來預設會隱藏的元件
 function defaultHiding(){
     $(".new-sub-handler").hide();   // new-sub-handler的物件預設隱藏
     $('.revenue-category').hide();  // 初始隱藏收入分類
 }
-
 // 左方記錄如果刪除的listenser
 // 會先把叉叉標記class="deletedRecord"
 // 這邊是click 事件
 $(document).on("click", ".deletedRecord", function(){
     var recordValue = $(this).prev().text().trim();
     var record = $(this).parents("tr");
-    var result = confirm("你真的要刪掉：" + recordValue + "嗎？");
+    var result = confirm("{% trans 'You wanna delete: ' %}" + recordValue + "嗎？");
     if(result){
         $.ajax({
             url: "../deleteReceipt/",
@@ -327,27 +288,24 @@ $(document).on("click", ".deletedRecord", function(){
                 record.remove();
                 // change total
                 if(result.receipt_type === 'expense'){
-                    $(".total_expense").text("總計："+ result.total_value)
+                    $(".total_expense").text("{% trans "Total: " %}"+ result.total_value)
                 }else if(result.receipt_type === 'income'){
-                    $(".total_income").text("總計："+ result.total_value)
+                    $(".total_income").text("{% trans "Total: " %}"+ result.total_value)
                 }
             },
             error: function(){
-                alert("刪除" + recordValue + "失敗");
+                alert({% blocktrans %}"Delete" + recordValue + "Fail"{% endblocktrans %});
             }
         });
     }
 }); // end document on click class='deletedRecord'
-
 $(document).on("click", ".receipt_info", function(){
     var recordValue = $(this).prev().text().trim();
     var record = $(this).parents("tr")
-
     $("#submit-btn").addClass("hidden");
     $("#last-btn").addClass("hidden");
     $("#modify-btn").removeClass("hidden");
     $("#cancel-btn").removeClass("hidden");
-
     $.ajax({
         url: "../modifyReceipt/",
         type:"POST",
@@ -360,21 +318,18 @@ $(document).on("click", ".receipt_info", function(){
             $("#memo").val(result.remark);
             $("#costCategory").val(result.classification_detail);
             $("#modify-btn").addClass(result.receipt_id);
-
         },
         error: function(){
-            alert("修改" + recordValue + "失敗");
+            alert({% blocktrans %}"Modify" + recordValue + "Fail"{% endblocktrans %});
         }
     });
 }); // end document on click class='deletedRecord'
-
 $(document).on("click", "#modify-btn", function(){
         var amount = $('#amount').val();
         var category = $('#costCategory').val();
         var memo = $('#memo').val();
         var record_type = $('#recordType').val();
         var record_class = $("#modify-btn").attr("class").split(" ").pop();
-
         if(amount){
             $.ajax({
                 dataType: 'json',
@@ -389,46 +344,40 @@ $(document).on("click", "#modify-btn", function(){
                     $("#modify-btn").removeClass(record_class);
                     $("#submit-btn").removeClass("hidden");
                     $("#last-btn").removeClass("hidden");
-
                     $("." +　record_class).remove();
                     var rowcontent = result.rowcontent;
                     var notificationMessage = result.budget_check;
-
                     if(record_type === 'expense'){
-                        rowcontent = rowcontent.replace("food-", "食-").replace("clothing-", "衣-").replace("housing-", "住-").replace("transportation-", "行-").replace("education-", "育-").replace("entertainment-", "樂-").replace("others-", "其-");
+                        rowcontent = rowcontent.replace("food-", "{% trans 'E' %}-").replace("clothing-", "{% trans 'C' %}-").replace("housing-", "{% trans 'H' %}-").replace("transportation-", "{% trans 'T' %}-").replace("education-", "{% trans 'Ed' %}-").replace("entertainment-", "{% trans 'En' %}-").replace("others-", "其-");
                         $('#cost-list').append(rowcontent);
-                        $('#costCategory').attr("value", "食-早餐");
-                        $(".total_expense").text("總計："+ result.total_value)
+                        $('#costCategory').attr("value", "{% trans 'E' %}-早餐");
+                        $(".total_expense").text("{% trans 'Total ' %} "+ result.total_value)
                     }else if(record_type === 'income'){
-                        rowcontent = rowcontent.replace("general_revenue-", "收入-").replace("invest_revenue-", "投資-").replace("other_revenue-", "其他-");
+                        rowcontent = rowcontent.replace("general_revenue-", "{% trans 'Income' %}-").replace("invest_revenue-", "{% trans 'Investment' %}-").replace("other_revenue-", "{% trans 'Other' %}-");
                         $('#revenue-list').append(rowcontent);
-                        $('#costCategory').attr("value", "一般收入-薪資");
-                        $(".total_income").text("總計："+ result.total_value)
+                        $('#costCategory').attr("value", "{% trans 'GI' %}-薪資");
+                        $(".total_income").text("{% trans 'Total ' %}   "+ result.total_value)
                     }
                     $('#amount').val('');
                     $('#memo').val('');
-
                     checkNotificationBellMessage(notificationMessage.monthly);
                     checkNotificationBellMessage(notificationMessage.class);
-
                 },
                 error: function(){
                     if(record_type === 'expense'){
-                        $('#costCategory').attr("value", "食-早餐");
+                        $('#costCategory').attr("value", "{% trans 'E' %}-早餐");
                     }else{
-                        $('#costCategory').attr("value", "一般收入-薪資");
+                        $('#costCategory').attr("value", "{% trans 'GI' %}-薪資");
                     }
                     $('#amount').val('');
                     $('#memo').val('');
-                    alert("記帳失敗");
+                    alert("{% trans 'Add record fail' %}");
                 }
             });
         }else{
-            alert("支出金額為必填");
-
+            alert("{% trans 'Must input amount' %}");
         }
     });
-
 // 左方支出與收入清單的滑鼠事件 （把滑入進入和離開事件一起寫）
 $(document).on({
     mouseenter: function(){
@@ -442,8 +391,63 @@ $(document).on({
         $(this).children("span:last-child").removeClass("deletedRecord");
     }
 }, "#cost-list tr td, #revenue-list tr td");    // end document on mouse event.
-
-
+// 檢查是否有通知訊息需要發出
+function checkNotificationBellMessage(message){
+    console.log("訊息" + message);
+    if(message === "正常")    // 如果檢查正常不用警告
+        return;
+    else if(message === null || message === "") // 如果沒訊息
+        return;
+    else{
+        if( $(".dropdown-alerts").children().length > 0 ){
+            var content = $(".dropdown-alerts strong").text();
+            if(content === "目前沒有通知"){
+                $(".dropdown-alerts").empty();
+            }
+            if( $(".fa-bell").hasClass("notification-icon") ){
+               var count = parseInt( $(".fa-bell").attr("data-count") );
+                count = count + 1;
+                $(".fa-bell").attr("data-count", count);
+            }else{
+                $(".fa-bell").addClass("notification-icon");
+                $(".fa-bell").attr("data-count","1");
+            }
+            $(".dropdown-alerts").prepend("<li><a href='#'><div><i class='fa fa-comment fa-fw'></i>"
+                                + message + "</div></a></li><li class='divider'></li>");
+        }else{
+            $(".fa-bell").addClass("notification-icon");
+            $(".fa-bell").attr("data-count","1");
+            $(".dropdown-alerts").append("<li><a href='#'><div><i class='fa fa-comment fa-fw'></i>"
+                                    + message + "</div></a></li><li class='divider'></li>");
+            $(".dropdown-alerts").append("<li id='clear-alert'><a href='#'><strong>清除所有通知</strong></a></li>");
+        }
+    }
+}
+// 處理按下通知鈴鐺後的改變
+$(document).on("click", "#notification-bell", function(){
+    if( $(".dropdown-alerts").children().length > 0 ){
+        $(".fa-bell").removeClass("notification-icon");
+        $(".fa-bell").removeAttr("data-count");
+        var last_li_content = $(".dropdown-alerts li:last-child a strong").text();
+        if(last_li_content !== "{% trans 'No notifiactions now' %}" && last_li_content !== "{% trans 'Clear all notifiactions' %}"){
+            if( !$(".dropdown-alerts li:last-child").hasClass("divider") ){
+                $(".dropdown-alerts").append("<li class='divider'></li>");
+            }
+            $(".dropdown-alerts").append("<li id='clear-alert'><a href='#'><strong>{% trans 'Clear all notifiactions' %}</strong></a></li>");
+        }
+    }else{
+		// 如果沒通知卻按下鈴鐺要有相對應文字
+        var expandedAttr = $("#notification-bell").attr("aria-expanded");
+        if( expandedAttr === "true" ){
+            $(".dropdown-alerts").append("<li><a href='#'><strong>{% trans 'No notifiactions now' %}</strong></a></li>");
+        }else{
+            $(".dropdown-alerts").empty();	// 關閉視窗
+        }
+    }
+});
+$(document).on("click", "#clear-alert", function(){
+    $(".dropdown-alerts").empty();
+});
 </script>
 
 {% endblock %}
@@ -453,150 +457,144 @@ $(document).on({
 
 <!-- Below the navbar starting -->
 <div class="container-fluid">
-
-    <div class="row col-sm-3 col-md-3 left-side">
-        <div class="panel-group collapse in" id="accordion" aria-expanded="true">
-
-            <!-- start panel 支出 -->
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a href="/filter/"><span class="glyphicon glyphicon-list-alt">
-                        </span>查看帳本</a>
-                    </h4>
-                </div>
-            </div>  <!-- /.panel 支出 -->
-
-            <!-- start panel 支出 -->
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-                            <span class="glyphicon glyphicon-list-alt"></span>支出
-                        </a>
-                        <span class="total_expense">總計：</span>
-                    </h4>
-                </div>
-                <div id="collapseOne" class="panel-collapse collapse in">
-                    <div class="panel-body">
-                        <table class="table" id="cost-list">
-                            {% for cost_receipt in cost_list %}
-                            <tr class="receipt{{ cost_receipt.id  }}">
-                                <td>
-                                    <span class='glyphicon glyphicon-file text-success'></span>
-                                    {% if cost_receipt.remark %}
-                                        <a class="receipt_info" href='#'>{% if cost_receipt.subclassification.classification.classification_type == "food" %}食{% elif cost_receipt.subclassification.classification.classification_type == "clothing" %}衣{% elif cost_receipt.subclassification.classification.classification_type == "housing" %}住{% elif cost_receipt.subclassification.classification.classification_type == "transportation" %}行{% elif cost_receipt.subclassification.classification.classification_type == "education" %}育{% elif cost_receipt.subclassification.classification.classification_type == "entertainment" %}樂{% else %}其{% endif %}-{{cost_receipt.subclassification.name}}-{{cost_receipt.remark}}: {{cost_receipt.money}}
-                                        </a>
-                                    {% else %}
-                                        <a class="receipt_info" href='#'>{% if cost_receipt.subclassification.classification.classification_type == "food" %}食{% elif cost_receipt.subclassification.classification.classification_type == "clothing" %}衣{% elif cost_receipt.subclassification.classification.classification_type == "housing" %}住{% elif cost_receipt.subclassification.classification.classification_type == "transportation" %}行{% elif cost_receipt.subclassification.classification.classification_type == "education" %}育{% elif cost_receipt.subclassification.classification.classification_type == "entertainment" %}樂{% else %}其{% endif %}-{{cost_receipt.subclassification.name}}: {{cost_receipt.money}}
-                                        </a>
-                                    {% endif %}
-                                    <span style='float: right; margin-right: 10px; color: #9D9D9D;'></span>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </table>
-                    </div>
-                </div>
-            </div>  <!-- /.panel 支出 -->
-
-                <!-- start panel 收入 -->
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><span class="glyphicon glyphicon-list-alt">
-                        </span>收入</a>
-                        <span class="total_income">總計：</span>
-                    </h4>
-                </div>
-                <div id="collapseTwo" class="panel-collapse collapse in">
-                    <div class="panel-body">
-                        <table class="table" id="revenue-list">
-                            {% for revenue_receipt in revenue_list %}
-                            <tr class="receipt{{ revenue_receipt.id  }}">
-                                <td>
-                                    <span class='glyphicon glyphicon-file text-success'></span>
-                                    {% if revenue_receipt.remark %}
-                                        <a class="receipt_info" href='#'>{% if revenue_receipt.subclassification.classification.classification_type == "general_revenue" %}收入{% elif revenue_receipt.subclassification.classification.classification_type == "invest_revenue" %}投資{% else %}其他{% endif %}-{{revenue_receipt.subclassification.name}}-{{revenue_receipt.remark}}: {{revenue_receipt.money}}
-                                        </a>
-                                    {% else %}
-                                        <a class="receipt_info" href='#'>{% if revenue_receipt.subclassification.classification.classification_type == "general_revenue" %}收入{% elif revenue_receipt.subclassification.classification.classification_type == "invest_revenue" %}投資{% else %}其他{% endif %}-{{revenue_receipt.subclassification.name}}: {{revenue_receipt.money}}
-                                        </a>
-                                    {% endif %}
-                                    <span style='float: right; margin-right: 10px; color: #9D9D9D;'></span>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </table>
-                    </div>
-                </div>
-            </div>  <!-- /.panel 收入 -->
-
-        </div>  <!-- /.panel group -->
-    </div>  <!-- /.left-side row -->
-
+            <div class="row col-sm-3 col-md-3 left-side">
+                <div class="panel-group collapse in" id="accordion" aria-expanded="true">
+                    <!-- start panel 支出 -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a href="/filter/"><span class="glyphicon glyphicon-list-alt">
+                                </span>{% trans "View books" %}</a>
+                            </h4>
+                        </div>
+                    </div>  <!-- /.panel 支出 -->
+                    <!-- start panel 支出 -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                    <span class="glyphicon glyphicon-list-alt"></span>{% trans "Expense" %}
+                                </a>
+                                <span class="total_expense">{% trans "Total" %}</span>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse in">
+                            <div class="panel-body">
+                                <table class="table" id="cost-list">
+                                    {% for cost_receipt in cost_list %}
+                                    <tr class="receipt{{ cost_receipt.id  }}">
+                                        <td>
+                                            <span class='glyphicon glyphicon-file text-success'></span>
+                                            {% if cost_receipt.remark %}
+                                                <a class="receipt_info" href='#'>{% if cost_receipt.subclassification.classification.classification_type == "food" %}{% trans "E" %}{% elif cost_receipt.subclassification.classification.classification_type == "clothing" %}{% trans "C" %}{% elif cost_receipt.subclassification.classification.classification_type == "housing" %}{% trans "H" %}{% elif cost_receipt.subclassification.classification.classification_type == "transportation" %}{% trans "T" %}{% elif cost_receipt.subclassification.classification.classification_type == "education" %}{% trans "Ed" %}{% elif cost_receipt.subclassification.classification.classification_type == "entertainment" %}{% trans "En" %}{% else %}{% trans "O" %}{% endif %}-{{cost_receipt.subclassification.name}}-{{cost_receipt.remark}}: {{cost_receipt.money}}
+												</a>
+                                            {% else %}
+                                                <a class="receipt_info" href='#'>{% if cost_receipt.subclassification.classification.classification_type == "food" %}{% trans "E" %}{% elif cost_receipt.subclassification.classification.classification_type == "clothing" %}{% trans "C" %}{% elif cost_receipt.subclassification.classification.classification_type == "housing" %}{% trans "H" %}{% elif cost_receipt.subclassification.classification.classification_type == "transportation" %}{% trans "T" %}{% elif cost_receipt.subclassification.classification.classification_type == "education" %}{% trans "Ed" %}{% elif cost_receipt.subclassification.classification.classification_type == "entertainment" %}{% trans "En" %}{% else %}{% trans "O" %}{% endif %}-{{cost_receipt.subclassification.name}}: {{cost_receipt.money}}
+												</a>
+                                            {% endif %}
+                                            <span style='float: right; margin-right: 10px; color: #9D9D9D;'></span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                        </div>
+                    </div>  <!-- /.panel 支出 -->
+                        <!-- start panel 收入 -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><span class="glyphicon glyphicon-list-alt">
+                                </span>{% trans "Income" %}</a>
+                                <span class="total_income">{% trans "Total:" %}</span>
+                            </h4>
+                        </div>
+                        <div id="collapseTwo" class="panel-collapse collapse in">
+                            <div class="panel-body">
+								<table class="table" id="revenue-list">
+                                    {% for revenue_receipt in revenue_list %}
+                                    <tr class="receipt{{ revenue_receipt.id  }}">
+                                        <td>
+                                            <span class='glyphicon glyphicon-file text-success'></span>
+                                            {% if revenue_receipt.remark %}
+                                                <a class="receipt_info" href='#'>{% if revenue_receipt.subclassification.classification.classification_type == "general_revenue" %}{% trans "Income" %}{% elif revenue_receipt.subclassification.classification.classification_type == "invest_revenue" %}{% trans "Investment" %}{% else %}{% trans "Other" %}{% endif %}-{{revenue_receipt.subclassification.name}}-{{revenue_receipt.remark}}: {{revenue_receipt.money}}
+												</a>
+                                            {% else %}
+                                                <a class="receipt_info" href='#'>{% if revenue_receipt.subclassification.classification.classification_type == "general_revenue" %}{% trans "Income" %}{% elif revenue_receipt.subclassification.classification.classification_type == "invest_revenue" %}{% trans "Investment" %}{% else %}{% trans "Other" %}{% endif %}-{{revenue_receipt.subclassification.name}}: {{revenue_receipt.money}}
+												</a>
+                                            {% endif %}
+                                            <span style='float: right; margin-right: 10px; color: #9D9D9D;'></span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                        </div>
+                    </div>  <!-- /.panel 收入 -->
+                </div>  <!-- /.panel group -->
+            </div>  <!-- /.left-side row -->
 {% endblock %}
 
 
 {% block main_content %}
    <!-- Main container -->
-    <div id="page-wrapper" class="col-sm-9 col-md-9">
-        <div class="container-fluid col-xs-12 col-sm-12">
-            <div class="row">
-                <div class="col-lg-12" id="center-content">
-                    <div id="titleMenu" class="page-header" style="text-align: center;">
-                        <form method="post" id="formadd">
-                            <select id="recordType" name="recordType">
-                                <option value="expense">支出</option>
-                                <option value="income">收入</option>
-                            </select>
-                            <select id="payment" name="payment" >
-                                <option value="cash">現金</option>
-                                <option value="credit_card">信用卡</option>
-                                <option value="other">其他</option>
-                            </select>
-                            <input type="text"  data-provide="datepicker" id="datepicker1">
-                        </form>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="display: inline-block;">
-                            <label id="dollarSign" style="font-size: 100px;padding-right: 20px;">$</label>
-                            <input type="number" id="amount">
+            <div id="page-wrapper" class="col-sm-9 col-md-9">
+                <div class="container-fluid col-xs-12 col-sm-12">
+                    <div class="row">
+                        <div class="col-lg-12" id="center-content">
+                            <div id="titleMenu" class="page-header" style="text-align: center;">
+                                <form method="post" id="formadd">
+                                    <select id="recordType" name="recordType">
+                                        <option value="expense">{% trans "Expense" %}</option>
+                                        <option value="income">{% trans "Income" %}</option>
+                                    </select>
+                                    <select id="payment" name="payment" >
+                                        <option value="cash">{% trans "Cash" %}</option>
+                                        <option value="credit_card">{% trans "Credit card" %}</option>
+                                        <option value="other">{% trans "Other" %}</option>
+                                    </select>
+                                    <input type="text"  data-provide="datepicker" id="datepicker1">
+                                </form>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="display: inline-block;">
+                                    <label id="dollarSign" style="font-size: 100px;padding-right: 20px;">$</label>
+                                    <input type="number" id="amount">
+                                </div>
+                                <div class="row" id="main-type-choose" style="text-align: center; margin-bottom: 20px;">
+                                    <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="food" style="background: #8D8F76 no-repeat;">{% trans "E" %}</button>
+                                    <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="clothing" style="background: #BAB6AF no-repeat;">{% trans "C" %}</button>
+                                    <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="housing" style="background: #E19F81 no-repeat;">{% trans "H" %}</button>
+                                    <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="transportation" style="background: #73AFB8 no-repeat;">{% trans "T" %}</button>
+                                    <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="education" style="background: #BA736A no-repeat;">{% trans "Ed" %}</button>
+                                    <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="entertainment" style="background: url('../../static/image/yellow.png') no-repeat;">{% trans "En" %}</button>
+                                    <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="others" style="background: url('../../static/image/brown.png') no-repeat;">{% trans "O" %}</button>
+                                    <button type="button" class="btn btn-default btn-lg revenue-category" data-toggle="modal" data-target="#myModal-revenue" id="general_revenue" style="background: #8D8F76 no-repeat;">{% trans "GI" %}</button>
+                                    <button type="button" class="btn btn-default btn-lg revenue-category" data-toggle="modal" data-target="#myModal-revenue" id="invest_revenue" style="background: #BAB6AF no-repeat;">{% trans "II" %}</button>
+                                    <button type="button" class="btn btn-default btn-lg revenue-category" data-toggle="modal" data-target="#myModal-revenue" id="other_revenue" style="background: #E19F81 no-repeat;">{% trans "Other" %}</button>
+                                </div>
+
+                                <div class="row" style="margin-bottom: 20px;">
+                                    <label style="font-size: 25px; padding-right: 5px;">{% trans "Class" %}</label>
+                                    <input type="text" id="costCategory" value={% blocktrans %}'E-早餐'{% endblocktrans %} readonly>
+                                </div>
+                                <div class="row">
+                                    <label style="font-size: 25px; padding-right: 5px;">{% trans "Remark" %}</label>
+                                    <input type="text" id="memo" />
+                                </div>
+                                <div class="row" style="margin-top: 30px;margin-bottom: 30px;">
+                                    <input type="submit" class="btn-default btn-lg submit determin" id="submit-btn" value="{% trans "Confirm" %}" style="border: 2px solid #03aaa0;">
+                                    <input type="button" class="btn-default btn-lg submit clear" id="last-btn" value={% blocktrans %}'Clear'{% endblocktrans %} style="border: 2px solid #03aaa0;">
+                                    <input type="submit" class="btn-default btn-lg submit modify_btn hidden" id="modify-btn" value={% blocktrans %}'Modify'{% endblocktrans %} style="border: 2px solid #03aaa0;">
+                                    <input type="button" class="btn-default btn-lg submit clear hidden" id="cancel-btn" value="{% trans "Cancel" %}" style="border: 2px solid #03aaa0;">
+                                </div>
+                                </div>
+                            </form>
                         </div>
-                        <div class="row" id="main-type-choose" style="text-align: center; margin-bottom: 20px;">
-                            <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="food" style="background: #8D8F76 no-repeat;">食</button>
-                            <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="clothing" style="background: #BAB6AF no-repeat;">衣</button>
-                            <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="housing" style="background: #E19F81 no-repeat;">住</button>
-                            <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="transportation" style="background: #73AFB8 no-repeat;">行</button>
-                            <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="education" style="background: #BA736A no-repeat;">育</button>
-                            <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="entertainment" style="background: url('../../static/image/yellow.png') no-repeat;">樂</button>
-                            <button type="button" class="btn btn-default btn-lg cost-category" data-toggle="modal" data-target="#myModal-cost" id="others" style="background: url('../../static/image/brown.png') no-repeat;">其</button>
-                            <button type="button" class="btn btn-default btn-lg revenue-category" data-toggle="modal" data-target="#myModal-revenue" id="general_revenue" style="background: #8D8F76 no-repeat;">一般收入</button>
-                            <button type="button" class="btn btn-default btn-lg revenue-category" data-toggle="modal" data-target="#myModal-revenue" id="invest_revenue" style="background: #BAB6AF no-repeat;">投資收入</button>
-                            <button type="button" class="btn btn-default btn-lg revenue-category" data-toggle="modal" data-target="#myModal-revenue" id="other_revenue" style="background: #E19F81 no-repeat;">其他</button>
-                        </div>
-                		
-                        <div class="row" style="margin-bottom: 20px;">
-                            <label style="font-size: 25px; padding-right: 5px;">分類</label>
-                            <input type="text" id="costCategory" value="食-早餐" readonly>
-                        </div>
-                        <div class="row">
-                            <label style="font-size: 25px; padding-right: 5px;">備註</label>
-                            <input type="text" id="memo" />
-                        </div>
-                        <div class="row" style="margin-top: 30px;margin-bottom: 30px;">
-                            <input type="submit" class="btn-default btn-lg submit determin" id="submit-btn" value="確定" style="border: 2px solid #03aaa0;">
-                            <input type="button" class="btn-default btn-lg submit clear" id="last-btn" value="清空" style="border: 2px solid #03aaa0;">
-                            <input type="submit" class="btn-default btn-lg submit modify_btn hidden" id="modify-btn" value="修改" style="border: 2px solid #03aaa0;">
-                            <input type="button" class="btn-default btn-lg submit clear hidden" id="cancel-btn" value="取消" style="border: 2px solid #03aaa0;">
-                        </div>
-                        </div>
-                    </form>
-                </div><!-- /#center-content -->
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </div><!-- /#page-wrapper (main container) -->
-</div><!-- /.container-fluid (whole div below navbar) -->
+                    </div><!-- /.row -->
+                </div><!-- /.container-fluid -->
+            </div><!-- /#page-wrapper (main container) -->
+        </div><!-- /.container-fluid (whole div below navbar) -->
 {% endblock %}
 
 {% block other_content %}
@@ -608,9 +606,8 @@ $(document).on({
 	            <div class="modal-header">
                     <h1 id="main-cate" style="display: none;"></h1>
 	                <button type="button" class="close" data-dismiss="modal">&times;</button>
-	                <h4 class="modal-title">請選擇子分類</h4>
+	                <h4 class="modal-title">{% trans "Choose subclass" %}</h4>
 	            </div> <!-- /.modal-header -->
-
 	            <div class="modal-body">
                     {% for food in food_list %}
                         <button type="button" class="btn btn-link food_list hidden sec-category">{{ food.name }}</button>
@@ -633,25 +630,23 @@ $(document).on({
                     {% for others in others_list %}
                         <button type="button" class="btn btn-link others_list hidden sec-category">{{ others.name }}</button>
                     {% endfor %}
-					
+
 				</div> <!-- /.modal-body -->
-                
+
 	            <div class="modal-footer">
                     <div style="float: left;">
-                        <button type="button" class="btn btn-default subCategoryAdder">新增子分類</button>
-                        <input type="text" id="new-expense-sub-text" class="new-sub-handler" placeholder="請輸入次分類名稱" maxlength="10" />
-                        <button type="button" class="btn btn-success btn-sm new-sub-handler new-sub-submit">新增</button>
-                        <button type="button" class="btn btn-danger btn-sm new-sub-handler">取消</button>
+                        <button type="button" class="btn btn-default subCategoryAdder">{% trans "Add new subclass" %}</button>
+                        <input type="text" id="new-expense-sub-text" class="new-sub-handler" placeholder={% blocktrans %}'Enter subclass name'{% endblocktrans %} maxlength="10" />
+                        <button type="button" class="btn btn-success btn-sm new-sub-handler new-sub-submit">{% trans "Add" %}</button>
+                        <button type="button" class="btn btn-danger btn-sm new-sub-handler">{% trans "Cancel" %}</button>
                     </div>
-	                <button type="button" class="btn btn-default modal-btn modal-submit" data-dismiss="modal">確定</button>
-	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal">取消</button>
+	                <button type="button" class="btn btn-default modal-btn modal-submit" data-dismiss="modal">{% trans "Confirm" %}</button>
+	                <button type="button" class="btn btn-default modal-btn" data-dismiss="modal">{% trans "Cancel" %}</button>
 	            </div> <!-- /.modal-footer -->
 	        </div>
 	    </div>
 	</div>
     <!-- /.modal -->
-
-
     <!-- Modal2 -->
     <div class="modal fade" id="myModal-revenue" role="dialog">
         <div class="modal-dialog">
@@ -660,9 +655,8 @@ $(document).on({
                 <div class="modal-header">
                     <h1 id="main-cate" style="display: none;"></h1>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">請選擇子分類</h4>
+                    <h4 class="modal-title">{% trans "Choose subclass" %}</h4>
                 </div> <!-- /.modal-header -->
-
                 <div class="modal-body">
                     {% for general_revenue in general_revenue_list %}
                         <button type="button" class="btn btn-link general_revenue_list hidden sec-category">{{ general_revenue.name }}</button>
@@ -674,16 +668,16 @@ $(document).on({
                         <button type="button" class="btn btn-link other_revenue_list hidden sec-category">{{ other_revenue.name }}</button>
                     {% endfor %}
                 </div> <!-- /.modal-body -->
-                
+
                 <div class="modal-footer">
                     <div style="float: left;">
-                        <button type="button" class="btn btn-default subCategoryAdder">新增子分類</button>
-                        <input type="text" id="new-income-sub-text" class="new-sub-handler" placeholder="請輸入次分類名稱" maxlength="10" />
-                        <button type="button" class="btn btn-success btn-sm new-sub-handler new-sub-submit">新增</button>
-                        <button type="button" class="btn btn-danger btn-sm new-sub-handler">取消</button>
+                        <button type="button" class="btn btn-default subCategoryAdder">{% trans "Add new subclass" %}</button>
+                        <input type="text" id="new-income-sub-text" class="new-sub-handler" placeholder={% blocktrans %}'Enter subclass name'{% endblocktrans %} maxlength="10" />
+                        <button type="button" class="btn btn-success btn-sm new-sub-handler new-sub-submit">{% trans "Add" %}</button>
+                        <button type="button" class="btn btn-danger btn-sm new-sub-handler">{% trans "Cancel" %}</button>
                     </div>
-                    <button type="button" class="btn btn-default modal-btn modal-submit" data-dismiss="modal">確定</button>
-                    <button type="button" class="btn btn-default modal-btn" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-default modal-btn modal-submit" data-dismiss="modal">{% trans "Confirm" %}</button>
+                    <button type="button" class="btn btn-default modal-btn" data-dismiss="modal">{% trans "Cancel" %}</button>
                 </div> <!-- /.modal-footer -->
             </div>
         </div>

@@ -1,6 +1,6 @@
 <!-- 這個頁面是圖表頁 -->
 {% extends 'base.html' %}
-{% load staticfiles %}
+{% load staticfiles i18n %}
 
 {% block local_include %}
         <!-- bokeh -->
@@ -48,14 +48,12 @@
 
     $(document).ready(function(){
         $('#week-page').addClass("now-click");
-
         $('div.panel-default').hover(function(){
-            $(this).addClass('divOver');        
-        },function(){
-            $(this).removeClass('divOver'); 
-            
-        });
+			$(this).addClass('divOver');
+		},function(){
+			$(this).removeClass('divOver');
 
+		});
         $('#week-page').click(function(event) {
             $('#week-page').addClass("now-click");
             $('#month-page').removeClass("now-click")
@@ -71,13 +69,12 @@
                     $('#title-text').css("display","none");
                     $("#chart").replaceWith("<div id=\"chart\"><div>"+result.script_bar+result.div_bar+"</div>"+result.the_script+result.the_div+"</div></div>");
                     $('#pageHeader_date').text(result.title);
-
                 },
                 error: function(status){
                     console.log(status);
-                    alert("周收支讀取失敗")
+                    alert("{% trans "Load data fail" %}")
                 }
-            }); 
+            });
         });
         $('#month-page').click(function(event) {
             $('#month-page').addClass("now-click");
@@ -94,13 +91,12 @@
                     $('#title-text').css("display","none");
                     $("#chart").replaceWith("<div id=\"chart\"><div>"+result.script_bar+result.div_bar+"</div>"+result.the_script+result.the_div+"</div></div>");
                     $('#pageHeader_date').text(result.title);
-
                 },
                 error: function(status){
                     console.log(status);
-                    alert("月收支讀取失敗")
+                    alert("{% trans "Load data fail" %}")
                 }
-            });  
+            });
         });
         $('#year-page').click(function(event) {
             $('#year-page').addClass("now-click");
@@ -117,22 +113,22 @@
                     $('#title-text').css("display","none");
                     $("#chart").replaceWith("<div id=\"chart\"><div>"+result.script_bar+result.div_bar+"</div>"+result.the_script+result.the_div+"</div></div>");
                     $('#pageHeader_date').text(result.title);
-
                 },
                 error: function(status){
                     console.log(status);
-                    alert("年收支讀取失敗")
+                    alert("{% trans "Load data fail" %}")
                 }
-            }); 
+            });
         });
         $('#category-page').click(function(event) {
             $('#category-page').addClass("now-click");
             $('#week-page').removeClass("now-click")
             $('#month-page').removeClass("now-click")
             $('#year-page').removeClass("now-click")
-            $('#title-text').find( "h3" ).html("總類別分析");
+            $('#title-text').find( "h3" ).html("{% trans "Total class analysis" %}");
             var start="月份";
             $('#menu1').html(start+' <span class=\"caret\"></span>');
+
             $.ajax({
                dataType: 'json',
                url: "../getCategoryChart/",
@@ -143,16 +139,13 @@
                     $('#title-text').css("display","");
                     //$("#chart").replaceWith("<div id=\"chart\"><div>"+result.script_pie+result.div_pie+"</div>"+result.script_pie_sub+result.div_pie_sub+"</div></div>");
                     $("#chart").replaceWith("<div id=\"chart\"><div class=\"pie\">"+result.script_pie+result.div_pie+"</div><div class=\"pie\">"+result.script_pie_in+result.div_pie_in+"</div><div class=\"pie\">"+result.script_pie_sub+result.div_pie_sub+"</div><div class=\"pie\">"+result.script_pie_sub_in+result.div_pie_sub_in+"</div></div>");
-
                 },
                 error: function(status){
                     console.log(status);
-                    alert("類別分析讀取失敗")
+                    alert("{% trans "Load data fail" %}")
                 }
-            }); 
+            });
         });
-
-
         //左右方向箭號的事件
         $('#btn_left,#btn_right').click(function(e){
             var idClick = e.target.id;
@@ -174,16 +167,14 @@
                 success: function(result){
                     $("#chart").replaceWith("<div id=\"chart\"><div>"+result.script_bar+result.div_bar+"</div>"+result.the_script+result.the_div+"</div></div>");
                     $('#pageHeader_date').text(result.title);
-
                 },
                 error: function(result, status){
                     console.log(status);
                     console.log(result);
-                    alert("抓新日期失敗")
+                    alert("{% trans "Get date fail" %}")
                 }
             });
         });
-
         //pie-下拉式選單
         $('div.dropdown ul.dropdown-menu li a').click(function (e) {
             var choosen = $(this).text();
@@ -191,7 +182,7 @@
             if(choosen == "------------"){
                 choosen="月份";
                 $('#menu1').html(choosen+' <span class=\"caret\"></span>');
-                $('#title-text').find( "h3" ).html("總類別分析");
+                $('#title-text').find( "h3" ).html("{% trans "Total class analysis" %}");
                 $.ajax({
                     dataType: 'json',
                     url: "../getCategoryChart/",
@@ -202,13 +193,12 @@
                         $('#title-text').css("display","");
                         //$("#chart").replaceWith("<div id=\"chart\"><div>"+result.script_pie+result.div_pie+"</div>"+result.script_pie_sub+result.div_pie_sub+"</div></div>");
                         $("#chart").replaceWith("<div id=\"chart\"><div class=\"pie\">"+result.script_pie+result.div_pie+"</div><div class=\"pie\">"+result.script_pie_in+result.div_pie_in+"</div><div class=\"pie\">"+result.script_pie_sub+result.div_pie_sub+"</div><div class=\"pie\">"    +result.script_pie_sub_in+result.div_pie_sub_in+"</div></div>");
-
                     },
                     error: function(status){
                         console.log(status);
-                        alert("類別分析讀取失敗")
+                        alert("{% trans "Load data fail" %}")
                     }
-                }); 
+                });
             }else{
                 $('#menu1').html(choosen+' <span class=\"caret\"></span>');
                 $('#title-text').find( "h3" ).html(choosen);
@@ -227,13 +217,12 @@
                     },
                     error: function(status){
                         console.log(status);
-                        alert("類別分析抓新日期失敗")
+                        alert("{% trans "Get date fail" %}")
                     }
                 });
             }
         });
-
-    }); // end document.ready()
+	}); // end document.ready()
 
     </script>
 {% endblock %}
@@ -241,55 +230,48 @@
 {% block left_side_content %}
 
 <div class="container-fluid">
-    <div class="row col-sm-3 col-md-3 left-side">
+    <div class="row col-sm-2 col-md-2 left-side">
         <div class="panel-group collapse in" id="accordion" aria-expanded="true">
-
             <!-- start panel 本周收支 -->
             <div class="panel panel-default" id="week-page">
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         <span class="fa fa-bar-chart" style="padding-right: 10px;">
-                        </span>本周收支
+                        </span>{% trans "Weekly Income Starement" %}
                     </h4>
                 </div>
             </div>  <!-- /.panel 本周收支 -->
-
             <!-- start panel 本月收支 -->
             <div class="panel panel-default" id="month-page">
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         <span class="fa fa-bar-chart" style="padding-right: 10px;">
-                        </span>本月收支
+                        </span>{% trans "Monthly Income Starement" %}
                     </h4>
                 </div>
             </div>  <!-- /.panel 本月收支 -->
-
             <!-- start panel 年度收支 -->
             <div class="panel panel-default" id="year-page">
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         <span class="fa fa-bar-chart" style="padding-right: 10px;">
-                        </span>年度收支
+                        </span>{% trans "Yearly Income Starement" %}
                     </h4>
                 </div>
             </div>  <!-- /.panel 年度收支 -->
-            
+
             <!-- start panel 類別分析 -->
             <div class="panel panel-default" id="category-page">
                 <div class="panel-heading">
                     <h4 class="panel-title">
-                        <span class="fa fa-pie-chart" style="padding-right: 10px;"></span>類別分析
+                        <span class="fa fa-pie-chart" style="padding-right: 10px;"></span>{% trans "Class analysis" %}
                     </h4>
                 </div>
             </div>  <!-- /.panel 類別分析 -->
-
         </div>  <!-- /.panel group -->
     </div>  <!-- /.left-side row -->
-{% endblock %}                   
-        
-{% block main_content %}
-<!-- Main container -->
-    <div id="page-wrapper" class="col-sm-9 col-md-9">
+    <!-- Main container -->
+    <div id="page-wrapper" class="col-sm-10 col-md-10">
         <div class="container-fluid col-xs-12 col-sm-12">
             <p style="text-align: center; font-size: 100px;">
             </p>
@@ -300,12 +282,12 @@
                             <form>
                                 <span class="glyphicon glyphicon-chevron-left" aria-hidden="true" id="btn_left"></span>
                                 <span class="label label-default" id="pageHeader_date" style="font-size:120%;">{{title}}</span>
-                                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true" id="btn_right"></span>      
+                                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true" id="btn_right"></span>
                             </form>
                             <HR>
                         </div>
                         <div style="margin: 20px 0px 50px 0px; display:none;" id="title-text">
-                            <h3><b>總類別分析</b></h3>
+                            <h3><b>{% trans "Total class analysis" %}</b></h3>
                             <div class="dropdown" style="text-align: right;">
                                 <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">月份
                                 <span class="caret"></span></button>
@@ -338,5 +320,4 @@
         </div><!-- /.container-fluid -->
     </div><!-- /#page-wrapper (main container) -->
 </div><!-- /.container-fluid (whole div below navbar) -->
-
 {% endblock %}
