@@ -1,0 +1,55 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-01-03 18:54+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: templates/login.html:41 templates/register.html:30
+msgid "Welcome to"
+msgstr ""
+
+#: templates/login.html:44
+msgid "Login"
+msgstr ""
+
+#: templates/login.html:48 templates/register.html:43
+msgid "'Email Address'"
+msgstr ""
+
+#: templates/login.html:51 templates/register.html:47
+msgid "'Password'"
+msgstr ""
+
+#: templates/login.html:56
+msgid "Sign in"
+msgstr ""
+
+#: templates/login.html:58
+msgid "Create account"
+msgstr ""
+
+#: templates/register.html:50
+msgid "'Confirm Password'"
+msgstr ""
+
+#: templates/register.html:54
+msgid "Register Now"
+msgstr ""
+
+#: templates/register.html:56
+msgid "Go to Login"
+msgstr ""

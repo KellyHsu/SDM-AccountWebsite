@@ -64,7 +64,7 @@ def dashboard(request):
                    "other_revenue_list": other_revenue_list,
                    "total_expense": total_expense, "total_income": total_income,
                    "notification_list_unread": notification_list_unread,
-                   "notification_unread_count": len(notification_list_unread), 
+                   "notification_unread_count": len(notification_list_unread),
                    "notification_list_isread": notification_list_isread})
 
 

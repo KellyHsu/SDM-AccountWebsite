@@ -249,12 +249,7 @@ $(document).ready(function() {
         $(".subCategoryAdder").show();
         $(".modal-btn").prop('disabled', false);    // 如果在新增子分類時按了背景，要把被鎖定的按鈕解鎖
     });
-    // notification handling
-    var notification_len = {{ periodic_notification_count}};
-    if(notification_len > 0){
-        $(".fa-bell").addClass('notification-icon');
-        $(".fa-bell").attr("data-count", notification_len);
-    }
+
     $(".total_expense").text("{% trans "Total: " %}"+ {{ total_expense }})
     $(".total_income").text("{% trans "Total: " %}"+ {{ total_income }})
 }); // end document ready

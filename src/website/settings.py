@@ -16,7 +16,7 @@ BASE_DIR = dirname(dirname(__file__))
 SECRET_KEY = '@q1%(5k7y=qfheiz-^)56m62%u6xr%!qvb$_1$zt23!y%ki+#v'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['140.112.107.109', '[::1]', 'localhost', '127.0.0.1']
 # Application definition
 DJANGO_APPS = (
     'django.contrib.auth',
